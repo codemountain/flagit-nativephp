@@ -2,6 +2,8 @@
 
 A complete mobile app starter kit built with Laravel, NativePHP, Livewire, and Tailwind CSS. Features authentication, news feed, and native mobile UI components.
 
+📚 [NativePHP Documentation](https://nativephp.com/docs/mobile/2/getting-started/introduction)
+
 ## Features
 
 - 🔐 Complete authentication system with Sanctum API tokens
