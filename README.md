@@ -58,6 +58,43 @@ php artisan native:run
 
 ## Development
 
+### Setting Up Your API Server
+
+The mobile app needs to connect to your Laravel API. For local development, you need to expose your local server so the mobile device/simulator can access it.
+
+#### Option 1: Using Laravel Herd (Recommended for macOS)
+
+```bash
+# Share your local site
+herd share
+
+# Update .env with the provided URL
+API_URL=https://your-app.herd.sh
+```
+
+#### Option 2: Using ngrok
+
+```bash
+# Start ngrok tunnel
+ngrok http 80
+
+# Update .env with the provided URL
+API_URL=https://abc123.ngrok.io
+```
+
+#### Option 3: Using Artisan Serve
+
+```bash
+# Start the development server
+php artisan serve
+
+# For local network access, use your machine's IP
+# Update .env with your local IP
+API_URL=http://192.168.1.100:8000
+```
+
+### Running the Mobile App
+
 ```bash
 # Run on iOS simulator (macOS only)
 php artisan native:run ios
