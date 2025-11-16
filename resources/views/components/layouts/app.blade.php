@@ -8,7 +8,7 @@
         <native:top-bar-action id="profile-action" label="Home" icon="user" url="{{ route('profile') }}"/>
     </native:top-bar>
 
-    <native:side-nav :gestures_enabled="!request()->routeIs('news')">
+    <native:side-nav :gestures_enabled="request()->routeIs('home')">
         <native:side-nav-header
             title="Welcome"
             subtitle="{{\Native\Mobile\Facades\SecureStorage::get('user_name')}}"
