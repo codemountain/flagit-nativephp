@@ -11,5 +11,7 @@
         </main>
 
         @livewireScripts
+        @fluxScripts
+        <flux:toast />
     </body>
 </html>

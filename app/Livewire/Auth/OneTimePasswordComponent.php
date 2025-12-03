@@ -61,29 +61,17 @@ class OneTimePasswordComponent extends Component
 
     protected function sendCode(): void
     {
-        $user = $this->findUser();
 
-        if ($this->rateLimitHit()) {
-            return;
-        }
+        $response = ApiClient::post('/otp-email', [
+            'email' => $this->email,
+        ]);
 
         $this->displayingEmailForm = false;
 
-        $user->sendOneTimePassword();
+        $this->errorMessage = $response->json('message', 'Code sent to your email');
+
     }
 
-    protected function rateLimitHit(): bool
-    {
-        $rateLimitKey = "one-time-password-component-send-code.{$this->email}";
-
-        if (RateLimiter::tooManyAttempts($rateLimitKey, 10)) {
-            return true;
-        }
-
-        RateLimiter::hit($rateLimitKey, 60); // 60 seconds decay time
-
-        return false;
-    }
 
     public function displayEmailForm(): void
     {

@@ -1,7 +1,7 @@
 <div x-data="{ resendText: '{{ __('one-time-passwords::form.resend_code') }}', isResending: false }">
-{{--    <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">--}}
-{{--        {{ __('one-time-passwords::form.one_time_password_form_title') }}--}}
-{{--    </h2>--}}
+    <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+        {{ __('one-time-passwords::form.one_time_password_form_title') }}
+    </h2>
     <flux:card>
         <form wire:submit="submitOneTimePassword" class="space-y-8">
             <div class="max-w-64 mx-auto space-y-2">
@@ -12,6 +12,7 @@
             <div class="space-y-4">
                 <flux:button variant="primary" type="submit" class="w-full">{{ __('one-time-passwords::form.submit_login_code_button') }}</flux:button>
                 <flux:button
+                    variant="outline"
                     @click="
                 if (!isResending) {
                     isResending = true;
