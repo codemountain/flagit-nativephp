@@ -25,14 +25,13 @@ class Login extends Component
 
         $this->errorMessage = '';
 
-        $response = ApiClient::post('/login', [
+        $response = ApiClient::post('otp-email', [
             'email' => $this->email,
-            'password' => $this->password,
+//            'password' => $this->password,
         ]);
 
         if ($response->successful()) {
             $data = $response->json();
-
             SecureStorage::set('api_token', $data['token']);
             SecureStorage::set('user_name', $data['user']['name']);
             SecureStorage::set('user_email', $data['user']['email']);

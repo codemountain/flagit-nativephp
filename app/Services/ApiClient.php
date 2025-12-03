@@ -18,7 +18,7 @@ class ApiClient
     {
         $token = SecureStorage::get('api_token');
 
-        return Http::baseUrl(static::baseUrl() . '/api')
+        return Http::baseUrl(static::baseUrl() )
             ->acceptJson()
             ->when($token, fn ($http) => $http->withToken($token))
             ->timeout(30);

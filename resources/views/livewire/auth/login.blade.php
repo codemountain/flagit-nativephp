@@ -11,59 +11,59 @@
             <p class=" text-red-800 dark:text-red-200">{{ $errorMessage }}</p>
         </div>
     @endif
+    <livewire:auth.one-time-password-component>
+{{--    <form wire:submit="login" class="flex flex-col gap-6">--}}
+{{--        <div>--}}
+{{--            <label for="email" class="block  font-medium text-zinc-900 dark:text-white">Email address</label>--}}
+{{--            <input--}}
+{{--                type="email"--}}
+{{--                id="email"--}}
+{{--                wire:model="email"--}}
+{{--                class="mt-1 block w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500"--}}
+{{--                placeholder="email@example.com"--}}
+{{--                required--}}
+{{--                autofocus--}}
+{{--            />--}}
+{{--            @error('email')--}}
+{{--                <p class="mt-1  text-red-600 dark:text-red-400">{{ $message }}</p>--}}
+{{--            @enderror--}}
+{{--        </div>--}}
 
-    <form wire:submit="login" class="flex flex-col gap-6">
-        <div>
-            <label for="email" class="block  font-medium text-zinc-900 dark:text-white">Email address</label>
-            <input
-                type="email"
-                id="email"
-                wire:model="email"
-                class="mt-1 block w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500"
-                placeholder="email@example.com"
-                required
-                autofocus
-            />
-            @error('email')
-                <p class="mt-1  text-red-600 dark:text-red-400">{{ $message }}</p>
-            @enderror
-        </div>
+{{--        <div>--}}
+{{--            <label for="password" class="block  font-medium text-zinc-900 dark:text-white">Password</label>--}}
+{{--            <input--}}
+{{--                type="password"--}}
+{{--                id="password"--}}
+{{--                wire:model="password"--}}
+{{--                class="mt-1 block w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500"--}}
+{{--                placeholder="Password"--}}
+{{--                required--}}
+{{--            />--}}
+{{--            @error('password')--}}
+{{--                <p class="mt-1  text-red-600 dark:text-red-400">{{ $message }}</p>--}}
+{{--            @enderror--}}
+{{--        </div>--}}
 
-        <div>
-            <label for="password" class="block  font-medium text-zinc-900 dark:text-white">Password</label>
-            <input
-                type="password"
-                id="password"
-                wire:model="password"
-                class="mt-1 block w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500"
-                placeholder="Password"
-                required
-            />
-            @error('password')
-                <p class="mt-1  text-red-600 dark:text-red-400">{{ $message }}</p>
-            @enderror
-        </div>
+{{--        <button--}}
+{{--            type="submit"--}}
+{{--            class="w-full rounded-lg bg-blue-600 px-4 py-2 text-white "--}}
+{{--            wire:loading.attr="disabled"--}}
+{{--            wire:target="login"--}}
+{{--        >--}}
+{{--            <span wire:loading.class="hidden" wire:target="login">Log In</span>--}}
+{{--            <span class="hidden" wire:loading.class.remove="hidden" wire:target="login">Logging In...</span>--}}
+{{--        </button>--}}
 
-        <button
-            type="submit"
-            class="w-full rounded-lg bg-blue-600 px-4 py-2 text-white "
-            wire:loading.attr="disabled"
-            wire:target="login"
-        >
-            <span wire:loading.class="hidden" wire:target="login">Log In</span>
-            <span class="hidden" wire:loading.class.remove="hidden" wire:target="login">Logging In...</span>
-        </button>
+{{--        <button--}}
+{{--            wire:click="skipLogin"--}}
+{{--            class="w-full rounded-lg bg-purple-600 px-4 py-2 text-white "--}}
+{{--        >--}}
+{{--            Skip Login--}}
+{{--        </button>--}}
+{{--    </form>--}}
 
-        <button
-            wire:click="skipLogin"
-            class="w-full rounded-lg bg-purple-600 px-4 py-2 text-white "
-        >
-            Skip Login
-        </button>
-    </form>
-
-    <div class="text-center  text-zinc-600 dark:text-zinc-400">
-        <span>Don't have an account?</span>
-        <a href="{{ route('register') }}" class="text-blue-600 dark:text-blue-400" wire:navigate>Sign up</a>
-    </div>
+{{--    <div class="text-center  text-zinc-600 dark:text-zinc-400">--}}
+{{--        <span>Don't have an account?</span>--}}
+{{--        <a href="{{ route('register') }}" class="text-blue-600 dark:text-blue-400" wire:navigate>Sign up</a>--}}
+{{--    </div>--}}
 </div>

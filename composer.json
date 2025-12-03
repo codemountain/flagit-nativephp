@@ -15,12 +15,13 @@
     },
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.4",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^3.6.4",
-        "nativephp/mobile": "^2.0.0"
+        "nativephp/mobile": "^2.0.0",
+        "spatie/laravel-one-time-passwords": "^1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
