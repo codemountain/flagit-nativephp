@@ -28,8 +28,7 @@
         "livewire/flux": "^2.9",
         "livewire/flux-pro": "^2.9",
         "livewire/livewire": "^3.6.4",
-        "nativephp/mobile": "^2.0.0",
-        "spatie/laravel-one-time-passwords": "^1.0"
+        "nativephp/mobile": "^2.0.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
