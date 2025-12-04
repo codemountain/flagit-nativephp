@@ -3,7 +3,7 @@
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
-
+@custom-variant dark (&:where(.dark, .dark *));
 @keyframes slideInFromRight {
     from {
         opacity: 0;
@@ -13,4 +13,7 @@
         opacity: 1;
         transform: translateX(0);
     }
+}
+@theme {
+    --font-sans: 'URWDIN', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
