@@ -17,3 +17,16 @@
 @theme {
     --font-sans: 'URWDIN', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
+a.mobile{
+    @apply h-14!;
+}
+button.mobile{
+    @apply h-14!;
+}
+div.mobile input{
+    @apply py-3! h-14!;
+}
+ui-modal dialog{
+    @apply bg-zinc-400! dark:bg-zinc-800! shadow-2xl dark:border-t-zinc-100/20! dark:border-t-6
+}
+

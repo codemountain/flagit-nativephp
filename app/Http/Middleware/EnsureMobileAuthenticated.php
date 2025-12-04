@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use App\Services\ApiClient;
 use Closure;
 use Illuminate\Http\Request;
+use Laravel\SerializableClosure\Serializers\Native;
+use Native\Mobile\Facades\System;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureMobileAuthenticated
@@ -16,6 +18,10 @@ class EnsureMobileAuthenticated
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if(!System::isMobile() && config('app.env')){
+            return $next($request);
+        }
+
         if (!ApiClient::isAuthenticated()) {
             return redirect()->route('login');
         }

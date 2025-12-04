@@ -26,22 +26,23 @@
             <native:bottom-nav-item
                 id="home"
                 icon="home"
-                label="Home"
-                url="/home"
+                label="{{__('Reports')}}"
+                url="/reports"
                 active="{{request()->routeIs('home')}}"
             />
             <native:bottom-nav-item
-                id="news"
-                icon="newspaper"
-                label="News"
-                url="/news"
-                badge="10"
-                active="{{request()->routeIs('news')}}"
+                id="add"
+                icon="plus"
+                class="size-18"
+                label="{{__('Add')}}"
+                url="/reports/create"
+{{--                badge="10"--}}
+                active="{{request()->routeIs('reports.add')}}"
             />
             <native:bottom-nav-item
                 id="profile"
                 icon="person"
-                label="Profile"
+                label="{{__('Profile')}}"
                 url="/profile"
                 active="{{request()->routeIs('profile')}}"
             />
@@ -53,5 +54,6 @@
     </main>
 
     @fluxScripts
+    <flux:toast />
 </body>
 </html>

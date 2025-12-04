@@ -22,7 +22,7 @@
         <form wire:submit="submitOneTimePassword" class="space-y-8">
             <flux:otp wire:model="oneTimePassword" length="4" label="Login Code" :error:icon="false" error:class="text-center" class="mx-auto" autofocus/>
             <div class="space-y-4">
-                <flux:button variant="primary" type="submit" class="w-full">{{ __('Submit login code') }}</flux:button>
+                <flux:button variant="primary" type="submit" class="w-full mobile">{{ __('Submit login code') }}</flux:button>
 
                 <flux:button
                     variant="primary"
@@ -48,6 +48,7 @@
                         autocomplete="email"
                         placeholder="email@example.com"
                         autofocus
+                        class="mobile"
                     />
 {{--                    @error('email')--}}
 {{--                    <p class="mt-2 text-sm text-red-600 dark:text-red-400 space-y-1">{{ $message }}</p>--}}
@@ -55,7 +56,7 @@
                 </div>
 
                 <div>
-                    <flux:button variant="primary" type="submit" class="w-full" data-test="login-button">
+                    <flux:button variant="primary" type="submit" class="w-full mobile" data-test="login-button">
                         {{__('Request login code')}}
                     </flux:button>
                 </div>

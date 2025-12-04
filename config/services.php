@@ -38,5 +38,23 @@ return [
     'api' => [
         'url' => env('API_URL', 'http://localhost:8000'),
     ],
+    'pt' => [
+        'api_base_url' => env('PT_API_BASE_URL'),
+        'has_refresh_endpoint' => env('PT_HAS_REFRESH_ENDPOINT', false),
+        'token_refresh_buffer_minutes' => env('PT_TOKEN_REFRESH_BUFFER_MINUTES', 5),
+        'report_refresh_delay' => env('PT_REPORT_REFRESH_DELAY', 10),
+        'teams_refresh_delay' => env('PT_TEAMS_REFRESH_DELAY', 60),
+        'base_refresh_delay' => env('PT_BASE_REFRESH_DELAY', 120),
+        'assigned_refresh_delay' => env('PT_ASSIGNED_REFRESH_DELAY', 30),
+        'users_refresh_delay' => env('PT_USERS_REFRESH_DELAY', 60*24),
+        'icon_url' => env('PT_ICON_URL'),
+        'login_test' => env('PT_TEST', false),
+    ],
+    'mapbox' => [
+        'token' => env('MAPBOX_TOKEN'),
+        'style' => env('MAPBOX_STYLE', 'mapbox://styles/mapbox/outdoors-v12'),
+        'track_interval' => env('MAPBOX_TRACK_INTERVAL_SECONDS', 1),
+        'recenter_interval' => env('MAPBOX_RECENTER_UPDATES_COUNT', 20),
+    ],
 
 ];

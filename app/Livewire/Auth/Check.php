@@ -24,6 +24,7 @@ class Check extends Component
     #[OnNative(Completed::class)]
     public function handleBiometricAuth(bool $success)
     {
+
         if ($success) {
             return redirect()->route('home');
         }

@@ -22,7 +22,7 @@ class Login extends Component
 
     public string $redirectTo = '/';
 
-    public bool $displayingEmailForm = true;
+    public bool $displayingEmailForm = false;
 
     public function mount(?string $redirectTo = null, ?string $email = ''): void
     {
