@@ -15,7 +15,7 @@ class Check extends Component
     public function mount()
     {
         if($this->isSecure){
-            Biometrics::promptForBiometricID();
+            Biometrics::prompt();
         }else{
             $this->redirectRoute('login');
         }
@@ -27,6 +27,7 @@ class Check extends Component
         if ($success) {
             return redirect()->route('home');
         }
+        return redirect()->route('login');
     }
 
     #[Computed]

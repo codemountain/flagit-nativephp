@@ -20,7 +20,7 @@
     @if(!$displayingEmailForm)
         <div class="">
         <form wire:submit="submitOneTimePassword" class="space-y-8">
-            <flux:otp wire:model="oneTimePassword" length="4" label="OTP Code" label:sr-only :error:icon="false" error:class="text-center" class="mx-auto" />
+            <flux:otp wire:model="oneTimePassword" length="4" label="Login Code" :error:icon="false" error:class="text-center" class="mx-auto" autofocus/>
             <div class="space-y-4">
                 <flux:button variant="primary" type="submit" class="w-full">{{ __('Submit login code') }}</flux:button>
 
@@ -47,6 +47,7 @@
                         type="email"
                         autocomplete="email"
                         placeholder="email@example.com"
+                        autofocus
                     />
 {{--                    @error('email')--}}
 {{--                    <p class="mt-2 text-sm text-red-600 dark:text-red-400 space-y-1">{{ $message }}</p>--}}
@@ -67,10 +68,10 @@
         </div>
     @endif
 
-    <div class="mx-12 mb-6">
-        <flux:radio.group x-data variant="segmented" x-model="$flux.appearance" >
-            <flux:radio value="light" icon="sun">{{ __('Light') }}</flux:radio>
-            <flux:radio value="dark" icon="moon">{{ __('Dark') }}</flux:radio>
-        </flux:radio.group>
-    </div>
+{{--    <div class="mx-12 mb-6">--}}
+{{--        <flux:radio.group x-data variant="segmented" x-model="$flux.appearance" >--}}
+{{--            <flux:radio value="light" icon="sun">{{ __('Light') }}</flux:radio>--}}
+{{--            <flux:radio value="dark" icon="moon">{{ __('Dark') }}</flux:radio>--}}
+{{--        </flux:radio.group>--}}
+{{--    </div>--}}
 </div>
