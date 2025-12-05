@@ -16,7 +16,7 @@ class NetworkMonitor extends Component
 
     public function mount()
     {
-        if(System::isMobile()) $this->getNetwork();
+        //$this->getNetwork();
     }
 
     public function getNetwork()

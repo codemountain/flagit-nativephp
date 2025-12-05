@@ -1,146 +1,44 @@
-<div class="block w-full">
-    <!-- First section - carousel (full width on mobile, half width on desktop) -->
-    <div class="w-full mb-6">
-        <form wire:submit="createReport" class="">
-            <div class="flex justify-between gap-2 mb-8">
-                <!-- Image Picker - First field -->
-                <div
-                    wire:click="camera"
-                    class="h-96! w-full flex justify-center rounded-lg border border-zinc-200 dark:border-zinc-700 p-0 items-center text-center bg-zinc-50">
-                    @if ($photoDataUrl)
-                        <img src="{{ $photoDataUrl }}" class="w-full rounded-lg" alt="Captured photo" />
-                    @else
-                        <flux:button  class="w-16 h-16 rounded-full border-0 bg-zinc-50!">
-                            <flux:icon.camera class="size-20 text-zinc-400" />
-                        </flux:button>
-                    @endif
-                    {{--                    @endif--}}
-
+<div class="space-y-6">
+    <!-- Header with Gradient -->
+    <div class="bg-gradient-to-br from-blue-500 to-cyan-500 dark:from-blue-600 dark:to-cyan-600 text-white border-0 pb-8 pt-[var(--inset-top)] px-6">
+        <div class="space-y-3">
+            <div class="flex items-start gap-4">
+                <div class="space-y-3">
+                    <h1 class="text-white text-3xl font-bold flex items-center space-x-6 pt-2">
+                        Camera
+                    </h1>
+                    <p class="text-lg text-white">
+                        Capture stunning photos with your device camera and unleash your creativity!
+                    </p>
                 </div>
             </div>
-
-
-            <div class="w-full gap-4 space-y-4 relative mt-8">
-                <flux:input
-                    label="{{__('Title')}}"
-                    class="mobile"
-                    placeholder="{{__('Fallen tree, blocked drainage')}}..."
-                    wire:model="new_report.title"
-                    required
-                />
-                <flux:field variant="inline" class="w-1/3 absolute top-0 right-2">
-                    <flux:label>Is urgent?</flux:label>
-                    <flux:switch wire:model="new_report.is_urgent" class="dark:bg-amber-700!"/>
-                </flux:field>
-                <flux:textarea
-                    label="{{__('Description')}}"
-                    wire:model="new_report.description"
-                    placeholder="{{__(' ')}}..."
-                    rows="4"
-                />
-
-            </div>
-
-            <div class="min-h-24 w-full"></div>
-            {{--                <div class="fixed bottom-0 p-4 h-32 left-0 right-0 z-20 bg-white border-t border-zinc-200 dark:bg-zinc-900 dark:border-zinc-700 lg:hidden shadow-lg" style="padding-bottom: env(safe-area-inset-bottom, 0px); box-shadow: 0 -4px 6px -1px rgb(0 0 0 / 0.1), 0 -2px 4px -2px rgb(0 0 0 / 0.1);">--}}
-            <div class="fixed bottom-0 p-4 h-32 left-0 right-0 z-20 bg-white  dark:bg-zinc-900  lg:hidden"  >
-                <div class="flex items-center justify-between gap-4  px-4 py-4">
-
-                    <flux:button
-                        variant="outline"
-                        class="w-full mobile "
-                        href="{{route('home')}}"
-                        wire:navigate
-                    >
-                        {{__('Cancel')}}
-                    </flux:button>
-
-                    {{--                    <flux:button--}}
-                    {{--                        type="button"--}}
-                    {{--                        class="w-full bg-zinc-400! mobile"--}}
-                    {{--                        wire:click="saveDraft"--}}
-                    {{--                    >{{__('Save draft')}}</flux:button>--}}
-
-                    <flux:button type="submit"
-                                 variant="primary"
-                                 class="w-full mobile bg-amber-400! dark:bg-amber-700!">
-                        {{__('Send Report')}}</flux:button>
-                </div>
-            </div>
-
-        </form>
-
-
-
-
-        <flux:modal name="image-method" class="w-full h-50 border border-neutral-content rounded-t-2xl" variant="flyout" position="bottom">
-            <div class="flex flex-col gap-4 p-4 pb-0 mb-0">
-                <flux:button wire:click="getImageFromCamera" class="w-full mobile" variant="primary">{{__('Take Photo')}}</flux:button>
-                <flux:button wire:click="getImageFromLibrary" class="w-full mobile">{{__('Choose from Library')}}</flux:button>
-            </div>
-        </flux:modal>
-
-        <!-- Load exifr FULL bundle for GPS support -->
-        {{--                <script src="https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.umd.js"></script>--}}
-
-{{--        <script>--}}
-{{--            document.addEventListener('DOMContentLoaded', function() {--}}
-{{--                document.addEventListener('location-picker-moved', function(event) {--}}
-{{--                    console.log('Received location update in create blade for location picker:', event.detail.lat, event.detail.lng);--}}
-{{--                    @this.call('handleLocationUpdate', event.detail.lat, event.detail.lng);--}}
-{{--                });--}}
-
-{{--                document.addEventListener('exif-new-image', function(event) {--}}
-{{--                    console.log('📸 Event received, looking for image...');--}}
-{{--                    console.log('🔍 Checking exifr availability:', typeof window.exifr);--}}
-{{--                    console.log('🔍 Checking global exifr:', typeof exifr);--}}
-
-{{--                    // Try both window.exifr and global exifr--}}
-{{--                    const exifrLib = exifr || (typeof exifr !== 'undefined' ? exifr : null);--}}
-
-{{--                    if (!exifrLib) {--}}
-{{--                        console.error('❌ exifr library not found');--}}
-{{--                        console.log('🔍 Available on window:', Object.keys(window).filter(k => k.toLowerCase().includes('exif')));--}}
-{{--                        return;--}}
-{{--                    }--}}
-
-{{--                    console.log('✅ exifr found:', exifrLib);--}}
-
-{{--                    // Wait for DOM to update, then find the image--}}
-{{--                    setTimeout(() => {--}}
-{{--                        const img = document.querySelector('#reportimg');--}}
-{{--                        console.log('🖼️ Image element:', img);--}}
-{{--                        console.log('📊 Image src exists:', img ? !!img.src : 'no img');--}}
-
-{{--                        if (img && img.src) {--}}
-{{--                            console.log('🔄 Extracting GPS from image src...');--}}
-
-{{--                            // Use the image src directly with exifr--}}
-{{--                            fetch(img.src)--}}
-{{--                                .then(response => response.blob())--}}
-{{--                                .then(blob => {--}}
-{{--                                    console.log('🔄 Blob created, extracting GPS...');--}}
-{{--                                    return exifrLib.gps(blob);--}}
-{{--                                })--}}
-{{--                                .then(gpsData => {--}}
-{{--                                    console.log('🗺️ GPS Result:', gpsData);--}}
-{{--                                    @this.call('handleImageGPS', gpsData);--}}
-{{--                                })--}}
-{{--                                .catch(error => {--}}
-{{--                                    console.error('❌ GPS extraction error:', error);--}}
-{{--                                });--}}
-{{--                        } else {--}}
-{{--                            console.log('❌ No image element or src found');--}}
-{{--                        }--}}
-{{--                    }, 200); // Longer delay to ensure DOM is updated--}}
-{{--                });--}}
-
-{{--            });--}}
-
-{{--        </script>--}}
+        </div>
     </div>
 
+    <!-- Main Content Area with Horizontal Padding -->
+    <div class="space-y-4 px-4">
+        <!-- Camera Button Card -->
+        <flux:card class="bg-zinc-50 dark:bg-zinc-800/50">
+            <flux:button
+                wire:click="camera"
+                icon="camera"
+                class="py-6 w-full bg-gradient-to-br from-blue-500 to-cyan-500 !text-white border-0 shadow-lg transition-all text-xl font-semibold [&>span]:!text-white"
+            >
+                Take a Photo
+            </flux:button>
+        </flux:card>
 
+        <!-- Photo Display Card -->
+        @if ($photoDataUrl)
+            <flux:card class="bg-gradient-to-br from-amber-100 to-yellow-100 dark:from-amber-900/30 dark:to-yellow-900/30 border-2 border-amber-200 dark:border-amber-700 overflow-hidden">
+                <flux:heading icon="camera" class="text-amber-900 dark:text-amber-100 mb-4">
+                    Your Amazing Photo
+                </flux:heading>
+                <img src="{{ $photoDataUrl }}" class="w-full rounded-lg shadow-2xl border-2 border-white/50" alt="Captured photo" />
+            </flux:card>
+        @endif
 
+    </div>
+    <div class="pb-32"></div>
 </div>
 

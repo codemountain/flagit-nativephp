@@ -1,4 +1,4 @@
-<div wire:poll.15s>
+<div>
 @if(!$connected)
     <flux:callout
         variant="warning"

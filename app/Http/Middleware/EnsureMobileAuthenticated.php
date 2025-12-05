@@ -18,9 +18,9 @@ class EnsureMobileAuthenticated
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!System::isMobile() && config('app.env')=='local') {
-            return $next($request);
-        }
+//        if(!System::isMobile() && config('app.env')=='local') {
+//            return $next($request);
+//        }
 
         if (!ApiClient::isAuthenticated()) {
             return redirect()->route('login');
