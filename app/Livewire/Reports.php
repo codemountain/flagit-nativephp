@@ -2,15 +2,10 @@
 
 namespace App\Livewire;
 
-use App\Services\ApiAuthService;
-use App\Services\ApiClient;
-use App\Services\Reports\GetReports;
 use App\Services\ReportServices;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Native\Mobile\Facades\SecureStorage;
 
 class Reports extends Component
 {
@@ -26,6 +21,8 @@ class Reports extends Component
 
     public string $cacheKey;
 
+    public bool $isLoading = false;
+
     public function mount()
     {
         $this->init();
@@ -34,31 +31,41 @@ class Reports extends Component
 
     public function init()
     {
-//        $this->initLocation();
-        $this->client = new ReportServices();
-        $this->cacheKey = "user_reports_".$this->page;
+        //        $this->initLocation();
+        $this->isLoading = true;
+        $this->client = new ReportServices;
+        $this->cacheKey = 'user_reports_'.$this->page;
         if (Cache::has($this->cacheKey)) {
             $this->reports = Cache::get($this->cacheKey);
         } else {
-            $this->reports = $this->client->getReports(['page' => 0, 'per_page' => 10]);
-            Cache::put($this->cacheKey, $this->reports , now()->addMinutes(10));
+            $this->reports = $this->client->getReports(['page' => 0, 'per_page' => 5]);
+            Cache::put($this->cacheKey, $this->reports, now()->addMinutes(10));
         }
-//        $this->local_notes = Note::getUnsyncedForUser(auth()->user()->external_user_id);
-//        $this->local_worklogs = Worklog::getUnsynced();
+        $this->isLoading = false;
+        //        $this->local_notes = Note::getUnsyncedForUser(auth()->user()->external_user_id);
+        //        $this->local_worklogs = Worklog::getUnsynced();
 
-//        if($this->local_reports->count() > 0 || $this->local_notes->count() > 0 || $this->local_worklogs->count() > 0){
-//            $this->activeTab = 'draft';
-//        } else {
-//            $this->activeTab = 'created';
-//        }
+        //        if($this->local_reports->count() > 0 || $this->local_notes->count() > 0 || $this->local_worklogs->count() > 0){
+        //            $this->activeTab = 'draft';
+        //        } else {
+        //            $this->activeTab = 'created';
+        //        }
 
-//        $this->uploadData();
+        //        $this->uploadData();
     }
 
     public function flushReports()
     {
+        $this->isLoading = true;
         Cache::forget($this->cacheKey);
         $this->reports = [];
+
+        // Dispatch a browser event to trigger loadReports after render
+        $this->dispatch('reports-flushed');
+    }
+
+    public function loadReports()
+    {
         $this->init();
     }
 
@@ -74,6 +81,6 @@ class Reports extends Component
     #[Layout('components.layouts.app', ['title' => 'Reports'])]
     public function render()
     {
-        return view('livewire.reports.index',['reports' => $this->reports]);
+        return view('livewire.reports.index', ['reports' => $this->reports]);
     }
 }
