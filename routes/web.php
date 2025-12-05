@@ -17,9 +17,9 @@ Route::get('/', Check::class)->name('auth-check');
 
 Route::middleware(['mobile.auth'])->group(function () {
 //    Route::get('/home', Home::class)->name('home');
-    Route::get('/news', News::class)->lazy()->name('news');
+//    Route::get('/news', News::class)->lazy()->name('news');
     Route::get('/profile', Profile::class)->name('profile');
-    Route::get('/reports', Reports::class)->name('home');
+    Route::get('/reports', Reports::class)->lazy()->name('home');
     Route::get('/reports/create', ReportCreate::class)->name('reports.create');
     Route::get('/reports/{report}', ReportDetails::class)->name('reports.details');
 });

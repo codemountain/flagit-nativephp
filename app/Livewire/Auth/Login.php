@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use App\Services\ApiClient;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Rule;
@@ -22,7 +23,7 @@ class Login extends Component
 
     public string $redirectTo = '/';
 
-    public bool $displayingEmailForm = false;
+    public bool $displayingEmailForm = true;
 
     public function mount(?string $redirectTo = null, ?string $email = ''): void
     {
@@ -122,6 +123,10 @@ class Login extends Component
             SecureStorage::set('user_lang', $data['lang']);
             SecureStorage::set('user_phone', $data['phone']);
             SecureStorage::set('user_phone_verified_at', $data['phone_verified_at']);
+
+            if(config('app.env') == 'local') {
+                Session::put('local_api_token', $data['access_token']);
+            }
 
             $this->redirect(route('home'));
         } else {

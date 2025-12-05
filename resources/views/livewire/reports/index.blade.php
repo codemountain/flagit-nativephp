@@ -1,4 +1,5 @@
 <div class="flex flex-col gap-4">
+    <flux:button wire:click="flushReports" icon="arrow-path">Reload</flux:button>
     <flux:tab.group>
 
         <flux:tabs variant="segmented" class="w-full h-14!">
@@ -8,21 +9,21 @@
 
 
         <flux:tab.panel name="created">
-            <a href="{{route('reports.details',['report'=> '123'])}}"><x-ui.report-card-test/></a>
-            <a href="{{route('reports.details',['report'=> '123'])}}"><x-ui.report-card-test/></a>
-            <a href="{{route('reports.details',['report'=> '123'])}}"><x-ui.report-card-test/></a>
-            <a href="{{route('reports.details',['report'=> '123'])}}"><x-ui.report-card-test/></a>
-            <a href="{{route('reports.details',['report'=> '123'])}}"><x-ui.report-card-test/></a>
-{{--            <div class="grid auto-rows-min mb-4">--}}
-{{--                @foreach ($reports as $report)--}}
-{{--                    <a class="cursor-pointer" wire:key="card-row-{{$report->id}}"--}}
-{{--                       href="{{ route('report.show', ['report' => $report->id ]) }}">--}}
-{{--                        <x-ui.report-card :report="$report"/>--}}
-{{--                    </a>--}}
-{{--                @endforeach--}}
-{{--            </div>--}}
+{{--            <a href="{{route('reports.details',['report'=> '123'])}}"><x-ui.report-card-test/></a>--}}
+{{--            <a href="{{route('reports.details',['report'=> '123'])}}"><x-ui.report-card-test/></a>--}}
+{{--            <a href="{{route('reports.details',['report'=> '123'])}}"><x-ui.report-card-test/></a>--}}
+{{--            <a href="{{route('reports.details',['report'=> '123'])}}"><x-ui.report-card-test/></a>--}}
+{{--            <a href="{{route('reports.details',['report'=> '123'])}}"><x-ui.report-card-test/></a>--}}
+            <div class="grid auto-rows-min mb-4">
+                @foreach ($reports as $report)
+                    <a class="cursor-pointer" wire:key="card-row-{{$report['report_id']}}"
+                       href="{{ route('reports.details', ['report' => $report['report_id']]) }}">
+                        <x-ui.report-card :report="$report" wire:model="reports"/>
+                    </a>
+                @endforeach
+            </div>
 
-{{--            <!-- Pagination Links for Created Reports -->--}}
+            <!-- Pagination Links for Created Reports -->
 {{--            <div class="mt-4 mb-40">--}}
 {{--                {{ $reports->links() }}--}}
 {{--            </div>--}}

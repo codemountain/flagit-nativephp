@@ -37,9 +37,10 @@ return [
 
     'api' => [
         'url' => env('API_URL', 'http://localhost:8000'),
+        'local_token' => env('LOCAL_API_TOKEN', ''),
     ],
     'pt' => [
-        'api_base_url' => env('PT_API_BASE_URL'),
+        'api_base_url' => env('API_URL'),
         'has_refresh_endpoint' => env('PT_HAS_REFRESH_ENDPOINT', false),
         'token_refresh_buffer_minutes' => env('PT_TOKEN_REFRESH_BUFFER_MINUTES', 5),
         'report_refresh_delay' => env('PT_REPORT_REFRESH_DELAY', 10),

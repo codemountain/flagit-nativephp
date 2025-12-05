@@ -18,7 +18,7 @@ class EnsureMobileAuthenticated
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!System::isMobile() && config('app.env')){
+        if(!System::isMobile() && config('app.env')=='local') {
             return $next($request);
         }
 
