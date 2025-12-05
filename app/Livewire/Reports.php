@@ -9,112 +9,125 @@ use Livewire\Component;
 
 class Reports extends Component
 {
-    public $reports;
-
     public string $activeTab = 'created';
-
-    public $api;
-
-    protected $client;
-
-    public int $page = 0;
-
-    public string $cacheKey;
-
-    public bool $isLoading = false;
-
-    public bool $isLoadingMore = false;
-
-    public bool $hasMorePages = true;
 
     public int $perPage = 5;
 
+    // State management for each report type
+    public array $reportStates = [
+        'created' => [
+            'data' => [],
+            'page' => 0,
+            'hasMore' => true,
+            'isLoading' => false,
+            'isLoadingMore' => false,
+        ],
+        'assigned' => [
+            'data' => [],
+            'page' => 0,
+            'hasMore' => true,
+            'isLoading' => false,
+            'isLoadingMore' => false,
+        ],
+    ];
+
     public function mount()
     {
-        $this->init();
-        // $this->requestCurrentLocation();
+        $this->initReports('created');
+        $this->initReports('assigned');
     }
 
-    public function init()
+    protected function getCacheKey(string $type, int $page): string
     {
-        //        $this->initLocation();
-        $this->isLoading = true;
-        $this->page = 0;
-        $this->client = new ReportServices;
-        $this->cacheKey = 'user_reports_'.$this->page;
+        return "user_{$type}_reports_{$page}";
+    }
 
-        if (Cache::has($this->cacheKey)) {
-            $this->reports = Cache::get($this->cacheKey);
+    protected function getClient(): ReportServices
+    {
+        return new ReportServices;
+    }
+
+    public function initReports(string $type)
+    {
+        $this->reportStates[$type]['isLoading'] = true;
+        $this->reportStates[$type]['page'] = 0;
+
+        $cacheKey = $this->getCacheKey($type, 0);
+
+        if (Cache::has($cacheKey)) {
+            $this->reportStates[$type]['data'] = Cache::get($cacheKey);
         } else {
-            $this->reports = $this->client->getReports(['page' => $this->page, 'per_page' => $this->perPage]);
-            Cache::put($this->cacheKey, $this->reports, now()->addMinutes(10));
+            $client = $this->getClient();
+            // Call the appropriate API method based on type
+            $reports = $type === 'created'
+                ? $client->getReports(['page' => 0, 'per_page' => $this->perPage])
+                : $client->getAssigned(['page' => 0, 'per_page' => $this->perPage]);
+
+            $this->reportStates[$type]['data'] = $reports;
+            Cache::put($cacheKey, $reports, now()->addMinutes(10));
         }
 
         // Check if we have more pages
-        $this->hasMorePages = count($this->reports) >= $this->perPage;
-
-        $this->isLoading = false;
-        //        $this->local_notes = Note::getUnsyncedForUser(auth()->user()->external_user_id);
-        //        $this->local_worklogs = Worklog::getUnsynced();
-
-        //        if($this->local_reports->count() > 0 || $this->local_notes->count() > 0 || $this->local_worklogs->count() > 0){
-        //            $this->activeTab = 'draft';
-        //        } else {
-        //            $this->activeTab = 'created';
-        //        }
-
-        //        $this->uploadData();
+        $this->reportStates[$type]['hasMore'] = count($this->reportStates[$type]['data']) >= $this->perPage;
+        $this->reportStates[$type]['isLoading'] = false;
     }
 
-    public function flushReports()
+    public function flushReports(string $type)
     {
-        $this->isLoading = true;
+        $this->reportStates[$type]['isLoading'] = true;
 
-        // Clear all cached pages
-        for ($i = 0; $i <= $this->page; $i++) {
-            Cache::forget('user_reports_'.$i);
+        // Clear all cached pages for this type
+        for ($i = 0; $i <= $this->reportStates[$type]['page']; $i++) {
+            Cache::forget($this->getCacheKey($type, $i));
         }
 
-        $this->reports = [];
-        $this->page = 0;
-        $this->hasMorePages = true;
+        $this->reportStates[$type]['data'] = [];
+        $this->reportStates[$type]['page'] = 0;
+        $this->reportStates[$type]['hasMore'] = true;
 
         // Dispatch a browser event to trigger loadReports after render
-        $this->dispatch('reports-flushed');
+        $this->dispatch("reports-flushed-{$type}");
     }
 
-    public function loadReports()
+    public function loadReports(string $type)
     {
-        $this->init();
+        $this->initReports($type);
     }
 
-    public function loadMore()
+    public function loadMore(string $type)
     {
-        $this->isLoadingMore = true;
+        $this->reportStates[$type]['isLoadingMore'] = true;
 
         // Increment page
-        $this->page++;
+        $this->reportStates[$type]['page']++;
+        $page = $this->reportStates[$type]['page'];
 
-        $this->client = new ReportServices;
-        $this->cacheKey = 'user_reports_'.$this->page;
+        $cacheKey = $this->getCacheKey($type, $page);
 
         // Check cache for this page
-        if (Cache::has($this->cacheKey)) {
-            $newReports = Cache::get($this->cacheKey);
+        if (Cache::has($cacheKey)) {
+            $newReports = Cache::get($cacheKey);
         } else {
-            $newReports = $this->client->getReports(['page' => $this->page, 'per_page' => $this->perPage]);
-            Cache::put($this->cacheKey, $newReports, now()->addMinutes(10));
+            $client = $this->getClient();
+            // Call the appropriate API method based on type
+            $newReports = $type === 'created'
+                ? $client->getReports(['page' => $page, 'per_page' => $this->perPage])
+                : $client->getAssigned(['page' => $page, 'per_page' => $this->perPage]);
+
+            Cache::put($cacheKey, $newReports, now()->addMinutes(10));
         }
 
         // Append new reports to existing array
         if (is_array($newReports) && count($newReports) > 0) {
-            $this->reports = array_merge($this->reports, $newReports);
+            $this->reportStates[$type]['data'] = array_merge(
+                $this->reportStates[$type]['data'],
+                $newReports
+            );
         }
 
         // Check if we have more pages
-        $this->hasMorePages = count($newReports) >= $this->perPage;
-
-        $this->isLoadingMore = false;
+        $this->reportStates[$type]['hasMore'] = count($newReports) >= $this->perPage;
+        $this->reportStates[$type]['isLoadingMore'] = false;
     }
 
     public function placeholder()
@@ -129,6 +142,8 @@ class Reports extends Component
     #[Layout('components.layouts.app', ['title' => 'Reports'])]
     public function render()
     {
-        return view('livewire.reports.index', ['reports' => $this->reports]);
+        return view('livewire.reports.index', [
+            'reportStates' => $this->reportStates,
+        ]);
     }
 }
