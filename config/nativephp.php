@@ -245,13 +245,13 @@ return [
     */
 
     'permissions' => [
-        'biometric' => false,
-        'camera' => false,
+        'biometric' => true,
+        'camera' => true,
         'microphone' => false,
         'nfc' => false,
-        'push_notifications' => false,
-        'location' => false,
-        'vibrate' => false,
+        'push_notifications' => true,
+        'location' => true,
+        'vibrate' => true,
         'storage_read' => false,
         'storage_write' => false,
         'qr-code' => false,
