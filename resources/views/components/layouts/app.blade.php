@@ -51,6 +51,7 @@
     @endif
 
     <main class="px-4 {{\Native\Mobile\Facades\System::isAndroid() ? 'py-4' : 'py-15'}}">
+        <livewire:ui.network-monitor />
         {{ $slot }}
     </main>
 
