@@ -2,22 +2,25 @@
 
 namespace App\Livewire;
 
+use App\Helpers\NativeImages;
 use Flux\Flux;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Native\Mobile\Attributes\OnNative;
 use Native\Mobile\Events\Camera\PhotoTaken;
 use Native\Mobile\Facades\Camera;
-use Native\Mobile\Facades\Camera as CameraFacade;
-use Native\Mobile\Facades\File;
 
 class ReportCreate extends Component
 {
+    public string $photoDataUrl = ''; // For display preview
 
+    public string $photoFullDataUrl = ''; // Full base64 for API submission
 
-    public string $photoDataUrl = '';
+    public bool $needsPreviewGeneration = false;
+
     public $photoPath = '';
+
+    public $files;
 
     public $new_report = [
         'title' => '',
@@ -26,8 +29,14 @@ class ReportCreate extends Component
         'long' => null,
         'image' => null,
         'is_urgent' => false,
-        'type' => null
+        'type' => null,
     ];
+
+    public function mount()
+    {
+        // dd(Storage::allFiles('photos'));
+
+    }
 
     public function getImage()
     {
@@ -37,6 +46,8 @@ class ReportCreate extends Component
     public function getImageFromCamera()
     {
         $this->photoDataUrl = '';
+        $this->photoFullDataUrl = '';
+        $this->needsPreviewGeneration = false;
         $this->new_report['image'] = null;
         Flux::modal('image-method')->close();
         Camera::getPhoto();
@@ -46,20 +57,49 @@ class ReportCreate extends Component
     #[OnNative(PhotoTaken::class)]
     public function handleCamera($path)
     {
-        $filename = 'photos/photo_'.time().'.jpg';
-        $this->photoPath = $path;
-//        $data   = base64_encode(file_get_contents($path));
-//        $mime   = mime_content_type($path);
-//        dd($data);
+        // Process the image using the helper
+        $result = NativeImages::process($path, 'photos');
 
-        //dd(Storage::disk('public')->path($filename));
-        File::move($path, Storage::path($filename));
-        $this->photoDataUrl = Storage::url($filename);
-        //$this->photoDataUrl = "data:$mime;base64,$data";
-//        $this->new_report['image'] = $path;
-//        $this->dispatch('exif-new-image');
+        if ($result['success']) {
+            // Store filename for the report
+            $this->new_report['image'] = $result['filename'];
+
+            // Store full data URL for API submission later
+            $this->photoFullDataUrl = $result['full_data_url'];
+
+            // If image is small enough, use directly
+            if (! $result['needs_preview']) {
+                $this->photoDataUrl = $result['display_url'];
+                $this->needsPreviewGeneration = false;
+            } else {
+                // For larger images, we'll generate a preview client-side
+                $this->photoDataUrl = '';
+                $this->needsPreviewGeneration = true;
+                // Dispatch browser event to trigger preview generation
+                $this->dispatch('generate-image-preview', [
+                    'fullDataUrl' => $result['full_data_url'],
+                    'mimeType' => $result['mime_type'],
+                ]);
+            }
+
+            // Debug information
+            $this->photoPath = "Size: {$result['size_kb']} KB | Type: {$result['mime_type']}";
+            $this->files = "Image saved: {$result['filename']}";
+        } else {
+            // Handle error
+            $this->photoDataUrl = '';
+            $this->photoFullDataUrl = '';
+            $this->needsPreviewGeneration = false;
+            $this->photoPath = 'Error: '.$result['error'];
+            $this->files = '';
+        }
     }
 
+    public function updatePreview($previewDataUrl)
+    {
+        $this->photoDataUrl = $previewDataUrl;
+        $this->needsPreviewGeneration = false;
+    }
 
     #[Layout('components.layouts.app', ['title' => 'New report'])]
     public function render()
