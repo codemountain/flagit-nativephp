@@ -82,19 +82,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Native App Service Provider
-    |--------------------------------------------------------------------------
-    |
-    | This is the main service provider used to configure your native app.
-    | It is where you can define hotkeys, menus, native windows, and
-    | other boot logic that runs inside the NativePHP runtime.
-    |
-    */
-
-    'provider' => \App\Providers\NativeAppServiceProvider::class,
-
-    /*
-    |--------------------------------------------------------------------------
     | Environment Keys to Clean Up
     |--------------------------------------------------------------------------
     |
@@ -198,8 +185,11 @@ return [
         ],
 
         'exclude_patterns' => [
+            'credentials',
+            '*\.sqlite',
             '\.git',
-            'storage',
+            'storage/logs',
+            'storage/framework',
             'vendor',
             'node_modules',
             '\.swp',
@@ -247,16 +237,19 @@ return [
     'permissions' => [
         'biometric' => true,
         'camera' => true,
-        'microphone' => false,
+        'microphone' => true,
         'nfc' => false,
         'push_notifications' => true,
-        'location' => true,
+        'location' => 'This is it!!!',
         'vibrate' => true,
         'storage_read' => false,
         'storage_write' => false,
-        'qr-code' => false,
+        'scanner' => true,
         'network_state' => true,
+        'microphone_background' => true,
     ],
+
+    'ipad' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -275,21 +268,15 @@ return [
     'orientation' => [
         'iPhone' => [
             'portrait' => true,
-            'upside_down' => true,
-            'landscape_left' => true,
-            'landscape_right' => true,
-        ],
-        'iPad' => [
-            'portrait' => true,
-            'upside_down' => true,
-            'landscape_left' => true,
-            'landscape_right' => true,
+            'upside_down' => false,
+            'landscape_left' => false,
+            'landscape_right' => false,
         ],
         'android' => [
             'portrait' => true,
-            'upside_down' => true,
-            'landscape_left' => true,
-            'landscape_right' => true,
+            'upside_down' => false,
+            'landscape_left' => false,
+            'landscape_right' => false,
         ],
     ],
 ];
