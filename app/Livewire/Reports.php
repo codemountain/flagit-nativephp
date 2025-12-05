@@ -23,6 +23,12 @@ class Reports extends Component
 
     public bool $isLoading = false;
 
+    public bool $isLoadingMore = false;
+
+    public bool $hasMorePages = true;
+
+    public int $perPage = 5;
+
     public function mount()
     {
         $this->init();
@@ -33,14 +39,20 @@ class Reports extends Component
     {
         //        $this->initLocation();
         $this->isLoading = true;
+        $this->page = 0;
         $this->client = new ReportServices;
         $this->cacheKey = 'user_reports_'.$this->page;
+
         if (Cache::has($this->cacheKey)) {
             $this->reports = Cache::get($this->cacheKey);
         } else {
-            $this->reports = $this->client->getReports(['page' => 0, 'per_page' => 5]);
+            $this->reports = $this->client->getReports(['page' => $this->page, 'per_page' => $this->perPage]);
             Cache::put($this->cacheKey, $this->reports, now()->addMinutes(10));
         }
+
+        // Check if we have more pages
+        $this->hasMorePages = count($this->reports) >= $this->perPage;
+
         $this->isLoading = false;
         //        $this->local_notes = Note::getUnsyncedForUser(auth()->user()->external_user_id);
         //        $this->local_worklogs = Worklog::getUnsynced();
@@ -57,8 +69,15 @@ class Reports extends Component
     public function flushReports()
     {
         $this->isLoading = true;
-        Cache::forget($this->cacheKey);
+
+        // Clear all cached pages
+        for ($i = 0; $i <= $this->page; $i++) {
+            Cache::forget('user_reports_'.$i);
+        }
+
         $this->reports = [];
+        $this->page = 0;
+        $this->hasMorePages = true;
 
         // Dispatch a browser event to trigger loadReports after render
         $this->dispatch('reports-flushed');
@@ -67,6 +86,35 @@ class Reports extends Component
     public function loadReports()
     {
         $this->init();
+    }
+
+    public function loadMore()
+    {
+        $this->isLoadingMore = true;
+
+        // Increment page
+        $this->page++;
+
+        $this->client = new ReportServices;
+        $this->cacheKey = 'user_reports_'.$this->page;
+
+        // Check cache for this page
+        if (Cache::has($this->cacheKey)) {
+            $newReports = Cache::get($this->cacheKey);
+        } else {
+            $newReports = $this->client->getReports(['page' => $this->page, 'per_page' => $this->perPage]);
+            Cache::put($this->cacheKey, $newReports, now()->addMinutes(10));
+        }
+
+        // Append new reports to existing array
+        if (is_array($newReports) && count($newReports) > 0) {
+            $this->reports = array_merge($this->reports, $newReports);
+        }
+
+        // Check if we have more pages
+        $this->hasMorePages = count($newReports) >= $this->perPage;
+
+        $this->isLoadingMore = false;
     }
 
     public function placeholder()

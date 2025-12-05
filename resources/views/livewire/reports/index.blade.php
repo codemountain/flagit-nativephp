@@ -1,5 +1,5 @@
 <div class="flex flex-col gap-4" @reports-flushed.window="$wire.loadReports()">
-    <flux:button wire:click="flushReports" icon="arrow-path">Reload</flux:button>
+
     <flux:tab.group>
 
         <flux:tabs variant="segmented" class="w-full h-14!">
@@ -8,12 +8,7 @@
         </flux:tabs>
 
 
-        <flux:tab.panel name="created">
-{{--            <a href="{{route('reports.details',['report'=> '123'])}}"><x-ui.report-card-test/></a>--}}
-{{--            <a href="{{route('reports.details',['report'=> '123'])}}"><x-ui.report-card-test/></a>--}}
-{{--            <a href="{{route('reports.details',['report'=> '123'])}}"><x-ui.report-card-test/></a>--}}
-{{--            <a href="{{route('reports.details',['report'=> '123'])}}"><x-ui.report-card-test/></a>--}}
-{{--            <a href="{{route('reports.details',['report'=> '123'])}}"><x-ui.report-card-test/></a>--}}
+        <flux:tab.panel name="created" class="relative">
             @if($isLoading)
                 <div class="grid auto-rows-min mb-4 gap-4">
                     @foreach(range(1, 5) as $index)
@@ -29,6 +24,14 @@
                     @endforeach
                 </div>
             @else
+                <div class="flex justify-end items-center pb-2 w-full -mt-4">
+                <flux:button
+                    wire:click="flushReports"
+                    class="absolute top-0 right-0"
+                    variant="outline"
+                    icon="arrow-path">
+                    </flux:button>
+                </div>
                 <div class="grid auto-rows-min mb-4">
                     @foreach ($reports as $report)
                         <a class="cursor-pointer" wire:key="card-row-{{$report['report_id']}}"
@@ -37,6 +40,19 @@
                         </a>
                     @endforeach
                 </div>
+
+                @if($hasMorePages && !$isLoading)
+                    <div class="mt-4 mb-4">
+                        <flux:button
+                            wire:click="loadMore"
+                            variant="outline"
+                            class="w-full"
+                            icon="arrow-down-circle"
+                        >
+                            {{ $isLoadingMore ? __('Loading...') : __('Load More') }}
+                        </flux:button>
+                    </div>
+                @endif
             @endif
 
             <!-- Pagination Links for Created Reports -->
