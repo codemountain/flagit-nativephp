@@ -9,7 +9,8 @@
         <native:top-bar title="{{ $title ?? config('app.name') }}" :show-navigation-icon="true">
             <native:top-bar-action id="profile-action" label="Home" icon="user" url="{{ route('profile') }}"/>
         </native:top-bar>
-        <native:side-nav gestures_enabled="{{request()->routeIs('home')}}">
+
+        <native:side-nav gestures_enabled="{{(\Native\Mobile\Facades\System::isIos()) ? request()->routeIs('home'):null}}">
             <native:side-nav-header
                 title="Welcome"
                 subtitle="{{\Native\Mobile\Facades\SecureStorage::get('user_name')}}"
@@ -18,7 +19,7 @@
                 :pinned="true"
             />
             <native:side-nav-item id="nav-home" label="Home" icon="home" url="{{ route('home') }}" active="{{ request()->routeIs('home') }}"/>
-            <native:side-nav-item id="nav-news" label="News" icon="newspaper" url="{{ route('news') }}" active="{{ request()->routeIs('news') }}"/>
+{{--            <native:side-nav-item id="nav-news" label="News" icon="newspaper" url="{{ route('news') }}" active="{{ request()->routeIs('news') }}"/>--}}
             <native:horizontal-divider/>
             <native:side-nav-item id="nav-profile" label="Profile" icon="user" url="{{ route('profile') }}" active="{{ request()->routeIs('profile') }}"/>
         </native:side-nav>
