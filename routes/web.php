@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ImageController;
 use App\Livewire\Auth\Check;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
@@ -23,7 +22,4 @@ Route::middleware(['mobile.auth'])->group(function () {
     Route::get('/reports', Reports::class)->lazy()->name('home');
     Route::get('/reports/create', ReportCreate::class)->name('reports.create');
     Route::get('/reports/{report}', ReportDetails::class)->name('reports.details');
-
-    // Image serving route for NativePHP
-    Route::get('/image/photos/{path}', [ImageController::class, 'show'])->name('image.show');
 });
