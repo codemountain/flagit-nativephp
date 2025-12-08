@@ -27,7 +27,7 @@
         <native:bottom-nav>
             <native:bottom-nav-item
                 id="home"
-                icon="home"
+                icon="description"
                 label="{{__('Reports')}}"
                 url="/reports"
                 active="{{request()->routeIs('home')}}"
@@ -36,17 +36,17 @@
                 id="add"
                 icon="plus"
                 class="size-18"
-                label="{{__('Add')}}"
+                label="{{__('New')}}"
                 url="/reports/create"
 {{--                badge="10"--}}
                 active="{{request()->routeIs('reports.add')}}"
             />
             <native:bottom-nav-item
-                id="profile"
-                icon="person"
-                label="{{__('Profile')}}"
-                url="/profile"
-                active="{{request()->routeIs('profile')}}"
+                id="settings"
+                icon="settings"
+                label="{{__('Settings')}}"
+                url="/settings"
+                active="{{request()->routeIs('settings')}}"
             />
         </native:bottom-nav>
     @endif

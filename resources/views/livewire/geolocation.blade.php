@@ -14,7 +14,26 @@
             </div>
         </div>
     </div>
-
+    @if($result)
+        <flux:card class="bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 border-2 border-green-200 dark:border-green-700">
+            <flux:heading icon="map" class="text-green-900 dark:text-green-100 mb-4">Result:</flux:heading>
+            <div class="p-4 bg-white/50 dark:bg-gray-800/50 rounded-lg border-2 border-white/50 backdrop-blur-sm">
+                <p class="text-sm whitespace-pre-wrap font-mono font-semibold">{{ $result }}</p>
+            </div>
+        </flux:card>
+    @endif
+    @if(\Native\Mobile\Facades\SecureStorage::get('current_latitude') && \Native\Mobile\Facades\SecureStorage::get('current_longitude'))
+        <!-- Go seomwhere card -->
+        <flux:card class="bg-zinc-50 dark:bg-zinc-800/50">
+            <flux:button
+                wire:click="requestPermission"
+                icon="plus"
+                class="py-6 w-full bg-gradient-to-br from-emerald-500 to-teal-500 !text-white border-0 shadow-lg transition-all text-xl font-semibold [&>span]:!text-white"
+            >
+                {{__('Create new report')}}
+            </flux:button>
+        </flux:card>
+    @endif
     <!-- Main Content Area with Horizontal Padding -->
     <div class="space-y-4 px-4">
         @if($isChecking)
@@ -24,22 +43,11 @@
                 <flux:heading size="lg">{{__('Checking if geolocation allowed...')}}</flux:heading>
             </div>
         </flux:card>
-        @else
-        <!-- Check Permissions Card -->
-        <flux:card class="bg-zinc-50 dark:bg-zinc-800/50">
-            <flux:button
-                wire:click="checkPermissions"
-                icon="shield-check"
-                class="py-6 w-full bg-gradient-to-br from-green-500 to-emerald-500 !text-white border-0 shadow-lg transition-all text-xl font-semibold [&>span]:!text-white"
-            >
-                Check Permissions
-            </flux:button>
-        </flux:card>
         @endif
         <!-- Request Permission Card -->
         <flux:card class="bg-zinc-50 dark:bg-zinc-800/50">
             <flux:button
-                wire:click="requestPermission"
+                href="{{route('reports.create')}}"
                 icon="lock-open"
                 class="py-6 w-full bg-gradient-to-br from-emerald-500 to-teal-500 !text-white border-0 shadow-lg transition-all text-xl font-semibold [&>span]:!text-white"
             >
@@ -58,14 +66,7 @@
             </flux:button>
         </flux:card>
 
-        @if($result)
-            <flux:card class="bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 border-2 border-green-200 dark:border-green-700">
-                <flux:heading icon="map" class="text-green-900 dark:text-green-100 mb-4">Result:</flux:heading>
-                <div class="p-4 bg-white/50 dark:bg-gray-800/50 rounded-lg border-2 border-white/50 backdrop-blur-sm">
-                    <p class="text-sm whitespace-pre-wrap font-mono font-semibold">{{ $result }}</p>
-                </div>
-            </flux:card>
-        @endif
+
         <div class="pb-32"></div>
     </div>
     <script>
