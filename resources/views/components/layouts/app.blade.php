@@ -39,7 +39,7 @@
                 label="{{__('New')}}"
                 url="/reports/create"
 {{--                badge="10"--}}
-                active="{{request()->routeIs('reports.add')}}"
+                active="{{request()->routeIs('reports.create')}}"
             />
             <native:bottom-nav-item
                 id="settings"
