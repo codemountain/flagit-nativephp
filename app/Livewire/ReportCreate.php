@@ -43,22 +43,10 @@ class ReportCreate extends Component
     #[OnNative(PhotoTaken::class)]
     public function handleCamera($path)
     {
-        // Generate filename like the kitchen sink example
-        $filename = 'photo_'.time().'.jpg';
-        //$filepath = storage_path('app/public/');
-        $allfile = 'photos/'.$filename;
-        // Move the file to storage like the kitchen sink example
-        File::move($path, Storage::path($allfile));
-        $this->storagePath = implode(",",Storage::allFiles('photos'));
-        // For NativePHP mobile, we need base64 for display
-        // Read the file from its new location
-//        $imageData = Storage::get($filename);
-//        $mimeType = Storage::mimeType($filename) ?: 'image/jpeg';
-
-        // Create data URL for display in the mobile app
-        //$this->photoDataUrl = "data:$mimeType;base64,".base64_encode($imageData);
-        $this->photoDataUrl = '/photos/'.$filename;
-        // Store the filename for the report
+        $filename = 'photos/photo_'.time().'.jpg';
+        File::move($path, Storage::path($filename));
+        //Log::info("Files ", print_r($this->folderFiles,true));
+        $this->photoDataUrl = Storage::url($filename);
         $this->new_report['image'] = $filename;
     }
 

@@ -237,19 +237,19 @@ return [
     'permissions' => [
         'biometric' => true,
         'camera' => true,
-        'microphone' => true,
+        'microphone' => false,
         'nfc' => false,
         'push_notifications' => true,
-        'location' => 'This is it!!!',
+        'location' => true,
         'vibrate' => true,
         'storage_read' => false,
         'storage_write' => false,
         'scanner' => true,
         'network_state' => true,
-        'microphone_background' => true,
+        'microphone_background' => false,
     ],
 
-    'ipad' => true,
+    'ipad' => false,
 
     /*
     |--------------------------------------------------------------------------

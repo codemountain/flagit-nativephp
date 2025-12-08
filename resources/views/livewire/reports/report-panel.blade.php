@@ -3,17 +3,12 @@
 
 @if($state['isLoading'])
     <div class="grid auto-rows-min mb-4 gap-4">
-        @foreach(range(1, 5) as $index)
-            <flux:skeleton.group animate="shimmer" class="flex items-center gap-4">
-                <flux:skeleton class="size-14 rounded-lg" />
-                <div class="flex-1">
-                    <flux:skeleton.line class="w-1/2 mb-2" />
-                    <flux:skeleton.line class="mb-2" />
-                    <flux:skeleton.line class="mb-2" />
-                    <flux:skeleton.line class="w-3/4" />
-                </div>
-            </flux:skeleton.group>
-        @endforeach
+
+        <x-ui.card-skeleton/>
+        <x-ui.card-skeleton/>
+        <x-ui.card-skeleton/>
+        <x-ui.card-skeleton/>
+
     </div>
 @else
     <div class="flex justify-end items-center pb-2 w-full -mt-4">

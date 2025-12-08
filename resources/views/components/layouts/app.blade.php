@@ -2,6 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 <head>
     @include('partials.head')
+
 </head>
 <body class="bg-white dark:bg-zinc-950 min-h-screen animate-[slideInFromRight_0.3s_ease-out] nativephp-safe-area">
 
@@ -19,7 +20,7 @@
                 :pinned="true"
             />
             <native:side-nav-item id="nav-home" label="Home" icon="home" url="{{ route('home') }}" active="{{ request()->routeIs('home') }}"/>
-{{--            <native:side-nav-item id="nav-news" label="News" icon="newspaper" url="{{ route('news') }}" active="{{ request()->routeIs('news') }}"/>--}}
+            <native:side-nav-item id="nav-geolocation" label="Geolocation" icon="map-pin" url="{{ route('geolocation') }}" active="{{ request()->routeIs('geolocation') }}"/>
             <native:horizontal-divider/>
             <native:side-nav-item id="nav-profile" label="Profile" icon="user" url="{{ route('profile') }}" active="{{ request()->routeIs('profile') }}"/>
         </native:side-nav>
@@ -51,7 +52,7 @@
     @endif
 
     <main class="px-4 {{\Native\Mobile\Facades\System::isAndroid() ? 'py-4' : 'py-15'}}">
-        <livewire:ui.network-monitor />
+{{--        <livewire:ui.network-monitor />--}}
         {{ $slot }}
     </main>
 
