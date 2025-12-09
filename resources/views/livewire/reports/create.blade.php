@@ -107,52 +107,82 @@
 
 
     <script>
-        document.addEventListener('exif-new-image', function(event) {
-            console.log('📸 Event received, looking for image...');
-            console.log('🔍 Checking exifr availability:', typeof window.exifr);
-            console.log('🔍 Checking global exifr:', typeof exifr);
+        // Image EXIF extraction and compression handler
+        document.addEventListener('exif-new-image', async function(event) {
+            console.log('📸 Event received, processing image...');
 
-            // Try both window.exifr and global exifr
-            const exifrLib = exifr || (typeof exifr !== 'undefined' ? exifr : null);
+            // Wait for DOM to update
+            await new Promise(resolve => setTimeout(resolve, 200));
 
-            if (!exifrLib) {
-                console.error('❌ exifr library not found');
-                console.log('🔍 Available on window:', Object.keys(window).filter(k => k.toLowerCase().includes('exif')));
+            const img = document.querySelector('#reportimg');
+            if (!img || !img.src) {
+                console.error('❌ No image element or src found');
                 return;
             }
 
-            console.log('✅ exifr found:', exifrLib);
+            try {
+                // Step 1: Fetch the original image
+                console.log('🔄 Fetching original image...');
+                const response = await fetch(img.src);
+                const originalBlob = await response.blob();
 
-            // Wait for DOM to update, then find the image
-            setTimeout(() => {
-                const img = document.querySelector('#reportimg');
-                console.log('🖼️ Image element:', img);
-                console.log('📊 Image src exists:', img ? !!img.src : 'no img');
+                // Step 2: Extract GPS data from the ORIGINAL image (before compression)
+                const exifrLib = window.exifr || (typeof exifr !== 'undefined' ? exifr : null);
 
-                if (img && img.src) {
-                    console.log('🔄 Extracting GPS from image src...');
-
-                    // Use the image src directly with exifr
-                    fetch(img.src)
-                        .then(response => response.blob())
-                        .then(blob => {
-                            console.log('🔄 Blob created, extracting GPS...');
-                            return exifrLib.gps(blob);
-                        })
-                        .then(gpsData => {
-                            console.log('🗺️ GPS Result:', gpsData);
-                            @this.call('handleImageGPS', gpsData);
-                        })
-                        .catch(error => {
-                            @this.call('handleImageGPSError',error);
-                            console.error('❌ GPS extraction error:', error);
-                        });
-                } else {
-                    console.log('❌ No image element or src found');
+                if (!exifrLib) {
+                    console.error('❌ exifr library not found');
+                    return;
                 }
-            }, 200); // Longer delay to ensure DOM is updated
-        });
 
+                console.log('🔄 Extracting GPS data from original image...');
+                const gpsData = await exifrLib.gps(originalBlob);
+                console.log('🗺️ GPS Result:', gpsData);
+
+                // Send GPS data to Livewire component
+                @this.call('handleImageGPS', gpsData);
+
+                // Step 3: Compress the image using Canvas API (after EXIF extraction)
+                if (window.ImageCompressor) {
+                    console.log('🗜️ Compressing image with Canvas API...');
+                    const compressionResult = await window.ImageCompressor.compress(originalBlob, {
+                        maxWidth: 1920,
+                        maxHeight: 1920,
+                        quality: 0.85,
+                        maxSizeMB: 2  // 2MB max size
+                    });
+
+                    if (!compressionResult.success) {
+                        console.error('❌ Compression failed:', compressionResult.error);
+                        @this.call('handleImageCompressionError', compressionResult.error);
+                        return;
+                    }
+
+                    console.log('✅ Compression successful');
+
+                    // Convert compressed blob to base64 for storage
+                    const compressedBase64 = await window.ImageCompressor.blobToBase64(compressionResult.blob);
+
+                    // Update the image in Livewire component with compressed version
+                    @this.set('photoDataUrl', compressedBase64);
+                } else {
+                    console.warn('⚠️ ImageCompressor not available, using original image');
+                    // If compressor not available, keep the original image
+                }
+
+            } catch (error) {
+                console.error('❌ Error processing image:', error);
+
+                // Determine if it's a compression or EXIF error
+                if (error.message && error.message.includes('GPS')) {
+                    @this.call('handleImageGPSError', error.message);
+                } else if (error.message && error.message.includes('compress')) {
+                    @this.call('handleImageCompressionError', error.message || 'Image compression failed');
+                } else {
+                    // Generic error - likely EXIF related since that happens first
+                    @this.call('handleImageGPSError', error.message || 'Failed to extract image data');
+                }
+            }
+        });
     </script>
 
 </div>

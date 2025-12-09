@@ -2,9 +2,8 @@
 
 namespace App\Livewire;
 
-use App\Helpers\MediaHelper;
 use App\Livewire\Traits\Geo;
-use App\Traits\ReportApi;
+use App\Livewire\Traits\ReportApi;
 use Flux\Flux;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -18,9 +17,9 @@ use Native\Mobile\Events\Gallery\MediaSelected;
 use Native\Mobile\Events\Geolocation\LocationReceived;
 use Native\Mobile\Facades\Camera;
 use Native\Mobile\Facades\Dialog;
+use Native\Mobile\Facades\File as MobileFile;
 use Native\Mobile\Facades\Geolocation as GeolocationFacade;
 use Native\Mobile\Facades\SecureStorage;
-use Native\Mobile\Facades\File as MobileFile;
 
 class ReportCreate extends Component
 {
@@ -141,6 +140,28 @@ class ReportCreate extends Component
         Dialog::toast($error);
     }
 
+    public function handleImageCompressionError($error)
+    {
+        // Clear image data
+        $this->photoDataUrl = '';
+        $this->new_report['image'] = null;
+
+        // Customize message based on error type
+        if (str_contains($error, 'HEIC')) {
+            $message = 'HEIC format not supported. Please change iPhone camera to "Most Compatible" in Settings > Camera > Formats.';
+        } elseif (str_contains($error, '2MB')) {
+            $message = 'Image too large (max 2MB). Please take a lower resolution photo.';
+        } else {
+            $message = 'Image compression failed. Please try a different photo.';
+        }
+
+        // Notify user
+        Dialog::toast($message);
+
+        // Log for debugging
+        Log::warning('Image compression failed', ['error' => $error]);
+    }
+
     public function getLocation()
     {
         $this->hasGpsLocation = true;
@@ -191,18 +212,28 @@ class ReportCreate extends Component
 
     public function createReport()
     {
-        $image = Storage::path($this->new_report['image']);
-        $data   = base64_encode(file_get_contents($image));
-        $mime   = mime_content_type($image);
-        $encodedImage = "data:$mime;base64,$data";
-        $imageValue = MediaHelper::compressBase64Image($encodedImage);
+        // Check if photoDataUrl contains compressed base64 image
+        if (str_starts_with($this->photoDataUrl, 'data:image')) {
+            // Use the already compressed image from client-side
+            $imageValue = $this->photoDataUrl;
+        } else {
+            // Fallback: read from file if not already compressed
+            $image = Storage::path($this->new_report['image']);
+            $data   = base64_encode(file_get_contents($image));
+            $mime   = mime_content_type($image);
+            $imageValue = "data:$mime;base64,$data";
+
+            // Note: We no longer use MediaHelper::compressBase64Image here
+            // as compression should happen client-side
+        }
+
         $data = [
             'title' => $this->new_report['title'],
             'description' => $this->new_report['description'],
             'category' => 'mtb',
-            'lat' => $this->new_report['lat'],
-            'long' => $this->new_report['long'],
-            'image' => $encodedImage,
+            'lat' => (string) $this->new_report['lat'],
+            'long' =>(string) $this->new_report['long'],
+            'image' => $imageValue,
             'is_urgent' => $this->new_report['is_urgent'],
             'type' => null,
             'email' => SecureStorage::get('user_email'),

@@ -2,14 +2,10 @@
 
 namespace App\Livewire;
 
-use App\Models\Report;
-use App\Models\User;
-use App\Services\ReportServices;
-use App\Traits\ReportApi;
+use App\Livewire\Traits\ReportApi;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Native\Mobile\Facades\SecureStorage;
 
 class Reports extends Component
 {

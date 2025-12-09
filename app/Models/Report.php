@@ -45,10 +45,10 @@ class Report extends Model
     public static function saveSingleFromApi($data)
     {
         $createdAt = null;
-        if (isset($data['created_date'])) {
+        if (isset($apiData['created_date'])) {
             try {
                 // Carbon can parse ISO 8601 format directly
-                $createdAt = \Carbon\Carbon::parse($data['created_date']);
+                $createdAt = \Carbon\Carbon::parse($apiData['created_date']);
             } catch (\Exception $e) {
                 // Fallback to current time if parsing fails
                 $createdAt = now();
@@ -76,7 +76,7 @@ class Report extends Model
                 'is_urgent' => $data['is_urgent'],
                 'network_logo_url' => $data['network_logo_url'],
                 'distance' => $data['distance'],
-                'created_at' => $createdAt,
+                'created_at' => $data['created_date'],
                 'updated_at' => now(),
                 'assigned_user_ids' => $data['assigned_user_ids'] ?? null,
                 'created_by' => $data['created_by'] ?? null,

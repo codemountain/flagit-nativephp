@@ -58,7 +58,7 @@
             {{ $report['description'] }}
         </p>
         <div class="absolute bottom-2 left-2">
-            <flux:badge size="2" class="!text-xs !bg-zinc-200 dark:!bg-zinc-700 opacity-75" >{{$report['created_at']}}</flux:badge>
+            <flux:badge size="2" class="!text-xs !bg-zinc-200 dark:!bg-zinc-700 opacity-75" >{{\Carbon\Carbon::parse($report['created_at'])->diffForHumans()}}</flux:badge>
         </div>
 
 {{--        @if(!empty($parent))--}}
