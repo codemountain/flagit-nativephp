@@ -45,7 +45,6 @@ class ReportCreate extends Component
 
     public function mount()
     {
-        Flux::modal('map-location')->show();
         $this->new_report['lat'] = SecureStorage::get('current_latitude') ?? null;
         $this->new_report['long'] = SecureStorage::get('current_longitude') ?? null;
         Flux::modal('map-location')->close();
@@ -85,7 +84,7 @@ class ReportCreate extends Component
     public function handleCamera($path)
     {
         $this->hasGpsLocation = true;
-        $filename = 'photos/photo_'.time().'.jpg';
+        $filename = '/photos/photo_'.time().'.jpg';
         File::move($path, Storage::path($filename));
         //Log::info("Files ", print_r($this->folderFiles,true));
         $this->photoDataUrl = Storage::url($filename);
