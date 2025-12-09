@@ -195,4 +195,88 @@ class MediaHelper
             return false;
         }
     }
+
+    /**
+     * Compress base64 image to reduce size
+     * EXIF data is preserved separately in the $report->exif_data field
+     */
+    public static function compressBase64Image(string $base64Image, int $quality = 80): string
+    {
+        try {
+            // Extract the base64 data and mime type
+            if (!preg_match('/^data:image\/(\w+);base64,/', $base64Image, $matches)) {
+                \Log::warning('Invalid base64 image format, returning original');
+
+                return $base64Image;
+            }
+
+            $imageType = $matches[1];
+            $base64Data = substr($base64Image, strpos($base64Image, ',') + 1);
+            $imageData = base64_decode($base64Data);
+
+            if ($imageData === false) {
+                \Log::warning('Failed to decode base64 image, returning original');
+
+                return $base64Image;
+            }
+
+            // Create image resource from string
+            $image = imagecreatefromstring($imageData);
+
+            if ($image === false) {
+                \Log::warning('Failed to create image resource, returning original');
+
+                return $base64Image;
+            }
+
+            // Start output buffering
+            ob_start();
+
+            // Compress based on image type
+            switch ($imageType) {
+                case 'jpeg':
+                case 'jpg':
+                    imagejpeg($image, null, $quality);
+                    break;
+                case 'png':
+                    // PNG quality is 0-9 (inverted from JPEG), convert 80 -> 2
+                    $pngQuality = floor((100 - $quality) / 10);
+                    imagepng($image, null, $pngQuality);
+                    break;
+                case 'webp':
+                    imagewebp($image, null, $quality);
+                    break;
+                default:
+                    // For other types, return original
+                    imagedestroy($image);
+                    ob_end_clean();
+
+                    return $base64Image;
+            }
+
+            // Get the compressed image data
+            $compressedData = ob_get_clean();
+            imagedestroy($image);
+
+            // Convert back to base64
+            $compressedBase64 = "data:image/{$imageType};base64,".base64_encode($compressedData);
+
+            $originalSize = strlen($base64Data);
+            $compressedSize = strlen(base64_encode($compressedData));
+            $reduction = round((1 - ($compressedSize / $originalSize)) * 100, 2);
+
+            \Log::info('Image compressed', [
+                'original_size' => number_format($originalSize),
+                'compressed_size' => number_format($compressedSize),
+                'reduction_percent' => $reduction.'%',
+                'type' => $imageType,
+            ]);
+
+            return $compressedBase64;
+        } catch (\Exception $e) {
+            \Log::error('Image compression failed: '.$e->getMessage());
+
+            return $base64Image; // Return original on error
+        }
+    }
 }

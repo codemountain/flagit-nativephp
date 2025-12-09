@@ -2,7 +2,9 @@
 
 namespace App\Livewire;
 
+use App\Helpers\MediaHelper;
 use App\Livewire\Traits\Geo;
+use App\Traits\ReportApi;
 use Flux\Flux;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -22,7 +24,7 @@ use Native\Mobile\Facades\File as MobileFile;
 
 class ReportCreate extends Component
 {
-    Use Geo;
+    Use Geo, ReportApi;
 
     public string $photoDataUrl = '';
 
@@ -35,8 +37,8 @@ class ReportCreate extends Component
     public string $locationSource = '';
 
     public $new_report = [
-        'title' => '',
-        'description' => '',
+        'title' => 'test',
+        'description' => 'test 123 lorem ipsum',
         'lat' => null,
         'long' => null,
         'image' => null,
@@ -193,6 +195,7 @@ class ReportCreate extends Component
         $data   = base64_encode(file_get_contents($image));
         $mime   = mime_content_type($image);
         $encodedImage = "data:$mime;base64,$data";
+        $imageValue = MediaHelper::compressBase64Image($encodedImage);
         $data = [
             'title' => $this->new_report['title'],
             'description' => $this->new_report['description'],
@@ -207,6 +210,15 @@ class ReportCreate extends Component
 
         ];
 
+        $client = $this->getClient();
+        $response_report = $client->postReport($data);
+        dd($response_report);
+        if(!empty($response_report)) {
+            Storage::delete($this->new_report['image']);
+            //add report to reports array prepend and cache?
+
+
+        }
         //NEED TO CLEAN PHOTOS DIRECTORY
     }
 

@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Report;
 use App\Models\User;
 use App\Services\ReportServices;
+use App\Traits\ReportApi;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -12,6 +13,8 @@ use Native\Mobile\Facades\SecureStorage;
 
 class Reports extends Component
 {
+    use ReportApi;
+
     public string $activeTab = 'created';
 
     public int $perPage = 5;
@@ -38,16 +41,6 @@ class Reports extends Component
     {
         $this->initReports('created');
         $this->initReports('assigned');
-    }
-
-    protected function getCacheKey(string $type, int $page): string
-    {
-        return "user_{$type}_reports_{$page}";
-    }
-
-    protected function getClient(): ReportServices
-    {
-        return new ReportServices;
     }
 
     public function initReports(string $type)

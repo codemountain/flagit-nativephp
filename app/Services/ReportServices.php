@@ -30,4 +30,11 @@ class ReportServices
         //need to store report in Report table Report->saveSingleFromApi();
         return $this->client->get('report/'.$id);
     }
+
+    public function postReport(array $data) : Report
+    {
+        $data = $this->client->post('report', $data);
+        //store report locally and send back to api request
+        return Report::create($data['report']);
+    }
 }
