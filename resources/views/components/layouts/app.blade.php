@@ -8,6 +8,9 @@
 
     @if(!blank(\Native\Mobile\Facades\SecureStorage::get('api_token')))
         <native:top-bar title="{{ $title ?? config('app.name') }}" :show-navigation-icon="true">
+            @if(request()->routeIs('home'))
+                <native:top-bar-action id="refresh-action" label="Refresh data" icon="refresh" url="{{ route('reports.refresh') }}"/>
+            @endif
             <native:top-bar-action id="profile-action" label="Home" icon="user" url="{{ route('profile') }}"/>
         </native:top-bar>
 

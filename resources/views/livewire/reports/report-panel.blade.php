@@ -11,14 +11,14 @@
 
     </div>
 @else
-    <div class="flex justify-end items-center pb-2 w-full -mt-4">
-        <flux:button
-            wire:click="flushReports('{{ $type }}')"
-            class="absolute top-0 right-0"
-            variant="outline"
-            icon="arrow-path">
-        </flux:button>
-    </div>
+{{--    <div class="flex justify-end items-center pb-2 w-full -mt-4">--}}
+{{--        <flux:button--}}
+{{--            wire:click="flushReports('{{ $type }}')"--}}
+{{--            class="absolute top-0 right-0"--}}
+{{--            variant="outline"--}}
+{{--            icon="arrow-path">--}}
+{{--        </flux:button>--}}
+{{--    </div>--}}
 
     <div class="grid auto-rows-min mb-4">
         @foreach ($state['data'] as $report)
