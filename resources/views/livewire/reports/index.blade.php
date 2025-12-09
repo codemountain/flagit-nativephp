@@ -5,8 +5,10 @@
     <flux:tab.group>
 
         <flux:tabs variant="segmented" class="w-full h-14!">
-            <flux:tab name="created" >{{__('Created')}}</flux:tab>
-            <flux:tab name="assigned">{{__('Assigned')}}</flux:tab>
+            <flux:tab name="created" ><flux:badge color="zinc" size="sm">{{count($reportStates['created']['data'])}}</flux:badge>
+                {{__('Created')}}
+            </flux:tab>
+            <flux:tab name="assigned"><flux:badge color="zinc" size="sm">{{count($reportStates['assigned']['data'])}}</flux:badge>{{__('Assigned')}}</flux:tab>
         </flux:tabs>
 
 

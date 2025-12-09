@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Auth;
 
+use App\Models\User;
 use App\Services\ApiClient;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
@@ -134,10 +135,30 @@ class Login extends Component
                 Session::put('local_api_token', $data['access_token']);
             }
 
+            $this->checkDatabaseForUser($data);
+
             $this->redirect(route('home'));
+
         } else {
             $this->errorMessage = $response->json('message', 'Invalid credentials');
         }
+
+    }
+
+    public function checkDatabaseForUser(array $data): void
+    {
+        $user = User::updateOrCreate(
+            ['user_id' => $data['user_id']],
+            [
+                'email' => $data['user_id'],
+                'name' => $data['name'],
+                'lang' => $data['lang'] ?? null,
+                'phone' => $data['phone'] ?? null,
+                'phone_verified_at' => isset($data['phone_verified_at']) && $data['phone_verified_at']
+                    ? \Carbon\Carbon::parse($data['phone_verified_at'])
+                    : null,
+            ]
+        );
 
     }
 
