@@ -4,7 +4,7 @@ namespace App\Livewire;
 
 use App\Livewire\Traits\Geo;
 use Flux\Flux;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
@@ -18,6 +18,7 @@ use Native\Mobile\Facades\Camera;
 use Native\Mobile\Facades\Dialog;
 use Native\Mobile\Facades\Geolocation as GeolocationFacade;
 use Native\Mobile\Facades\SecureStorage;
+use Native\Mobile\Facades\File as MobileFile;
 
 class ReportCreate extends Component
 {
@@ -42,9 +43,9 @@ class ReportCreate extends Component
         'is_urgent' => false,
         'type' => null,
     ];
-
     public function mount()
     {
+        Flux::modal('map-location')->show();
         $this->new_report['lat'] = SecureStorage::get('current_latitude') ?? null;
         $this->new_report['long'] = SecureStorage::get('current_longitude') ?? null;
         Flux::modal('map-location')->close();
@@ -85,7 +86,7 @@ class ReportCreate extends Component
     {
         $this->hasGpsLocation = true;
         $filename = '/photos/photo_'.time().'.jpg';
-        File::move($path, Storage::path($filename));
+        MobileFile::move($path, Storage::path($filename));
         //Log::info("Files ", print_r($this->folderFiles,true));
         $this->photoDataUrl = Storage::url($filename);
         $this->new_report['image'] = $filename;
@@ -106,7 +107,7 @@ class ReportCreate extends Component
         foreach ($files as $file) {
             $this->hasGpsLocation = true;
             $filename = 'photos/photo_'.time().'.jpg';
-            File::move($file['path'], Storage::path($filename));
+            MobileFile::move($file['path'], Storage::path($filename));
             $this->photoDataUrl = Storage::url($filename);
             $this->new_report['image'] = $filename;
             $this->dispatch('exif-new-image');

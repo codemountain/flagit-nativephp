@@ -19,6 +19,8 @@
 @theme {
     --font-sans: 'URWDIN', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
+@source inline('h-[90vh],h-[100vh],h-full,h-[100%],bg-status-{submitted,validated,done,cancelled,new,updated,added,draft,urgent,scheduled,ongoing,suspended,archived},text-reverse-{submitted,validated,done,cancelled}, backtopo');
+
 a.mobile{
     @apply h-14!;
 }
