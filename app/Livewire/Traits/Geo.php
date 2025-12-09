@@ -64,11 +64,20 @@ trait Geo
     #[OnNative(LocationReceived::class)]
     public function handleLocationReceived($success = null, $latitude = null, $longitude = null, $accuracy = null, $timestamp = null, $provider = null, $error = null)
     {
+
         if ($success) {
+
             $this->result = 'Location from getLocation: '.$latitude.', '.$longitude.' (±'.$accuracy.'m) via '.$provider;
             SecureStorage::set('current_latitude', $latitude);
             SecureStorage::set('current_longitude', $longitude);
             SecureStorage::set('current_accuracy', $accuracy);
+//            dd($longitude.', '.$latitude.', '.$accuracy.', '.$timestamp.', '.$provider.', '.$error);
+//            $this->dispatch('location-updated', ['lat' => $latitude, 'long' => $longitude]);
+            $this->dispatch('center-map-on-location', [
+                'lat' => $latitude,
+                'lng' => $longitude,
+                'componentId' => $this->getId()
+            ]);
         } else {
             $this->result = 'Location Error: '.($error ?? 'Unknown error');
             SecureStorage::set('current_latitude', null);

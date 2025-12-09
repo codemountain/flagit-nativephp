@@ -1,7 +1,16 @@
 <div class="space-y-6">
     <!-- Main Content Area with Horizontal Padding -->
     <form wire:submit="createReport" class="">
-
+        @if(!empty($new_report['lat']) && !empty($new_report['long']))
+        <div class="h-[100vh] w-full">
+             <livewire:helpers.location-picker
+                 :lat="$new_report['lat'] ?? null"
+                 :long="$new_report['long'] ?? null"
+                 label="{{__('Location')}}"
+                 class="h-80 z-10"
+             />
+        </div>
+        @endif
 
         <div class="flex justify-between gap-2 relative mb-4">
             <!-- Image Picker - First field -->

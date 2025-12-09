@@ -41,6 +41,12 @@ class ReportCreate extends Component
         'type' => null,
     ];
 
+    public function mount()
+    {
+        $this->new_report['lat'] = SecureStorage::get('current_latitude') ?? null;
+        $this->new_report['long'] = SecureStorage::get('current_longitude') ?? null;
+    }
+
     public function getImage()
     {
 //        Flux::modal('image-method')->show();
@@ -151,6 +157,14 @@ class ReportCreate extends Component
             SecureStorage::set('current_accuracy', null);
             $this->hasGpsLocation = false;
         }
+    }
+
+    #[On('location-updated')]
+    public function handleLocationUpdate($lat, $long)
+    {
+        $this->new_report['lat'] = $lat;
+        $this->new_report['long'] = $long;
+        Dialog::toast(__('Location updated.'));
     }
 
     public function createReport()

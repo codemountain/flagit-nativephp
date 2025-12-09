@@ -338,7 +338,7 @@ window.MapboxGeolocateControlFactory = {
                             if (isRequestInProgress) {
                                 document.removeEventListener('livewire:user-location-updated', handleLocationReceived);
                                 isRequestInProgress = false;
-                                console.log('Timeout reached (10s), cleaning up location listener');
+                                // console.log('Timeout reached (10s), cleaning up location listener');
 
                                 // Stop spinning animation on timeout
                                 if (control._geolocateButton) {
@@ -347,12 +347,12 @@ window.MapboxGeolocateControlFactory = {
                                     console.log('Stopped spinning animation due to timeout');
                                 }
 
-                                // Show error if no location was received
-                                if (options.onError) {
-                                    options.onError(new Error('Location request timed out after 10 seconds'));
-                                }
+                                // // Show error if no location was received
+                                // if (options.onError) {
+                                //     options.onError(new Error('Location request timed out after 10 seconds'));
+                                // }
                             }
-                        }, 10000);
+                        }, 5000);
 
                     } else {
                         console.error('Could not find Livewire component:', options.componentId);

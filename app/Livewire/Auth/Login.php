@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
+use Native\Mobile\Facades\Device;
 use Native\Mobile\Facades\SecureStorage;
 
 class Login extends Component
@@ -25,6 +26,8 @@ class Login extends Component
 
     public bool $displayingEmailForm = true;
 
+    public $device = [];
+
     public function mount(?string $redirectTo = null, ?string $email = ''): void
     {
 
@@ -34,6 +37,7 @@ class Login extends Component
             $this->isFixedEmail = true;
             $this->displayingEmailForm = false;
         }
+        $this->device = json_decode(Device::getInfo());
 
     }
 
@@ -124,6 +128,7 @@ class Login extends Component
             SecureStorage::set('user_phone', $data['phone']);
             SecureStorage::set('user_phone_verified_at', $data['phone_verified_at']);
             SecureStorage::set('user_id', $data['user_id']);
+            SecureStorage::set('device_os', (!empty($this->device) ? $this->device->platform : null));
 
             if(config('app.env') == 'local') {
                 Session::put('local_api_token', $data['access_token']);
