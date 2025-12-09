@@ -3,11 +3,8 @@
 namespace App\Livewire\Helpers;
 
 use App\Livewire\Traits\Geo;
-use App\Livewire\Traits\HasGeo;
-use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use Native\Mobile\Facades\Geolocation;
 use Native\Mobile\Facades\SecureStorage;
 
 class LocationPicker extends Component
@@ -62,12 +59,15 @@ class LocationPicker extends Component
         $this->lat = $lat;
         $this->long = $lng; // Store as 'long' property but accept 'lng' parameter
 
-        // Emit event to parent component
-//        ray("LocationPicker dispatching location-updated ".$lat.','.$lng);
         $this->dispatch('location-updated',
             lat: $lat,
             long: $lng
         );
+    }
+
+    public function manualMapUpdate()
+    {
+        $this->dispatch('manual-location-updated');
     }
     /**
      * Update location from map interaction and sync with user location

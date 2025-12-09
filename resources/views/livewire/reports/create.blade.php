@@ -1,16 +1,7 @@
 <div class="space-y-6">
     <!-- Main Content Area with Horizontal Padding -->
     <form wire:submit="createReport" class="">
-        @if(!empty($new_report['lat']) && !empty($new_report['long']))
-        <div class="h-[100vh] w-full">
-             <livewire:helpers.location-picker
-                 :lat="$new_report['lat'] ?? null"
-                 :long="$new_report['long'] ?? null"
-                 label="{{__('Location')}}"
-                 class="h-80 z-10"
-             />
-        </div>
-        @endif
+
 
         <div class="flex justify-between gap-2 relative mb-4">
             <!-- Image Picker - First field -->
@@ -33,14 +24,20 @@
 {{--        <div class="bg-zinc-500/20 p-4 rounded-2xl">--}}
 {{--            {{ print_r($new_report,true) }}--}}
 {{--        </div>--}}
-        @if(!empty($photoDataUrl) && !$hasGpsLocation)
-            <flux:callout icon="map-pin" color="red" class="mb-4">
-                <flux:callout.heading>{{__('No GPS Data available on image')}}</flux:callout.heading>
+        @if(!empty($locationSource))
+            <flux:callout icon="map-pin" color="green" class="mb-4 opacity-75">
+                <flux:callout.heading>{{__('Got Location from :source',['source'=>$locationSource])}}</flux:callout.heading>
                 <x-slot name="actions">
-                    <flux:button class="w-full -ml-4" wire:click="getLocation">{{__('Use current')}}</flux:button>
+                    <flux:button class="w-full mr-6"
+                                 variant="outline"
+                                 icon="map"
+                                 x-on:click="$flux.modal('map-location').show()" >
+                        {{__('View map')}}
+                    </flux:button>
                 </x-slot>
             </flux:callout>
         @endif
+        @if(!empty($photoDataUrl))
         <div class="w-full gap-4 space-y-4 relative">
             <flux:input
                 label="{{__('Title')}}"
@@ -62,6 +59,7 @@
             />
 
         </div>
+        @endif
 
         <div class="h-4 w-full"></div>
         {{--                <div class="fixed bottom-0 p-4 h-32 left-0 right-0 z-20 bg-white border-t border-zinc-200 dark:bg-zinc-900 dark:border-zinc-700 lg:hidden shadow-lg" style="padding-bottom: env(safe-area-inset-bottom, 0px); box-shadow: 0 -4px 6px -1px rgb(0 0 0 / 0.1), 0 -2px 4px -2px rgb(0 0 0 / 0.1);">--}}
@@ -90,14 +88,23 @@
     </form>
 
 
+    <flux:modal name="map-location" class="w-full h-[80%] border border-neutral-content rounded-t-2xl p-0!" variant="flyout" position="bottom" closable="false">
+            @if(!empty($new_report['lat']) && !empty($new_report['long']))
+                <div id="report-location" class="w-full h-full mt-0!">
+                    <livewire:helpers.location-picker
+                        :lat="$new_report['lat'] ?? null"
+                        :long="$new_report['long'] ?? null"
+                        class="h-[90vh] z-10"
+                    />
 
+                </div>
+            @else
+                <flux:callout variant="danger" icon="x-circle" heading="Cannot get location from Mobile or Image." />
+           @endif
 
-    <flux:modal name="image-method" class="w-full h-50 border border-neutral-content rounded-t-2xl" variant="flyout" position="bottom">
-        <div class="flex flex-col gap-4 p-4 pb-0 mb-0">
-            <flux:button wire:click="getImageFromCamera" class="w-full mobile" variant="primary">{{__('Take Photo')}}</flux:button>
-            <flux:button wire:click="getImageFromLibrary" class="w-full mobile">{{__('Choose from Library')}}</flux:button>
-        </div>
+        <flux:icon.chevron-down class="z-50 absolute top-6 left-6 p-4 size-14 bg-black/80 rounded-full text-white cursor-pointer" x-on:click="$flux.modal('map-location').close()" />
     </flux:modal>
+
 
     <script>
         document.addEventListener('exif-new-image', function(event) {

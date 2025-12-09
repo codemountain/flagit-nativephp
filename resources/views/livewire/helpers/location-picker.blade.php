@@ -22,21 +22,12 @@
     </div>
 
     <!-- Display current coordinates (optional, for debugging) -->
-    @if(config('app.debug'))
-        <div class="text-xs text-gray-500 mt-1">
-            Lat: {{ number_format($lat, 6) }}, Long: {{ number_format($long, 6) }} | OS: {{ $os }}
-        </div>
-
-        <!-- Test buttons for debugging -->
-{{--        <div class="mt-2 space-x-2">--}}
-{{--            <button wire:click="testCacheUpdate" class="px-2 py-1 bg-blue-500 text-white text-xs rounded">--}}
-{{--                Test Cache Update--}}
-{{--            </button>--}}
-{{--            <button onclick="console.log('Cache contents:', @js(\Illuminate\Support\Facades\Cache::get('last_user_location')))" class="px-2 py-1 bg-green-500 text-white text-xs rounded">--}}
-{{--                Show Cache--}}
-{{--            </button>--}}
+{{--    @if(config('app.debug'))--}}
+{{--        <div class="text-xs text-gray-500 mt-1">--}}
+{{--            Lat: {{ number_format($lat, 6) }}, Long: {{ number_format($long, 6) }} | OS: {{ $os }}--}}
 {{--        </div>--}}
-    @endif
+
+{{--    @endif--}}
 </div>
 
 <script>
@@ -70,7 +61,7 @@
             const map = new mapboxgl.Map({
                 container: mapId,
                 center: [{{ $long }}, {{ $lat }}], // [lng, lat] format for Mapbox
-                zoom: 14,
+                zoom: 15,
                 style: '{{ config('services.mapbox.style') }}'
             });
 
@@ -118,6 +109,12 @@
 
                 // Update the component's location (method expects lat, lng)
                 @this.call('updateLocation', center.lat, center.lng);
+            });
+
+            // Example of a MapTouchEvent of type "touch"
+            map.on('touchstart', (e) => {
+                console.log("touchstart");
+                @this.call('manualMapUpdate');
             });
 
             // Store map reference for potential cleanup

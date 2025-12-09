@@ -31,6 +31,8 @@ class ReportCreate extends Component
 
     public bool $hasGpsLocation = false;
 
+    public string $locationSource = '';
+
     public $new_report = [
         'title' => '',
         'description' => '',
@@ -43,13 +45,14 @@ class ReportCreate extends Component
 
     public function mount()
     {
+        Flux::modal('map-location')->show();
         $this->new_report['lat'] = SecureStorage::get('current_latitude') ?? null;
         $this->new_report['long'] = SecureStorage::get('current_longitude') ?? null;
+        Flux::modal('map-location')->close();
     }
 
     public function getImage()
     {
-//        Flux::modal('image-method')->show();
         Dialog::alert(
             'Choose',
             'Source of image',
@@ -119,10 +122,14 @@ class ReportCreate extends Component
 //            Dialog::toast(__('📍Got GPS lat,long data from image ✅'));
             $this->photoGeoStatus = __('GPS data found ✅');
             $this->hasGpsLocation = true;
+            $this->locationSource = __("image");
+            //Flux::modal('map-location')->show();
         } else {
             $this->photoGeoStatus = __('No GPS data found ❌');
             $this->hasGpsLocation = false;
-            Dialog::toast(__('No GPS data found in image OR Location permissions not available.'));
+            //Dialog::toast(__('No GPS data found in image OR Location permissions not available.'));
+            $this->locationSource ='';
+            $this->getLocation();
         }
 
     }
@@ -135,7 +142,7 @@ class ReportCreate extends Component
     public function getLocation()
     {
         $this->hasGpsLocation = true;
-        $this->photoGeoStatus = __('Checking current location...');
+        $this->photoGeoStatus = __('Checking for current location...');
         GeolocationFacade::getCurrentPosition(true);
     }
 
@@ -150,13 +157,19 @@ class ReportCreate extends Component
             SecureStorage::set('current_longitude', $longitude);
             SecureStorage::set('current_accuracy', $accuracy);
             $this->hasGpsLocation = true;
+            $this->locationSource = __("user location");
         } else {
             $this->photoGeoStatus = __('Current location not available');
-            SecureStorage::set('current_latitude', null);
-            SecureStorage::set('current_longitude', null);
-            SecureStorage::set('current_accuracy', null);
-            $this->hasGpsLocation = false;
+//            SecureStorage::set('current_latitude', null);
+//            SecureStorage::set('current_longitude', null);
+//            SecureStorage::set('current_accuracy', null);
+            $this->new_report['lat'] = SecureStorage::get('current_latitude');
+            $this->new_report['long'] = SecureStorage::get('current_longitude');;
+            $this->hasGpsLocation = true;
+            $this->locationSource = __("last saved location");
         }
+
+        //Flux::modal('map-location')->show();
     }
 
     #[On('location-updated')]
@@ -164,7 +177,14 @@ class ReportCreate extends Component
     {
         $this->new_report['lat'] = $lat;
         $this->new_report['long'] = $long;
+        $this->locationSource = (empty($this->locationSource) ? __("user map entry") : $this->locationSource);
         Dialog::toast(__('Location updated.'));
+    }
+
+    #[On('manual-location-updated')]
+    public function manualMapUpdate()
+    {
+        $this->locationSource =  __("user map entry") ;
     }
 
     public function createReport()

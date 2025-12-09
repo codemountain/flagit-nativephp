@@ -32,3 +32,27 @@ ui-modal dialog{
     @apply bg-zinc-400! dark:bg-zinc-800! shadow-2xl dark:border-t-zinc-100/20! dark:border-t-6
 }
 
+.mapboxgl-popup {
+    max-width: 200px;
+}
+
+.mapboxgl-popup-content {
+    text-align: left;
+    font-family: 'URWDIN', sans-serif;
+    @apply rounded-2xl;
+
+}
+.mapboxgl-popup-content img{
+    @apply rounded-2xl;
+}
+.mapboxgl-popup-close-button{
+    top: 12px;
+    right: 8px;
+}
+.mapboxgl-popup-close-button span{
+    font-size: 2rem;
+}
+.mapboxgl-ctrl-group button{
+    width: 40px;
+    height: 40px;
+}
