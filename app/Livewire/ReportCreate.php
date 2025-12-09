@@ -155,7 +155,25 @@ class ReportCreate extends Component
 
     public function createReport()
     {
-        dd($this->new_report);
+        $image = Storage::path($this->new_report['image']);
+        $data   = base64_encode(file_get_contents($image));
+        $mime   = mime_content_type($image);
+        $encodedImage = "data:$mime;base64,$data";
+        $data = [
+            'title' => $this->new_report['title'],
+            'description' => $this->new_report['description'],
+            'category' => 'mtb',
+            'lat' => $this->new_report['lat'],
+            'long' => $this->new_report['long'],
+            'image' => $encodedImage,
+            'is_urgent' => $this->new_report['is_urgent'],
+            'type' => null,
+            'email' => SecureStorage::get('user_email'),
+            'flagit_user_id' => SecureStorage::get('user_id'),
+
+        ];
+
+        //NEED TO CLEAN PHOTOS DIRECTORY
     }
 
     #[Layout('components.layouts.app', ['title' => 'New report'])]

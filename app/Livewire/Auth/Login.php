@@ -123,6 +123,7 @@ class Login extends Component
             SecureStorage::set('user_lang', $data['lang']);
             SecureStorage::set('user_phone', $data['phone']);
             SecureStorage::set('user_phone_verified_at', $data['phone_verified_at']);
+            SecureStorage::set('user_id', $data['user_id']);
 
             if(config('app.env') == 'local') {
                 Session::put('local_api_token', $data['access_token']);
