@@ -13,6 +13,10 @@ class Reports extends Component
 
     public int $perPage = 5;
 
+    public int $myReportsCount = 0;
+
+    public int $myAssignedCount = 0;
+
     // State management for each report type
     public array $reportStates = [
         'created' => [
@@ -35,6 +39,7 @@ class Reports extends Component
     {
         $this->initReports('created');
         $this->initReports('assigned');
+
     }
 
     public function initReports(string $type)
@@ -43,6 +48,8 @@ class Reports extends Component
         $this->reportStates[$type]['page'] = 0;
 
         $userId = User::currentUserId();
+        $this->myReportsCount = Report::createdBy($userId)->get()->count();
+        $this->myAssignedCount = Report::assignedTo($userId)->get()->count();
 
         if ($type === 'created') {
             $reports = Report::createdBy($userId)

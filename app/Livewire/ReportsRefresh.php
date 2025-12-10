@@ -10,21 +10,21 @@ use Native\Mobile\Edge\Edge;
 
 class ReportsRefresh extends Component
 {
-    public array $createdLog = [];
-
     public int $createdPage = 0;
 
     public int $createdTotal = 0;
+
+    public int $createdProgress = 0;
 
     public bool $createdSyncing = false;
 
     public bool $createdComplete = false;
 
-    public array $assignedLog = [];
-
     public int $assignedPage = 0;
 
     public int $assignedTotal = 0;
+
+    public int $assignedProgress = 0;
 
     public bool $assignedSyncing = false;
 
@@ -38,9 +38,9 @@ class ReportsRefresh extends Component
 
     public function startCreatedSync()
     {
-        $this->createdLog = [];
         $this->createdPage = 0;
         $this->createdTotal = 0;
+        $this->createdProgress = 0;
         $this->createdSyncing = true;
         $this->createdComplete = false;
 
@@ -54,7 +54,7 @@ class ReportsRefresh extends Component
 
         $count = count($response['data'] ?? []);
         $this->createdTotal = $response['total'] ?? 0;
-        $this->createdLog[] = "Page {$this->createdPage}: fetched {$count} reports";
+        $this->createdProgress = min(($this->createdPage + 1) * 10, $this->createdTotal);
 
         if ($count >= 10) {
             $this->createdPage++;
@@ -62,7 +62,7 @@ class ReportsRefresh extends Component
         } else {
             $this->createdSyncing = false;
             $this->createdComplete = true;
-            $this->createdLog[] = "Complete! Total: {$this->createdTotal}";
+            $this->createdProgress = $this->createdTotal;
         }
     }
 
@@ -74,9 +74,9 @@ class ReportsRefresh extends Component
 
     public function startAssignedSync()
     {
-        $this->assignedLog = [];
         $this->assignedPage = 0;
         $this->assignedTotal = 0;
+        $this->assignedProgress = 0;
         $this->assignedSyncing = true;
         $this->assignedComplete = false;
 
@@ -90,7 +90,7 @@ class ReportsRefresh extends Component
 
         $count = count($response['data'] ?? []);
         $this->assignedTotal = $response['total'] ?? 0;
-        $this->assignedLog[] = "Page {$this->assignedPage}: fetched {$count} reports";
+        $this->assignedProgress = min(($this->assignedPage + 1) * 10, $this->assignedTotal);
 
         if ($count >= 10) {
             $this->assignedPage++;
@@ -98,7 +98,7 @@ class ReportsRefresh extends Component
         } else {
             $this->assignedSyncing = false;
             $this->assignedComplete = true;
-            $this->assignedLog[] = "Complete! Total: {$this->assignedTotal}";
+            $this->assignedProgress = $this->assignedTotal;
         }
     }
 
