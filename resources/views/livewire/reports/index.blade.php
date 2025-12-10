@@ -1,7 +1,5 @@
-<div class="flex flex-col gap-4"
-     @reports-flushed-created.window="$wire.loadReports('created')"
-     @reports-flushed-assigned.window="$wire.loadReports('assigned')">
-
+<div class="flex flex-col gap-4">
+    @if(!empty($reportStates))
     <flux:tab.group>
 
         <flux:tabs variant="segmented" class="w-full h-14!">
@@ -25,4 +23,5 @@
             ])
         </flux:tab.panel>
     </flux:tab.group>
+    @endif
 </div>

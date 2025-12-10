@@ -17,27 +17,32 @@
                 @endif
 
             </div>
-            @if(!empty($photoDataUrl))
+            @if(!empty($photoDataUrl) && empty($locationSource))
             <div class="absolute bottom-0 right-0 p-2 bg-amber-700/70 rounded-tl-xl px-2">{{$photoGeoStatus}}</div>
+            @endif
+            @if(!empty($locationSource))
+                <div class="absolute bottom-0 right-0 p-2 w-full" x-on:click="$flux.modal('map-location').show()">
+                <flux:callout icon="map" color="green" class="mb-0">
+                    <flux:callout.heading>
+                        {{__('Got Location from :source',['source'=>$locationSource])}}
+                    </flux:callout.heading>
+{{--                    <x-slot name="actions">--}}
+{{--                        <flux:button class="w-full mr-6"--}}
+{{--                                     variant="outline"--}}
+{{--                                     icon="map"--}}
+{{--                                     x-on:click="$flux.modal('map-location').show()" >--}}
+{{--                            {{__('View map')}}--}}
+{{--                        </flux:button>--}}
+{{--                    </x-slot>--}}
+                </flux:callout>
+                </div>
             @endif
         </div>
 {{--        <div class="bg-zinc-500/20 p-4 rounded-2xl">--}}
 {{--            {{ print_r($new_report,true) }}--}}
 {{--        </div>--}}
-        @if(!empty($locationSource))
-            <flux:callout icon="map-pin" color="green" class="mb-4 opacity-75">
-                <flux:callout.heading>{{__('Got Location from :source',['source'=>$locationSource])}}</flux:callout.heading>
-                <x-slot name="actions">
-                    <flux:button class="w-full mr-6"
-                                 variant="outline"
-                                 icon="map"
-                                 x-on:click="$flux.modal('map-location').show()" >
-                        {{__('View map')}}
-                    </flux:button>
-                </x-slot>
-            </flux:callout>
-        @endif
-        @if(!empty($photoDataUrl))
+
+       @if(!empty($photoDataUrl) && !empty($locationSource))
         <div class="w-full gap-4 space-y-4 relative">
             <flux:input
                 label="{{__('Title')}}"
@@ -88,7 +93,7 @@
     </form>
 
 
-    <flux:modal name="map-location" class="w-full h-[80%] border border-neutral-content rounded-t-2xl p-0!" variant="flyout" position="bottom" closable="false">
+    <flux:modal name="map-location" class="w-full h-[90vh] border border-neutral-content rounded-t-2xl p-0!" variant="flyout" position="bottom" closable="false">
             @if(!empty($new_report['lat']) && !empty($new_report['long']))
                 <div id="report-location" class="w-full h-full mt-0!">
                     <livewire:helpers.location-picker

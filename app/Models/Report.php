@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Report extends Model
@@ -32,30 +33,60 @@ class Report extends Model
         ];
     }
 
-    public static function saveListFromApi($data) : array
+    /**
+     * Scope to filter reports created by a specific user.
+     */
+    public function scopeCreatedBy(Builder $query, string $userId): Builder
+    {
+        return $query->where('created_by', $userId);
+    }
+
+    /**
+     * Scope to get reports that have assigned users (for further PHP filtering).
+     */
+    public function scopeAssignedTo(Builder $query): Builder
+    {
+        return $query->whereNotNull('assigned_user_ids')
+            ->where('assigned_user_ids', '!=', '');
+    }
+
+    /**
+     * Check if a user is in the assigned_user_ids CSV field.
+     */
+    public function isAssignedTo(string $userId): bool
+    {
+        if (empty($this->assigned_user_ids)) {
+            return false;
+        }
+
+        return in_array($userId, explode(',', $this->assigned_user_ids));
+    }
+
+    /**
+     * Scope to order reports by most recent first.
+     */
+    public function scopeLatestFirst(Builder $query): Builder
+    {
+        return $query->orderBy('created_at', 'desc');
+    }
+
+    public static function saveListFromApi($data): array
     {
         $reports = [];
-        //loop and call single method
-        foreach ($data as $item) {
-            $reports[] = static::saveSingleFromApi($item)->toArray();
+        // loop and call single method
+        foreach ($data['data'] as $item) {
+            $reports['data'][] = static::saveSingleFromApi($item)->toArray();
         }
+
+        $reports['total'] = $data['total'] ?? null;
+
         return $reports;
     }
 
     public static function saveSingleFromApi($data)
     {
-        $createdAt = null;
-        if (isset($apiData['created_date'])) {
-            try {
-                // Carbon can parse ISO 8601 format directly
-                $createdAt = \Carbon\Carbon::parse($apiData['created_date']);
-            } catch (\Exception $e) {
-                // Fallback to current time if parsing fails
-                $createdAt = now();
-            }
-        }
 
-       $report = static::updateOrCreate(
+        $report = static::updateOrCreate(
             ['report_id' => $data['report_id']],
             [
                 'category' => $data['category'],
@@ -76,7 +107,7 @@ class Report extends Model
                 'is_urgent' => $data['is_urgent'],
                 'network_logo_url' => $data['network_logo_url'],
                 'distance' => $data['distance'],
-                'created_at' => $data['created_date'],
+                'created_at' => $data['created_at'],
                 'updated_at' => now(),
                 'assigned_user_ids' => $data['assigned_user_ids'] ?? null,
                 'created_by' => $data['created_by'] ?? null,
@@ -87,6 +118,7 @@ class Report extends Model
                 'task_names' => $data['task_names'] ?? null,
             ]
         );
+
         return $report;
         /*  {
     "category": "mtb",

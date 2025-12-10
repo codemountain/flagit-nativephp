@@ -11,6 +11,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Native\Mobile\Attributes\OnNative;
+use Native\Mobile\Edge\Edge;
 use Native\Mobile\Events\Alert\ButtonPressed;
 use Native\Mobile\Events\Camera\PhotoTaken;
 use Native\Mobile\Events\Gallery\MediaSelected;
@@ -46,6 +47,8 @@ class ReportCreate extends Component
     ];
     public function mount()
     {
+        $edge = new Edge();
+        $edge->clear();
         Flux::modal('map-location')->show();
         $this->new_report['lat'] = SecureStorage::get('current_latitude') ?? null;
         $this->new_report['long'] = SecureStorage::get('current_longitude') ?? null;
@@ -243,17 +246,15 @@ class ReportCreate extends Component
 
         $client = $this->getClient();
         $response_report = $client->postReport($data);
-        dd($response_report);
+
         if(!empty($response_report)) {
             Storage::delete($this->new_report['image']);
             //add report to reports array prepend and cache?
-
-
         }
-        //NEED TO CLEAN PHOTOS DIRECTORY
+        $this->redirect(route('home'));
     }
 
-    #[Layout('components.layouts.app', ['title' => 'New report'])]
+    #[Layout('components.layouts.app', ['title' => 'New report', 'showEdgeComponents' => false])]
     public function render()
     {
         return view('livewire.reports.create');

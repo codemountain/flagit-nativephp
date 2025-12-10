@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Str;
+use Native\Mobile\Facades\SecureStorage;
 
-class User extends Model
+class User extends Authenticatable
 {
     /**
      * The attributes that are mass assignable.
@@ -59,5 +60,26 @@ class User extends Model
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    /**
+     * Get the authenticated user's ID.
+     * Uses Laravel auth if available, falls back to SecureStorage for mobile.
+     */
+    public static function currentUserId(): ?string
+    {
+        if (auth()->check()) {
+            return auth()->user()->user_id;
+        }
+
+        return SecureStorage::get('user_id');
+    }
+
+    /**
+     * Check if a user is authenticated.
+     */
+    public static function isAuthenticated(): bool
+    {
+        return auth()->check() || ! empty(SecureStorage::get('user_id'));
     }
 }

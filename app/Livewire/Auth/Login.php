@@ -4,6 +4,7 @@ namespace App\Livewire\Auth;
 
 use App\Models\User;
 use App\Services\ApiClient;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
@@ -42,36 +43,36 @@ class Login extends Component
 
     }
 
-//    public function login(): void
-//    {
-//        $this->validate();
-//
-//        $this->errorMessage = '';
-//
-//        $response = ApiClient::post('otp-email', [
-//            'email' => $this->email,
-////            'password' => $this->password,
-//        ]);
-//
-//        if ($response->successful()) {
-//            $data = $response->json();
-//            SecureStorage::set('api_token', $data['token']);
-//            SecureStorage::set('user_name', $data['user']['name']);
-//            SecureStorage::set('user_email', $data['user']['email']);
-//
-//            $this->redirect(route('home'));
-//        } else {
-//            $this->errorMessage = $response->json('message', 'Invalid credentials');
-//        }
-//    }
-//
-//    public function skipLogin()
-//    {
-//        SecureStorage::set('api_token', Str::uuid()->toString());
-//        SecureStorage::set('user_name', 'Simon Hamp');
-//        SecureStorage::set('user_email', 'simon@nativephp.com');
-//        $this->redirect(route('home'));
-//    }
+    //    public function login(): void
+    //    {
+    //        $this->validate();
+    //
+    //        $this->errorMessage = '';
+    //
+    //        $response = ApiClient::post('otp-email', [
+    //            'email' => $this->email,
+    // //            'password' => $this->password,
+    //        ]);
+    //
+    //        if ($response->successful()) {
+    //            $data = $response->json();
+    //            SecureStorage::set('api_token', $data['token']);
+    //            SecureStorage::set('user_name', $data['user']['name']);
+    //            SecureStorage::set('user_email', $data['user']['email']);
+    //
+    //            $this->redirect(route('home'));
+    //        } else {
+    //            $this->errorMessage = $response->json('message', 'Invalid credentials');
+    //        }
+    //    }
+    //
+    //    public function skipLogin()
+    //    {
+    //        SecureStorage::set('api_token', Str::uuid()->toString());
+    //        SecureStorage::set('user_name', 'Simon Hamp');
+    //        SecureStorage::set('user_email', 'simon@nativephp.com');
+    //        $this->redirect(route('home'));
+    //    }
 
     public function submitEmail(): void
     {
@@ -82,7 +83,6 @@ class Login extends Component
         $response = ApiClient::post('/otp-email', [
             'email' => $this->email,
         ]);
-
 
         $this->displayingEmailForm = false;
     }
@@ -129,10 +129,11 @@ class Login extends Component
             SecureStorage::set('user_phone', $data['phone']);
             SecureStorage::set('user_phone_verified_at', $data['phone_verified_at']);
             SecureStorage::set('user_id', $data['user_id']);
-            SecureStorage::set('device_os', (!empty($this->device) ? $this->device->platform : null));
+            SecureStorage::set('device_os', (! empty($this->device) ? $this->device->platform : null));
 
-            if(config('app.env') == 'local') {
+            if (config('app.env') == 'local') {
                 Session::put('local_api_token', $data['access_token']);
+                Session::put('local_user_id', $data['user_id']);
             }
 
             $this->checkDatabaseForUser($data);
@@ -150,7 +151,7 @@ class Login extends Component
         $user = User::updateOrCreate(
             ['user_id' => $data['user_id']],
             [
-                'email' => $data['user_id'],
+                'email' => $data['email'],
                 'name' => $data['name'],
                 'lang' => $data['lang'] ?? null,
                 'phone' => $data['phone'] ?? null,
@@ -160,6 +161,7 @@ class Login extends Component
             ]
         );
 
+        Auth::login($user);
     }
 
     #[Layout('components.layouts.auth')]

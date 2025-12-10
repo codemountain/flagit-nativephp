@@ -35,6 +35,6 @@ class ReportServices
     {
         $data = $this->client->post('report', $data);
         //store report locally and send back to api request
-        return Report::create($data['report']);
+        return Report::saveSingleFromApi($data['report']);
     }
 }

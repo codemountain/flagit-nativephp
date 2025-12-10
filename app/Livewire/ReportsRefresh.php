@@ -3,52 +3,48 @@
 namespace App\Livewire;
 
 use App\Services\ReportServices;
-use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Native\Mobile\Edge\Edge;
 
 class ReportsRefresh extends Component
 {
-
-    public array $reportStates = [
-        'created' => [
-            'data' => [],
-            'page' => 0,
-            'hasMore' => true,
-            'isLoading' => false,
-            'isLoadingMore' => false,
-        ],
-        'assigned' => [
-            'data' => [],
-            'page' => 0,
-            'hasMore' => true,
-            'isLoading' => false,
-            'isLoadingMore' => false,
-        ],
-    ];
+    public $reportCount = 0;
+    public $assignedCount = 0;
 
     public function mount()
     {
-        $this->flushReports('created');
-        $this->flushReports('assigned');
-        $this->redirect(route('home'));
+        $edge = new Edge();
+        $edge->clear();
+        $this->init();
     }
 
-    protected function getCacheKey(string $type, int $page): string
+    public function init()
     {
-        return "user_{$type}_reports_{$page}";
+        $client = new ReportServices;
+
+        // Sync created reports (API saves to DB via Report::saveListFromApi)
+        $page = 0;
+        do {
+            $reports = $client->getReports(['page' => $page, 'per_page' => 10]);
+            $page++;
+            $this->reportCount = count($reports['data']);
+        } while (count($reports) >= $reports['total'] ?? 9999);
+
+        // Sync assigned reports
+        $page = 0;
+        do {
+            $reports = $client->getAssigned(['page' => $page, 'per_page' => 10]);
+            $page++;
+            $this->assignedCount = count($reports['data']);;
+        } while (count($reports) >= $reports['total'] ?? 9999);
+
+       // $this->redirect(route('home'));
     }
 
-    public function flushReports(string $type)
-    {
-        // Clear all cached pages for this type
-        for ($i = 0; $i <= $this->reportStates[$type]['page']; $i++) {
-            Cache::forget($this->getCacheKey($type, $i));
-        }
 
-    }
 
-    #[Layout('components.layouts.app', ['title' => 'Reports'])]
+    #[Layout('components.layouts.app', ['title' => 'Synching data', 'showEdgeComponents' => false])]
     public function render()
     {
         return view('livewire.reports.refresh');

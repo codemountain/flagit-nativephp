@@ -6,6 +6,8 @@ use App\Services\ApiClient;
 use Closure;
 use Illuminate\Http\Request;
 use Laravel\SerializableClosure\Serializers\Native;
+use Native\Mobile\Edge\Components\EdgeComponent;
+use Native\Mobile\Edge\Edge;
 use Native\Mobile\Facades\System;
 use Symfony\Component\HttpFoundation\Response;
 

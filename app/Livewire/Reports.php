@@ -2,15 +2,13 @@
 
 namespace App\Livewire;
 
-use App\Livewire\Traits\ReportApi;
-use Illuminate\Support\Facades\Cache;
+use App\Models\Report;
+use App\Models\User;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 class Reports extends Component
 {
-    use ReportApi;
-
     public string $activeTab = 'created';
 
     public int $perPage = 5;
@@ -44,81 +42,64 @@ class Reports extends Component
         $this->reportStates[$type]['isLoading'] = true;
         $this->reportStates[$type]['page'] = 0;
 
-        $cacheKey = $this->getCacheKey($type, 0);
+        $userId = User::currentUserId();
 
-        if (Cache::has($cacheKey)) {
-            $this->reportStates[$type]['data'] = Cache::get($cacheKey);
+        if ($type === 'created') {
+            $reports = Report::createdBy($userId)
+                ->latestFirst()
+                ->take($this->perPage)
+                ->get()
+                ->toArray();
         } else {
-            $client = $this->getClient();
-            // Call the appropriate API method based on type
-            $reports = $type === 'created'
-                ? $client->getReports(['page' => 0, 'per_page' => $this->perPage])
-                : $client->getAssigned(['page' => 0, 'per_page' => $this->perPage]);
-
-            $this->reportStates[$type]['data'] = $reports;
-            $duration = config('cache.duration');
-            Cache::put($cacheKey, $reports, now()->addMinutes(60));
+            // For assigned: filter in PHP using explode/in_array
+            $reports = Report::assignedTo()
+                ->latestFirst()
+                ->get()
+                ->filter(fn ($r) => $r->isAssignedTo($userId))
+                ->take($this->perPage)
+                ->values()
+                ->toArray();
         }
 
-        // Check if we have more pages
-        $this->reportStates[$type]['hasMore'] = count($this->reportStates[$type]['data']) >= $this->perPage;
+        $this->reportStates[$type]['data'] = $reports;
+        $this->reportStates[$type]['hasMore'] = count($reports) >= $this->perPage;
         $this->reportStates[$type]['isLoading'] = false;
-    }
-
-    public function flushReports(string $type)
-    {
-        $this->reportStates[$type]['isLoading'] = true;
-
-        // Clear all cached pages for this type
-        for ($i = 0; $i <= $this->reportStates[$type]['page']; $i++) {
-            Cache::forget($this->getCacheKey($type, $i));
-        }
-
-        $this->reportStates[$type]['data'] = [];
-        $this->reportStates[$type]['page'] = 0;
-        $this->reportStates[$type]['hasMore'] = true;
-
-        // Dispatch a browser event to trigger loadReports after render
-        $this->dispatch("reports-flushed-{$type}");
-    }
-
-    public function loadReports(string $type)
-    {
-        $this->initReports($type);
     }
 
     public function loadMore(string $type)
     {
         $this->reportStates[$type]['isLoadingMore'] = true;
-
-        // Increment page
         $this->reportStates[$type]['page']++;
-        $page = $this->reportStates[$type]['page'];
 
-        $cacheKey = $this->getCacheKey($type, $page);
+        $offset = $this->reportStates[$type]['page'] * $this->perPage;
+        $userId = User::currentUserId();
 
-        // Check cache for this page
-        if (Cache::has($cacheKey)) {
-            $newReports = Cache::get($cacheKey);
+        if ($type === 'created') {
+            $newReports = Report::createdBy($userId)
+                ->latestFirst()
+                ->skip($offset)
+                ->take($this->perPage)
+                ->get()
+                ->toArray();
         } else {
-            $client = $this->getClient();
-            // Call the appropriate API method based on type
-            $newReports = $type === 'created'
-                ? $client->getReports(['page' => $page, 'per_page' => $this->perPage])
-                : $client->getAssigned(['page' => $page, 'per_page' => $this->perPage]);
-
-            Cache::put($cacheKey, $newReports, now()->addMinutes(10));
+            // For assigned: filter in PHP, then paginate
+            $newReports = Report::assignedTo()
+                ->latestFirst()
+                ->get()
+                ->filter(fn ($r) => $r->isAssignedTo($userId))
+                ->skip($offset)
+                ->take($this->perPage)
+                ->values()
+                ->toArray();
         }
 
-        // Append new reports to existing array
-        if (is_array($newReports) && count($newReports) > 0) {
+        if (count($newReports) > 0) {
             $this->reportStates[$type]['data'] = array_merge(
                 $this->reportStates[$type]['data'],
                 $newReports
             );
         }
 
-        // Check if we have more pages
         $this->reportStates[$type]['hasMore'] = count($newReports) >= $this->perPage;
         $this->reportStates[$type]['isLoadingMore'] = false;
     }

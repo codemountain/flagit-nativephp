@@ -1,25 +1,11 @@
-<div class="flex flex-col gap-4"
-     @reports-flushed-created.window="$wire.loadReports('created')"
-     @reports-flushed-assigned.window="$wire.loadReports('assigned')">
-    <flux:tab.group>
 
-        <flux:tabs variant="segmented" class="w-full h-14!">
-            <flux:tab name="created" >{{__('Created')}}</flux:tab>
-            <flux:tab name="assigned">{{__('Assigned')}}</flux:tab>
-        </flux:tabs>
+    <div class="grid auto-rows-min mb-4 gap-4">
+        <flux:heading size="xl">{{__('Synching data')}}</flux:heading>
+        <flux:subheading><div wire:model.live="reportCount">{{__('Reports')}}: {{$reportCount}}</div></flux:subheading>
+        <x-ui.card-skeleton/>
+        <x-ui.card-skeleton/>
+        <x-ui.card-skeleton/>
 
 
-        <flux:tab.panel name="created" class="relative">
-            @include('livewire.reports.report-panel', [
-                'type' => 'created',
-                'state' => $reportStates['created']
-            ])
-        </flux:tab.panel>
-        <flux:tab.panel name="assigned" class="relative">
-            @include('livewire.reports.report-panel', [
-                'type' => 'assigned',
-                'state' => $reportStates['assigned']
-            ])
-        </flux:tab.panel>
-    </flux:tab.group>
-</div>
+    </div>
+

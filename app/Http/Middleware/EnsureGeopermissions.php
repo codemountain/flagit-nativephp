@@ -2,12 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use App\Services\ApiClient;
 use Closure;
 use Illuminate\Http\Request;
-use Laravel\SerializableClosure\Serializers\Native;
-use Native\Mobile\Facades\System;
 use Native\Mobile\Facades\SecureStorage;
+use Native\Mobile\Facades\System;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureGeopermissions
@@ -19,11 +17,11 @@ class EnsureGeopermissions
      */
     public function handle(Request $request, Closure $next): Response
     {
-//        if(!System::isMobile() && config('app.env')=='local') {
-//            return $next($request);
-//        }
-//            dd(SecureStorage::get('location_permission'));
-        if (!SecureStorage::get('location_permission')) {
+        if (! System::isMobile() && config('app.env') == 'local') {
+            return $next($request);
+        }
+        //            dd(SecureStorage::get('location_permission'));
+        if (! SecureStorage::get('location_permission')) {
             return redirect()->route('geolocation');
         }
 

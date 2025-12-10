@@ -1,11 +1,12 @@
+@php use Native\Mobile\Edge\Edge; @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 <head>
     @include('partials.head')
 
 </head>
-<body class="bg-white dark:bg-zinc-950 min-h-screen animate-[slideInFromRight_0.3s_ease-out] nativephp-safe-area">
-
+<body id="app_body" class="bg-white dark:bg-zinc-950 min-h-screen nativephp-safe-area">
+@if($showEdgeComponents ?? true)
     @if(!blank(\Native\Mobile\Facades\SecureStorage::get('api_token')))
         <native:top-bar title="{{ $title ?? config('app.name') }}" :show-navigation-icon="true">
             @if(request()->routeIs('home'))
@@ -52,12 +53,25 @@
                 active="{{request()->routeIs('settings')}}"
             />
         </native:bottom-nav>
-    @endif
-
-    <main class="px-4 {{\Native\Mobile\Facades\System::isAndroid() ? 'py-4' : 'py-15'}}">
-{{--        <livewire:ui.network-monitor />--}}
+      @endif
+    <main class="animate-[slideInFromRight_0.3s_ease-out] px-4 {{\Native\Mobile\Facades\System::isAndroid() ? 'py-4' : 'py-15'}}">
+        {{--        <livewire:ui.network-monitor />--}}
         {{ $slot }}
     </main>
+@else
+    <div class="flex justify-end items-center gap-2 w-full pt-8 pr-6">
+        <flux:button :href="request()->header('referer')" wire:navigate
+                      variant="outline"
+                    class="h-12! w-12! border-0! bg-transparent!">
+            <flux:icon.x-mark class="h-12! w-12!" />
+        </flux:button>
+    </div>
+    <main class="animate-[slideInFromBottom_0.3s_ease-out] px-4 {{\Native\Mobile\Facades\System::isAndroid() ? 'py-4' : 'py-15'}}">
+        {{--        <livewire:ui.network-monitor />--}}
+        {{ $slot }}
+    </main>
+@endif
+
 
     @fluxScripts
     <flux:toast />
