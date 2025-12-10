@@ -32,9 +32,9 @@
                 $imageUrl = $report['image'];
             }
 
-            $image = App\Helpers\MediaHelper::checkAndGet($imageUrl);
+//            $image = App\Helpers\MediaHelper::checkAndGet($imageUrl);
         @endphp
-        <img src="{{ $image }}"
+        <img src="{{ $imageUrl }}"
              class="w-full h-full object-cover"
              alt="">
 {{--        @if($report->notes->count() > 0)--}}

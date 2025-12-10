@@ -42,12 +42,17 @@ class Report extends Model
     }
 
     /**
-     * Scope to get reports that have assigned users (for further PHP filtering).
+     * Scope to get reports assigned to a specific user.
+     * Uses LIKE query with boundaries to match userId in CSV field.
      */
-    public function scopeAssignedTo(Builder $query): Builder
+    public function scopeAssignedTo(Builder $query, string $userId): Builder
     {
-        return $query->whereNotNull('assigned_user_ids')
-            ->where('assigned_user_ids', '!=', '');
+        return $query->where(function ($q) use ($userId) {
+            $q->where('assigned_user_ids', $userId)
+                ->orWhere('assigned_user_ids', 'LIKE', $userId.',%')
+                ->orWhere('assigned_user_ids', 'LIKE', '%,'.$userId.',%')
+                ->orWhere('assigned_user_ids', 'LIKE', '%,'.$userId);
+        });
     }
 
     /**

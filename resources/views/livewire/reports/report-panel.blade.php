@@ -1,44 +1,24 @@
 {{-- Reusable report panel component --}}
-{{-- Parameters: $type, $state (from $reportStates[$type]) --}}
+{{-- Parameters: $type, $reports (SimplePaginator) --}}
 
-@if($state['isLoading'])
-    <div class="grid auto-rows-min mb-4 gap-4">
+<div class="grid auto-rows-min mb-4">
+    @foreach ($reports as $report)
+        <a class="cursor-pointer" wire:key="{{ $type }}-card-row-{{ $report->report_id }}"
+           href="{{ route('reports.details', ['id' => $report->report_id]) }}">
+            <x-ui.report-card :report="$report->toArray()"/>
+        </a>
+    @endforeach
+</div>
 
-        <x-ui.card-skeleton/>
-        <x-ui.card-skeleton/>
-        <x-ui.card-skeleton/>
-        <x-ui.card-skeleton/>
-
+@if($reports->hasMorePages())
+    <div
+        x-intersect="$wire.loadMore('{{ $type }}')"
+        class="flex justify-center py-4 transition-opacity"
+    >
+        <flux:icon.arrow-path  class="animate-spin w-8! h-8!"></flux:icon.arrow-path>
     </div>
 @else
-{{--    <div class="flex justify-end items-center pb-2 w-full -mt-4">--}}
-{{--        <flux:button--}}
-{{--            wire:click="flushReports('{{ $type }}')"--}}
-{{--            class="absolute top-0 right-0"--}}
-{{--            variant="outline"--}}
-{{--            icon="arrow-path">--}}
-{{--        </flux:button>--}}
-{{--    </div>--}}
-
-    <div class="grid auto-rows-min mb-4">
-        @foreach ($state['data'] as $report)
-            <a class="cursor-pointer" wire:key="{{ $type }}-card-row-{{$report['report_id']}}"
-               href="{{ route('reports.details', ['id' => $report['report_id']]) }}">
-                <x-ui.report-card :report="$report"/>
-            </a>
-        @endforeach
+    <div class="text-center py-4 text-gray-400">
+        {{__('You\'ve reached the end of the list.')}}
     </div>
-
-    @if($state['hasMore'] && !$state['isLoading'])
-        <div class="mt-4 mb-4">
-            <flux:button
-                wire:click="loadMore('{{ $type }}')"
-                class="w-full"
-                icon="squares-plus"
-                iconVariant="outline"
-            >
-                {{ $state['isLoadingMore'] ? __('Loading...') : __('More') }}
-            </flux:button>
-        </div>
-    @endif
 @endif

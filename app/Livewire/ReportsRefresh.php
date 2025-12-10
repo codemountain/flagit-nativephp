@@ -139,18 +139,12 @@ class ReportsRefresh extends Component
         // Delete local assigned reports that weren't returned from API
         $userId = User::currentUserId();
         if ($userId && count($this->assignedSyncedIds) > 0) {
-            // Get all reports where user is assigned but report_id not in synced list
-            Report::assignedTo()
+            Report::assignedTo($userId)
                 ->whereNotIn('report_id', $this->assignedSyncedIds)
-                ->get()
-                ->filter(fn ($r) => $r->isAssignedTo($userId))
-                ->each(fn ($r) => $r->delete());
+                ->delete();
         } elseif ($userId && $this->assignedTotal === 0) {
             // API returned 0 assigned reports, delete all local assigned reports for this user
-            Report::assignedTo()
-                ->get()
-                ->filter(fn ($r) => $r->isAssignedTo($userId))
-                ->each(fn ($r) => $r->delete());
+            Report::assignedTo($userId)->delete();
         }
 
         $this->assignedSyncing = false;
