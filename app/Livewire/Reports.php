@@ -2,8 +2,10 @@
 
 namespace App\Livewire;
 
+use App\Enums\SyncModel;
 use App\Models\Report;
 use App\Models\User;
+use App\Models\UserSync;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -17,6 +19,35 @@ class Reports extends Component
     public int $createdPerPage = 5;
 
     public int $assignedPerPage = 5;
+
+    public function mount()
+    {
+        $userId = User::currentUserId();
+
+        if (! $userId) {
+            return;
+        }
+
+        // Get user's sync delay preference (default 1 day = 1440 minutes)
+        $user = User::where('user_id', $userId)->first();
+        $delayMinutes = $user?->sync_delay_minutes ?? 1440;
+
+        // Check if either reports type should redirect (needs sync AND not already notified this cycle)
+        $shouldRedirectMyReports = UserSync::shouldRedirectToSync($userId, SyncModel::MyReports, $delayMinutes);
+        $shouldRedirectAssigned = UserSync::shouldRedirectToSync($userId, SyncModel::Assigned, $delayMinutes);
+
+        if ($shouldRedirectMyReports || $shouldRedirectAssigned) {
+            // Record that we notified the user
+            if ($shouldRedirectMyReports) {
+                UserSync::recordNotified($userId, SyncModel::MyReports);
+            }
+            if ($shouldRedirectAssigned) {
+                UserSync::recordNotified($userId, SyncModel::Assigned);
+            }
+
+            $this->redirect(route('reports.refresh'));
+        }
+    }
 
     public function loadMore(string $type)
     {
@@ -52,9 +83,15 @@ class Reports extends Component
             ->latestFirst()
             ->paginate($this->assignedPerPage);
 
+        // Get last sync times
+        $createdLastSync = UserSync::getLastSync($userId, SyncModel::MyReports);
+        $assignedLastSync = UserSync::getLastSync($userId, SyncModel::Assigned);
+
         return view('livewire.reports.index', [
             'createdReports' => $createdReports,
             'assignedReports' => $assignedReports,
+            'createdLastSyncedAt' => $createdLastSync?->last_synced_at,
+            'assignedLastSyncedAt' => $assignedLastSync?->last_synced_at,
         ]);
     }
 }

@@ -20,8 +20,8 @@ class User extends Authenticatable
         'phone',
         'lang',
         'user_id',
-        'phone',
         'phone_verified_at',
+        'sync_delay_minutes',
     ];
 
     /**

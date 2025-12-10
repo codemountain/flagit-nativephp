@@ -2,8 +2,10 @@
 
 namespace App\Livewire;
 
+use App\Enums\SyncModel;
 use App\Models\Report;
 use App\Models\User;
+use App\Models\UserSync;
 use App\Services\ReportServices;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
@@ -89,6 +91,11 @@ class ReportsRefresh extends Component
             Report::createdBy($userId)->delete();
         }
 
+        // Record sync time
+        if ($userId) {
+            UserSync::recordSync($userId, SyncModel::MyReports);
+        }
+
         $this->createdSyncing = false;
         $this->createdComplete = true;
         $this->createdProgress = $this->createdTotal;
@@ -145,6 +152,11 @@ class ReportsRefresh extends Component
         } elseif ($userId && $this->assignedTotal === 0) {
             // API returned 0 assigned reports, delete all local assigned reports for this user
             Report::assignedTo($userId)->delete();
+        }
+
+        // Record sync time
+        if ($userId) {
+            UserSync::recordSync($userId, SyncModel::Assigned);
         }
 
         $this->assignedSyncing = false;
