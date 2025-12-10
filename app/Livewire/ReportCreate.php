@@ -47,8 +47,6 @@ class ReportCreate extends Component
     ];
     public function mount()
     {
-        $edge = new Edge();
-        $edge->clear();
         Flux::modal('map-location')->show();
         $this->new_report['lat'] = SecureStorage::get('current_latitude') ?? null;
         $this->new_report['long'] = SecureStorage::get('current_longitude') ?? null;
@@ -222,8 +220,8 @@ class ReportCreate extends Component
         } else {
             // Fallback: read from file if not already compressed
             $image = Storage::path($this->new_report['image']);
-            $data   = base64_encode(file_get_contents($image));
-            $mime   = mime_content_type($image);
+            $data = base64_encode(file_get_contents($image));
+            $mime = mime_content_type($image);
             $imageValue = "data:$mime;base64,$data";
 
             // Note: We no longer use MediaHelper::compressBase64Image here
@@ -235,7 +233,7 @@ class ReportCreate extends Component
             'description' => $this->new_report['description'],
             'category' => 'mtb',
             'lat' => (string) $this->new_report['lat'],
-            'long' =>(string) $this->new_report['long'],
+            'long' => (string) $this->new_report['long'],
             'image' => $imageValue,
             'is_urgent' => $this->new_report['is_urgent'],
             'type' => null,
@@ -247,16 +245,20 @@ class ReportCreate extends Component
         $client = $this->getClient();
         $response_report = $client->postReport($data);
 
-        if(!empty($response_report)) {
+        if (!empty($response_report)) {
             Storage::delete($this->new_report['image']);
             //add report to reports array prepend and cache?
         }
         $this->redirect(route('home'));
     }
 
-    #[Layout('components.layouts.app', ['title' => 'New report', 'showEdgeComponents' => false])]
     public function render()
     {
-        return view('livewire.reports.create');
+        return view('livewire.reports.create')
+            ->layout('components.layouts.app',[
+                'title' => 'New report',
+                'showEdgeComponents' => false,
+                'link_back'=> url('/reports')
+            ]);
     }
 }

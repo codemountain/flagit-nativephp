@@ -29,8 +29,6 @@ class ReportDetails extends Component
 
     public function mount($id)
     {
-        $edge = new Edge;
-        $edge->clear();
         $this->id = $id;
         $this->os = SecureStorage::get('device_os');
         $this->init();
@@ -49,6 +47,11 @@ class ReportDetails extends Component
     public function render()
     {
         return view('livewire.reports.details')
-            ->layout('components.layouts.app',['title' => Str::limit($this->report->network_name,30) ?? __('Trail Report'), 'showEdgeComponents' => false] );;
+            ->layout('components.layouts.app',[
+                'title' => Str::limit($this->report->network_name,25) ?? __('Trail Report'),
+                'showEdgeComponents' => false,
+                'link_back'=> url('/reports')
+                ]
+            );
     }
 }

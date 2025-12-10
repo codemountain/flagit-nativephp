@@ -38,11 +38,6 @@ class ReportsRefresh extends Component
 
     public array $assignedSyncedIds = [];
 
-    public function mount()
-    {
-        $edge = new Edge;
-        $edge->clear();
-    }
 
     public function startCreatedSync()
     {
@@ -173,6 +168,10 @@ class ReportsRefresh extends Component
     public function render()
     {
         return view('livewire.reports.refresh')
-            ->layout('components.layouts.app',['title' => __('Sync Reports') , 'showEdgeComponents' => false]);
+            ->layout('components.layouts.app',[
+                'title' => __('Sync Reports') ,
+                'showEdgeComponents' => false,
+                'link_back'=> url('/reports')
+            ]);
     }
 }

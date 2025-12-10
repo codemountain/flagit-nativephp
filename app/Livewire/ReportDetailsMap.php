@@ -7,6 +7,7 @@ use App\Livewire\Traits\ReportApi;
 use App\Models\Report;
 use App\Services\ApiClient;
 use Flux\Flux;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -28,9 +29,6 @@ class ReportDetailsMap extends Component
 
     public function mount($id)
     {
-
-        $edge = new Edge;
-        $edge->clear();
         $this->id = $id;
         $this->os = SecureStorage::get('device_os');
         $this->init();
@@ -43,7 +41,7 @@ class ReportDetailsMap extends Component
             $this->redirect(route('home'));
         }
     }
-    
+
     /**
      * Handle center-map-on-location event from HasGeo trait
      */
@@ -67,6 +65,12 @@ class ReportDetailsMap extends Component
     public function render()
     {
         return view('livewire.reports.details-map')
-            ->layout('components.layouts.app',['title' => $this->report->title ?? __('Report map'), 'showEdgeComponents' => false] );
+            ->layout('components.layouts.app',[
+                'title' => Str::limit($this->report->title,25) ?? __('Report map'),
+                'showEdgeComponents' => false,
+                'link_back'=> url('/reports/'.$this->report->report_id)
+                ]
+            );
     }
+
 }

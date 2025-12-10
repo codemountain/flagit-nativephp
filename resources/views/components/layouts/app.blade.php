@@ -7,15 +7,24 @@
 </head>
 <body id="app_body" class="bg-white dark:bg-zinc-950 min-h-screen relative">
 {{--nativephp-safe-area--}}
-@if($showEdgeComponents ?? true)
+
     @if(!blank(\Native\Mobile\Facades\SecureStorage::get('api_token')))
+
+        @if(empty($link_back))
         <native:top-bar title="{{ $title ?? config('app.name') }}" :show-navigation-icon="true" >
             @if(request()->routeIs('home'))
                 <native:top-bar-action id="refresh-action" label="Refresh data" icon="refresh" url="{{ route('reports.refresh') }}"/>
             @endif
             <native:top-bar-action id="profile-action" label="Home" icon="user" url="{{ route('profile') }}"/>
         </native:top-bar>
+        @else
+        <native:top-bar title="{{$title ?? ''}}" :show-navigation-icon="false" text-color="#F26E36">
+            <native:top-bar-action id="profile-action" label="Home" icon="back" url="{{ $link_back ?? request()->header('referer') }}"/>
+        </native:top-bar>
+        @endif
 
+
+        @if(empty($link_back))
         <native:side-nav gestures_enabled="{{(\Native\Mobile\Facades\System::isIos()) ? request()->routeIs('home'):null}}">
             <native:side-nav-header
                 title="Welcome"
@@ -56,6 +65,7 @@
                 active="{{request()->routeIs('settings')}}"
             />
         </native:bottom-nav>
+        @endif
 {{--        <native:fab--}}
 {{--            icon="plus"--}}
 {{--            size="regular"--}}
@@ -68,21 +78,15 @@
 {{--            :url="route('reports.create')"--}}
 {{--        />--}}
       @endif
-    <main class="animate-[slideInFromRight_0.3s_ease-out] px-4 {{\Native\Mobile\Facades\System::isAndroid() ? 'py-4' : 'py-15'}}">
+    <main @class(["animate-[slideInFromRight_0.3s_ease-out] ",
+        'py-4 px-4' => \Native\Mobile\Facades\System::isAndroid(),
+        'py-15 px-4' => !\Native\Mobile\Facades\System::isAndroid(),
+        'py-0 px-0' => !empty($link_back)
+        ])>
         {{--        <livewire:ui.network-monitor />--}}
         {{ $slot }}
     </main>
-@else
-    <native:top-bar title="{{$title ?? ''}}" :show-navigation-icon="false" text-color="#F26E36">
-        <native:top-bar-action id="profile-action" label="Home" icon="back" url="{{ request()->header('referer') }}"/>
-    </native:top-bar>
 
-    <main class="animate-[slideInFromBottom_0.3s_ease-out] {{\Native\Mobile\Facades\System::isAndroid() ? 'py-0' : 'py-0'}}">
-{{--                <livewire:ui.network-monitor />--}}
-
-        {{ $slot }}
-    </main>
-@endif
 
 
     @fluxScripts
