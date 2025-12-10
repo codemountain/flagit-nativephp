@@ -58,3 +58,6 @@ ui-modal dialog{
     width: 40px;
     height: 40px;
 }
+div.hidegeolocatebutton .mapboxgl-ctrl-geolocate{
+    display: none !important;
+}

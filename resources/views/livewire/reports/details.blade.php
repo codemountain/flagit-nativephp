@@ -1,5 +1,5 @@
 <div>
-{{--    @if(!empty($report) && !empty($report->id))--}}
+    @if(!empty($report) && !empty($report->id))
         <div class="block w-full">
             <!-- First section - carousel (full width on mobile, half width on desktop) -->
             <div class="w-full mb-6">
@@ -13,22 +13,22 @@
                             <flux:icon.arrow-left class="h-8!" />
                         </flux:button>
                         <flux:heading size="xl" level="1">
-                            <div class="mt-2">Loup Garou</div>
+                            <div class="mt-2">{{$report->network_name ?? __('Orphan')}}</div>
                         </flux:heading>
                     </div>
                     <flux:icon.marker-status variant="submitted" size="6" />
                 </div>
                 <div class="mt-6 flex justify-between items-center">
-                    <div class="text-xl">Nordique</div>
-                    <flux:badge size="2" class="!text-xs !bg-zinc-200 dark:!bg-zinc-700 opacity-75" >2 days ago</flux:badge>
+                    <div class="text-xl">{{$report->trail_name ?? __('Trail TBD')}}</div>
+                    <flux:badge size="2" class="!text-xs !bg-zinc-200 dark:!bg-zinc-700 opacity-75" >{{\Carbon\Carbon::parse($report->created_at)->diffForHumans()}}</flux:badge>
                 </div>
-                <div class="text-lg text-zinc-500 dark:text-zinc-400">Roche dangeureuse</div>
+                <div class="text-lg text-zinc-500 dark:text-zinc-400">{{$report->title ?? __('Title missing')}}</div>
                 <!-- Carousel container -->
                 <div class="flex items-center gap-2 justify-end">
                     <div class="relative bg-primary w-full p-0 rounded-lg mt-4">
 
                         <img
-                            src="https://placehold.co/400x600/png"
+                            src="{{$report->image}}"
                             class="w-full h-full object-cover relative rounded-t-2xl"
                         />
 
@@ -51,7 +51,7 @@
 
                 <div class="p-6 bg-zinc-400 dark:bg-zinc-700 mt-0 rounded-b-2xl relative">
                     <div class="text-sm text-zinc-50 dark:text-zinc-200 mr-24">
-                        Lorem ipsum description
+                        {{$report->description ?? __('No description given')}}
                     </div>
 {{--                    @if(!$embedded)--}}
                         <div class="absolute bottom-2 right-2">
@@ -97,7 +97,7 @@
                             </flux:dropdown>
 
 {{--                            @if($report->notes->count() > 0)--}}
-                                <div class="absolute -top-2 -left-2 bg-amber-600 rounded-full w-5 h-5 flex items-center justify-center text-white text-xs">100</div>
+{{--                                <div class="absolute -top-2 -left-2 bg-amber-600 rounded-full w-5 h-5 flex items-center justify-center text-white text-xs">100</div>--}}
 {{--                            @endif--}}
                         </div>
 {{--                    @endif--}}
@@ -191,7 +191,7 @@
 {{--            @endif--}}
 {{--        </div>--}}
 {{--    @endif--}}
-    Worklogs here
+
 </flux:modal>
 <flux:modal name="report-fixit" class="w-full h-[87%] border border-neutral-content rounded-t-2xl p-0!" variant="flyout" position="bottom" closable="false">
 {{--    @if($report)--}}
@@ -200,93 +200,147 @@
     Fix it here
 </flux:modal>
 
-<flux:modal name="report-map" class="w-full h-[80%] border border-neutral-content rounded-t-2xl p-0!" variant="flyout" position="bottom" closable="false">
-    <div id="report-location" wire:ignore class="w-full h-[100%] mt-0!"></div>
+<flux:modal name="report-map" class="w-full h-[90vh] border border-neutral-content rounded-t-2xl p-0!" variant="flyout" position="bottom" closable="false">
+    <div id="report-location" class="hidegeolocatebutton w-full h-full mt-0!" wire:ignore></div>
     <flux:icon.chevron-down class="z-50 absolute top-6 left-6 p-4 size-14 bg-black/80 rounded-full text-white cursor-pointer" x-on:click="$flux.modal('report-map').close()" />
 </flux:modal>
 <script data-navigate-track>
-
-    // Add global debug listeners for user-location-updated events (multiple formats)
-    document.addEventListener('livewire:user-location-updated', function(event) {
-        console.log('Global listener (livewire:): Received user-location-updated event:', event.detail);
-    });
-
-    document.addEventListener('user-location-updated', function(event) {
-        console.log('Global listener (direct): Received user-location-updated event:', event.detail);
-    });
-
-    window.addEventListener('user-location-updated', function(event) {
-        console.log('Global listener (window): Received user-location-updated event:', event.detail);
-    });
-
-    document.addEventListener('open-map', function(event) {
-        console.log('Received refresh-map event:', event.detail);
-
-        // Always center on the report location for details view
-        const reportLat = 40;
-        const reportLong = -75;
-        // console.log('Centering map on report location:', reportLat, reportLong);
-
-        mapboxgl.accessToken = '{{config('services.mapbox.token')}}';
-        const map = new mapboxgl.Map({
-            container: 'report-location', // container ID
-            center: [reportLong, reportLat], // center on report location
-            zoom: 15, // starting zoom
-            style: '{{config('services.mapbox.style')}}'
+    function initializeMap() {
+        // Add global debug listeners for user-location-updated events (multiple formats)
+        document.addEventListener('livewire:user-location-updated', function (event) {
+            console.log('Global listener (livewire:): Received user-location-updated event:', event.detail);
         });
 
-        const el = document.createElement('div');
-        const width = 30;
-        const height = 38;
-        const marker = '{{asset('icons/markers/submitted.svg')}}';
-        el.className = 'marker';
-        el.style.backgroundImage = `url(${marker})`;
-        el.style.width = `${width}px`;
-        el.style.height = `${height}px`;
-        el.style.backgroundSize = '100%';
+        document.addEventListener('user-location-updated', function (event) {
+            console.log('Global listener (direct): Received user-location-updated event:', event.detail);
+        });
 
-        // make a marker for each feature and add to the map
-        const markerElement = new mapboxgl.Marker(el)
-            .setLngLat([-75, 40])
-            .addTo(map);
+        window.addEventListener('user-location-updated', function (event) {
+            console.log('Global listener (window): Received user-location-updated event:', event.detail);
+        });
 
-        //code from step 8 will go here
-        const nav = new mapboxgl.NavigationControl();
-        map.addControl(nav, 'top-right');
-
-        // ✨ Use the unified factory to create geolocate control
-        if (window.MapboxGeolocateControlFactory) {
-            const os = 'android';
-            const componentId = '{{ $this->getId() }}';
-            const geolocateControl = MapboxGeolocateControlFactory.create(os, {
-                componentId: componentId,
-                // Report map specific options - show user location visually
-                trackUserLocation: true,
-                showUserHeading: true,
-                showAccuracyCircle: true,
-                showUserLocation: true,
-                onLocationReceived: function(lat, lng) {
-                    console.log('Location received in unified report map control:', lat, lng);
-                    // Center map on user location
-                    map.setCenter([lng, lat]);
-                },
-                onError: function(error) {
-                    console.error('Unified geolocate error in report map:', error);
-                    alert('Location Error: ' + error.message);
-                }
+        document.addEventListener('open-map', function (event) {
+            console.log('Received refresh-map event:', event.detail);
+            console.log('report currently available: ', {{$report->lat}});
+            // Always center on the report location for details view
+            const reportLat = {{$report->lat}};
+            const reportLong = {{$report->long}};
+            // console.log('Centering map on report location:', reportLat, reportLong);
+            mapboxgl.accessToken = '{{config('services.mapbox.token')}}';
+            const map = new mapboxgl.Map({
+                container: 'report-location', // container ID
+                center: [reportLong, reportLat], // center on report location
+                zoom: 15, // starting zoom
+                style: '{{config('services.mapbox.style')}}'
             });
 
-            map.addControl(geolocateControl, 'top-right');
-            console.log('Unified geolocate control added to report map');
-        } else {
-            console.error('MapboxGeolocateControlFactory not found');
+            const el = document.createElement('div');
+            const width = 30;
+            const height = 38;
+            const marker = '{{asset('icons/markers/'.$report->status.'.svg')}}';
+            el.className = 'marker';
+            el.style.backgroundImage = `url(${marker})`;
+            el.style.width = `${width}px`;
+            el.style.height = `${height}px`;
+            el.style.backgroundSize = '100%';
+
+            // make a marker for each feature and add to the map
+            const markerElement = new mapboxgl.Marker(el)
+                .setLngLat([{{$report->long}}, {{$report->lat}}])
+                .addTo(map);
+
+            //code from step 8 will go here
+            const nav = new mapboxgl.NavigationControl();
+            map.addControl(nav, 'top-right');
+
+            // ✨ Use the unified factory to create geolocate control
+            if (window.MapboxGeolocateControlFactory) {
+                const os = {{$os}};
+                const componentId = '{{ $this->getId() }}';
+                //hidding the geolocate button with CSS app.css
+                const geolocateControl = MapboxGeolocateControlFactory.create(os, {
+                    componentId: componentId,
+                    // Report map specific options - show user location visually
+                    trackUserLocation: true,
+                    showUserHeading: true,
+                    showAccuracyCircle: true,
+                    showUserLocation: true,
+                    onLocationReceived: function (lat, lng) {
+                        console.log('Location received in unified report map control:', lat, lng);
+                        // Center map on user location
+                        map.setCenter([lng, lat]);
+                    },
+                    onError: function (error) {
+                        console.error('Unified geolocate error in report map:', error);
+                        alert('Location Error: ' + error.message);
+                    }
+                });
+
+                map.addControl(geolocateControl, 'top-right');
+                console.log('Unified geolocate control added to report map');
+            } else {
+                console.error('MapboxGeolocateControlFactory not found');
+            }
+
+        });
+        document.addEventListener('move-map-to-location', function () {
+            console.log('Livewire move-map-to-location:', data);
+            if (data.componentId === componentId) {
+
+                const mapElement = document.getElementById(mapId);
+                if (mapElement && mapElement._mapboxMap) {
+                    mapElement._mapboxMap.setCenter([data.lng, data.lat]);
+                }
+            }
+        });
+    }
+
+    function waitForMapbox(callback, maxAttempts = 50) {
+        let attempts = 0;
+
+        function check() {
+            attempts++;
+
+            if (typeof mapboxgl !== 'undefined') {
+                console.log('Mapbox GL JS loaded after', attempts, 'attempts');
+                callback();
+            } else if (attempts < maxAttempts) {
+                console.log('Waiting for Mapbox GL JS... attempt', attempts);
+                setTimeout(check, 200);
+            } else {
+                console.error('Mapbox GL JS failed to load after', maxAttempts, 'attempts');
+            }
         }
 
+        check();
+    }
+
+    // Wait for Mapbox GL JS to be available, then initialize
+    waitForMapbox(initializeMap);
+    // Listen for move-map-to-location events from Livewire
+    document.addEventListener('livewire:init', function() {
+        // Listen for move-map-to-location events from Livewire
+        // Livewire.on('move-map-to-location', function(data) {
+        //     if (data.componentId === componentId) {
+        //         console.log('Livewire move-map-to-location:', data);
+        //
+        //         const mapElement = document.getElementById(mapId);
+        //         if (mapElement && mapElement._mapboxMap) {
+        //             mapElement._mapboxMap.setCenter([data.lng, data.lat]);
+        //         }
+        //     }
+        // });
+
+        // Listen for location errors
+        Livewire.on('location-error', function(data) {
+            console.error('Location error:', data.message);
+            alert('Location Error: ' + data.message);
+        });
     });
 </script>
-{{--@else--}}
-{{--    No report valid--}}
-{{--    @endif--}}
+@else
+    No report valid
+    @endif
 
 
     </div>

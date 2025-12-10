@@ -137,7 +137,7 @@
                 callback();
             } else if (attempts < maxAttempts) {
                 console.log('Waiting for Mapbox GL JS... attempt', attempts);
-                setTimeout(check, 100);
+                setTimeout(check, 200);
             } else {
                 console.error('Mapbox GL JS failed to load after', maxAttempts, 'attempts');
             }

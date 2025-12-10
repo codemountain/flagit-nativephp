@@ -23,7 +23,7 @@
     <div class="grid auto-rows-min mb-4">
         @foreach ($state['data'] as $report)
             <a class="cursor-pointer" wire:key="{{ $type }}-card-row-{{$report['report_id']}}"
-               href="{{ route('reports.details', ['report' => $report['report_id']]) }}">
+               href="{{ route('reports.details', ['id' => $report['report_id']]) }}">
                 <x-ui.report-card :report="$report"/>
             </a>
         @endforeach

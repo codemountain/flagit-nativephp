@@ -28,5 +28,5 @@ Route::middleware(['mobile.auth','mobile.geopermissions'])->group(function () {
     Route::get('/reports', Reports::class)->lazy()->name('home');
     Route::get('/reports/create', ReportCreate::class)->name('reports.create');
     Route::get('/reports/refresh', ReportsRefresh::class)->name('reports.refresh');
-    Route::get('/reports/{report}', ReportDetails::class)->name('reports.details');
+    Route::get('/reports/{id}', ReportDetails::class)->name('reports.details');
 });

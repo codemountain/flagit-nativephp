@@ -17,6 +17,8 @@ return [
 
     'default' => env('CACHE_STORE', 'database'),
 
+    'duration' => env('CACHE_STORE_DURATION', 60),
+
     /*
     |--------------------------------------------------------------------------
     | Cache Stores

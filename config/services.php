@@ -58,4 +58,5 @@ return [
         'recenter_interval' => env('MAPBOX_RECENTER_UPDATES_COUNT', 20),
     ],
 
+
 ];

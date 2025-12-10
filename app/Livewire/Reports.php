@@ -56,7 +56,8 @@ class Reports extends Component
                 : $client->getAssigned(['page' => 0, 'per_page' => $this->perPage]);
 
             $this->reportStates[$type]['data'] = $reports;
-            Cache::put($cacheKey, $reports, now()->addMinutes(10));
+            $duration = config('cache.duration');
+            Cache::put($cacheKey, $reports, now()->addMinutes(60));
         }
 
         // Check if we have more pages
