@@ -4,9 +4,9 @@
 
         <flux:tabs variant="segmented" class="w-full h-14!">
             <flux:tab name="created" >
-                {{__('Created')}} <flux:badge color="zinc" size="sm">{{$myReportsCount}}</flux:badge>
+                {{__('Created')}}
             </flux:tab>
-            <flux:tab name="assigned">{{__('Assigned')}}<flux:badge color="zinc" size="sm">{{$myAssignedCount}}</flux:badge></flux:tab>
+            <flux:tab name="assigned">{{__('Assigned')}}</flux:tab>
 
         </flux:tabs>
 

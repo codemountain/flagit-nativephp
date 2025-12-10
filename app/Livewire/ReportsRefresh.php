@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use App\Models\Report;
+use App\Models\User;
 use App\Services\ReportServices;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
@@ -20,6 +22,8 @@ class ReportsRefresh extends Component
 
     public bool $createdComplete = false;
 
+    public array $createdSyncedIds = [];
+
     public int $assignedPage = 0;
 
     public int $assignedTotal = 0;
@@ -29,6 +33,8 @@ class ReportsRefresh extends Component
     public bool $assignedSyncing = false;
 
     public bool $assignedComplete = false;
+
+    public array $assignedSyncedIds = [];
 
     public function mount()
     {
@@ -43,6 +49,7 @@ class ReportsRefresh extends Component
         $this->createdProgress = 0;
         $this->createdSyncing = true;
         $this->createdComplete = false;
+        $this->createdSyncedIds = [];
 
         $this->syncCreatedPage();
     }
@@ -56,14 +63,35 @@ class ReportsRefresh extends Component
         $this->createdTotal = $response['total'] ?? 0;
         $this->createdProgress = min(($this->createdPage + 1) * 10, $this->createdTotal);
 
+        // Collect synced report IDs
+        foreach ($response['data'] ?? [] as $report) {
+            $this->createdSyncedIds[] = $report['report_id'];
+        }
+
         if ($count >= 10) {
             $this->createdPage++;
             $this->dispatch('continue-created-sync');
         } else {
-            $this->createdSyncing = false;
-            $this->createdComplete = true;
-            $this->createdProgress = $this->createdTotal;
+            $this->finishCreatedSync();
         }
+    }
+
+    protected function finishCreatedSync()
+    {
+        // Delete local reports that weren't returned from API
+        $userId = User::currentUserId();
+        if ($userId && count($this->createdSyncedIds) > 0) {
+            Report::createdBy($userId)
+                ->whereNotIn('report_id', $this->createdSyncedIds)
+                ->delete();
+        } elseif ($userId && $this->createdTotal === 0) {
+            // API returned 0 reports, delete all local created reports
+            Report::createdBy($userId)->delete();
+        }
+
+        $this->createdSyncing = false;
+        $this->createdComplete = true;
+        $this->createdProgress = $this->createdTotal;
     }
 
     #[On('continue-created-sync')]
@@ -79,6 +107,7 @@ class ReportsRefresh extends Component
         $this->assignedProgress = 0;
         $this->assignedSyncing = true;
         $this->assignedComplete = false;
+        $this->assignedSyncedIds = [];
 
         $this->syncAssignedPage();
     }
@@ -92,14 +121,41 @@ class ReportsRefresh extends Component
         $this->assignedTotal = $response['total'] ?? 0;
         $this->assignedProgress = min(($this->assignedPage + 1) * 10, $this->assignedTotal);
 
+        // Collect synced report IDs
+        foreach ($response['data'] ?? [] as $report) {
+            $this->assignedSyncedIds[] = $report['report_id'];
+        }
+
         if ($count >= 10) {
             $this->assignedPage++;
             $this->dispatch('continue-assigned-sync');
         } else {
-            $this->assignedSyncing = false;
-            $this->assignedComplete = true;
-            $this->assignedProgress = $this->assignedTotal;
+            $this->finishAssignedSync();
         }
+    }
+
+    protected function finishAssignedSync()
+    {
+        // Delete local assigned reports that weren't returned from API
+        $userId = User::currentUserId();
+        if ($userId && count($this->assignedSyncedIds) > 0) {
+            // Get all reports where user is assigned but report_id not in synced list
+            Report::assignedTo()
+                ->whereNotIn('report_id', $this->assignedSyncedIds)
+                ->get()
+                ->filter(fn ($r) => $r->isAssignedTo($userId))
+                ->each(fn ($r) => $r->delete());
+        } elseif ($userId && $this->assignedTotal === 0) {
+            // API returned 0 assigned reports, delete all local assigned reports for this user
+            Report::assignedTo()
+                ->get()
+                ->filter(fn ($r) => $r->isAssignedTo($userId))
+                ->each(fn ($r) => $r->delete());
+        }
+
+        $this->assignedSyncing = false;
+        $this->assignedComplete = true;
+        $this->assignedProgress = $this->assignedTotal;
     }
 
     #[On('continue-assigned-sync')]

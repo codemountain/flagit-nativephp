@@ -48,8 +48,8 @@ class Reports extends Component
         $this->reportStates[$type]['page'] = 0;
 
         $userId = User::currentUserId();
-        $this->myReportsCount = Report::createdBy($userId)->get()->count();
-        $this->myAssignedCount = Report::assignedTo($userId)->get()->count();
+//        $this->myReportsCount = Report::createdBy($userId)->get()->count();
+//        $this->myAssignedCount = Report::assignedTo()->get()->count();
 
         if ($type === 'created') {
             $reports = Report::createdBy($userId)
