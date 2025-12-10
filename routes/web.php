@@ -20,7 +20,7 @@ Route::get('/register', Register::class)->name('register');
 Route::get('/', Check::class)->name('auth-check');
 
 Route::middleware(['mobile.auth'])->group(function () {
-    Route::get('/settings', Settings::class)->name('settings');
+    Route::get('/settings', Settings\Index::class)->name('settings');
     Route::get('/profile', Profile::class)->name('profile');
     Route::get('/geolocation', Geolocation::class)->name('geolocation');
 });
