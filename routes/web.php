@@ -9,6 +9,7 @@ use App\Livewire\News;
 use App\Livewire\Profile;
 use App\Livewire\ReportCreate;
 use App\Livewire\ReportDetails;
+use App\Livewire\ReportDetailsMap;
 use App\Livewire\Reports;
 use App\Livewire\ReportsRefresh;
 use App\Livewire\Settings;
@@ -29,4 +30,5 @@ Route::middleware(['mobile.auth','mobile.geopermissions'])->group(function () {
     Route::get('/reports/create', ReportCreate::class)->name('reports.create');
     Route::get('/reports/refresh', ReportsRefresh::class)->name('reports.refresh');
     Route::get('/reports/{id}', ReportDetails::class)->name('reports.details');
+    Route::get('/reports/{id}/map', ReportDetailsMap::class)->name('reports.details.map');
 });

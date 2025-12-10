@@ -1,4 +1,4 @@
-<div class="space-y-6">
+<div class="nativephp-safe-area mt-4 px-4 py-8">
     <!-- Main Content Area with Horizontal Padding -->
     <form wire:submit="createReport" class="">
 

@@ -116,6 +116,8 @@ class Report extends Model
                 'updated_at' => now(),
                 'assigned_user_ids' => $data['assigned_user_ids'] ?? null,
                 'created_by' => $data['created_by'] ?? null,
+                'created_by_name' => $data['created_by_name'] ?? null,
+                'created_by_email' => $data['created_by_email'] ?? null,
                 'category_names' => $data['category_names'] ?? null,
                 'skill_names' => $data['skill_names'] ?? null,
                 'equipment_names' => $data['equipment_names'] ?? null,

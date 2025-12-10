@@ -5,10 +5,11 @@
     @include('partials.head')
 
 </head>
-<body id="app_body" class="bg-white dark:bg-zinc-950 min-h-screen nativephp-safe-area">
+<body id="app_body" class="bg-white dark:bg-zinc-950 min-h-screen relative">
+{{--nativephp-safe-area--}}
 @if($showEdgeComponents ?? true)
     @if(!blank(\Native\Mobile\Facades\SecureStorage::get('api_token')))
-        <native:top-bar title="{{ $title ?? config('app.name') }}" :show-navigation-icon="true">
+        <native:top-bar title="{{ $title ?? config('app.name') }}" :show-navigation-icon="true" >
             @if(request()->routeIs('home'))
                 <native:top-bar-action id="refresh-action" label="Refresh data" icon="refresh" url="{{ route('reports.refresh') }}"/>
             @endif
@@ -23,7 +24,7 @@
                 :show-close-button="true"
                 :pinned="true"
             />
-            <native:side-nav-item id="nav-home" label="Home" icon="home" url="{{ route('home') }}" active="{{ request()->routeIs('home') }}"/>
+{{--            <native:side-nav-item id="nav-home" label="Home" icon="home" url="{{ route('home') }}" active="{{ request()->routeIs('home') }}"/>--}}
             <native:side-nav-item id="nav-geolocation" label="Geolocation" icon="map-pin" url="{{ route('geolocation') }}" active="{{ request()->routeIs('geolocation') }}"/>
             <native:horizontal-divider/>
             <native:side-nav-item id="nav-profile" label="Profile" icon="user" url="{{ route('profile') }}" active="{{ request()->routeIs('profile') }}"/>
@@ -36,13 +37,15 @@
                 url="/reports"
                 active="{{request()->routeIs('home')}}"
             />
+
             <native:bottom-nav-item
                 id="add"
                 icon="plus"
                 class="size-18"
+                containerColor="#FF5C00"
+                text-color="#F26E36"
                 label="{{__('New')}}"
                 url="/reports/create"
-{{--                badge="10"--}}
                 active="{{request()->routeIs('reports.create')}}"
             />
             <native:bottom-nav-item
@@ -53,21 +56,30 @@
                 active="{{request()->routeIs('settings')}}"
             />
         </native:bottom-nav>
+{{--        <native:fab--}}
+{{--            icon="plus"--}}
+{{--            size="regular"--}}
+{{--            position="center"--}}
+{{--            containerColor="#FF5C00"--}}
+{{--            contentColor="#FFF"--}}
+{{--            :bottomOffset="0"--}}
+{{--            :cornerRadius="50"--}}
+{{--            :elevation="0"--}}
+{{--            :url="route('reports.create')"--}}
+{{--        />--}}
       @endif
     <main class="animate-[slideInFromRight_0.3s_ease-out] px-4 {{\Native\Mobile\Facades\System::isAndroid() ? 'py-4' : 'py-15'}}">
         {{--        <livewire:ui.network-monitor />--}}
         {{ $slot }}
     </main>
 @else
-    <div class="flex justify-end items-center gap-2 w-full pt-8 pr-6">
-        <flux:button :href="request()->header('referer')" wire:navigate
-                      variant="outline"
-                    class="h-12! w-12! border-0! bg-transparent!">
-            <flux:icon.x-mark class="h-12! w-12!" />
-        </flux:button>
-    </div>
-    <main class="animate-[slideInFromBottom_0.3s_ease-out] px-4 {{\Native\Mobile\Facades\System::isAndroid() ? 'py-4' : 'py-15'}}">
-        {{--        <livewire:ui.network-monitor />--}}
+    <native:top-bar title="{{$title ?? ''}}" :show-navigation-icon="false" text-color="#F26E36">
+        <native:top-bar-action id="profile-action" label="Home" icon="back" url="{{ request()->header('referer') }}"/>
+    </native:top-bar>
+
+    <main class="animate-[slideInFromBottom_0.3s_ease-out] {{\Native\Mobile\Facades\System::isAndroid() ? 'py-0' : 'py-0'}}">
+{{--                <livewire:ui.network-monitor />--}}
+
         {{ $slot }}
     </main>
 @endif

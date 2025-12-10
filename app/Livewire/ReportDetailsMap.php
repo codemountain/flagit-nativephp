@@ -7,7 +7,6 @@ use App\Livewire\Traits\ReportApi;
 use App\Models\Report;
 use App\Services\ApiClient;
 use Flux\Flux;
-use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -15,9 +14,9 @@ use Native\Mobile\Edge\Edge;
 use Native\Mobile\Facades\Device;
 use Native\Mobile\Facades\SecureStorage;
 
-class ReportDetails extends Component
+class ReportDetailsMap extends Component
 {
-    Use ReportApi;
+    Use Geo;
 
     public $device_info = null;
 
@@ -29,6 +28,7 @@ class ReportDetails extends Component
 
     public function mount($id)
     {
+
         $edge = new Edge;
         $edge->clear();
         $this->id = $id;
@@ -42,13 +42,31 @@ class ReportDetails extends Component
         if(empty($this->report)){
             $this->redirect(route('home'));
         }
+    }
+    
+    /**
+     * Handle center-map-on-location event from HasGeo trait
+     */
+    #[On('center-map-on-location')]
+    public function handleCenterMapOnLocation($data)
+    {
+        $this->js('console.log("PHP: handleCenterMapOnLocation called');
+        // Extract data from the event payload
+        $lat = $data['lat'] ?? null;
+        $lng = $data['lng'] ?? null;
+        $componentId = $data['componentId'] ?? null;
+        // Dispatch JavaScript event to center the map
+        $this->dispatch('move-map-to-location',
+            componentId: $this->getId(),
+            lat: $lat,
+            lng: $lng
+        );
 
     }
 
-
     public function render()
     {
-        return view('livewire.reports.details')
-            ->layout('components.layouts.app',['title' => Str::limit($this->report->network_name,30) ?? __('Trail Report'), 'showEdgeComponents' => false] );;
+        return view('livewire.reports.details-map')
+            ->layout('components.layouts.app',['title' => $this->report->title ?? __('Report map'), 'showEdgeComponents' => false] );
     }
 }

@@ -3,11 +3,11 @@
         <flux:tabs variant="segmented" class="w-full h-14! mb-0! rounded-t! rounded-b-none!">
             <flux:tab name="created">
                 {{ __('Created') }}
-                <flux:badge size="sm">{{ $createdReports->count() }}</flux:badge>
+                <flux:badge size="sm">{{ $myTotal }}</flux:badge>
             </flux:tab>
             <flux:tab name="assigned">
                 {{ __('Assigned') }}
-                <flux:badge size="sm">{{ $assignedReports->count() }}</flux:badge>
+                <flux:badge size="sm">{{ $assignedTotal }}</flux:badge>
             </flux:tab>
         </flux:tabs>
 

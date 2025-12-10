@@ -170,9 +170,9 @@ class ReportsRefresh extends Component
         $this->syncAssignedPage();
     }
 
-    #[Layout('components.layouts.app', ['title' => 'Syncing data', 'showEdgeComponents' => false])]
     public function render()
     {
-        return view('livewire.reports.refresh');
+        return view('livewire.reports.refresh')
+            ->layout('components.layouts.app',['title' => __('Sync Reports') , 'showEdgeComponents' => false]);
     }
 }

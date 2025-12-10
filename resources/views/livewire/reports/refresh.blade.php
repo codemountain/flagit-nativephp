@@ -1,15 +1,15 @@
-<div class="grid auto-rows-min mb-4 gap-4">
-    <flux:heading size="xl">{{ __('Sync Reports') }}</flux:heading>
+<div class="grid auto-rows-min nativephp-safe-area mt-4 px-4 py-8 gap-4">
 
     <!-- Created Reports Section -->
-    <flux:card class="bg-gradient-to-br rounded-2xl from-orange-600 to-amber-600 dark:from-orange-900/30 dark:to-amber-900/30 border:0 pb-8 pt-[var(--inset-top)]">
-        <div class="flex items-center justify-between mb-4">
+    <flux:card class="bg-amber-700 dark:bg-amber-700/30  border-0 pb-8 pt-[var(--inset-top)]">
+        <div class="flex items-center justify-between mb-4 pt-4">
             <flux:heading size="lg">{{ __('My Reports') }}</flux:heading>
             <flux:button
                 wire:click="startCreatedSync"
                 :disabled="$createdSyncing"
                 variant="outline"
                 icon="arrow-path"
+                class="opacity-50!"
             >
                 {{ $createdSyncing ? __('Syncing...') : __('Sync') }}
             </flux:button>
@@ -34,14 +34,15 @@
     </flux:card>
 
     <!-- Assigned Reports Section -->
-    <flux:card class="bg-gradient-to-br rounded-2xl from-orange-600 to-amber-600 dark:from-orange-900/30 dark:to-amber-900/30 border:0 pb-8 pt-[var(--inset-top)]">
-        <div class="flex items-center justify-between mb-4">
+    <flux:card class="bg-amber-700 dark:bg-amber-700/30  border-0 pb-8 pt-[var(--inset-top)]">
+        <div class="flex items-center justify-between mb-4 pt-4">
             <flux:heading size="lg">{{ __('Assigned Reports') }}</flux:heading>
             <flux:button
                 wire:click="startAssignedSync"
                 :disabled="$assignedSyncing"
                 variant="outline"
                 icon="arrow-path"
+                class="opacity-50!"
             >
                 {{ $assignedSyncing ? __('Syncing...') : __('Sync') }}
             </flux:button>

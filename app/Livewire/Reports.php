@@ -20,33 +20,43 @@ class Reports extends Component
 
     public int $assignedPerPage = 5;
 
+    public int $myTotal = 0;
+
+    public int $assignedTotal = 0;
+
+    public string $userId = '';
+
     public function mount()
     {
-        $userId = User::currentUserId();
+        $this->userId = User::currentUserId();
 
-        if (! $userId) {
+        if (! $this->userId) {
             return;
         }
 
         // Get user's sync delay preference (default 1 day = 1440 minutes)
-        $user = User::where('user_id', $userId)->first();
+        $user = User::where('user_id', $this->userId)->first();
         $delayMinutes = $user?->sync_delay_minutes ?? 1440;
 
         // Check if either reports type should redirect (needs sync AND not already notified this cycle)
-        $shouldRedirectMyReports = UserSync::shouldRedirectToSync($userId, SyncModel::MyReports, $delayMinutes);
-        $shouldRedirectAssigned = UserSync::shouldRedirectToSync($userId, SyncModel::Assigned, $delayMinutes);
+        $shouldRedirectMyReports = UserSync::shouldRedirectToSync($this->userId, SyncModel::MyReports, $delayMinutes);
+        $shouldRedirectAssigned = UserSync::shouldRedirectToSync($this->userId, SyncModel::Assigned, $delayMinutes);
 
         if ($shouldRedirectMyReports || $shouldRedirectAssigned) {
             // Record that we notified the user
             if ($shouldRedirectMyReports) {
-                UserSync::recordNotified($userId, SyncModel::MyReports);
+                UserSync::recordNotified($this->userId, SyncModel::MyReports);
             }
             if ($shouldRedirectAssigned) {
-                UserSync::recordNotified($userId, SyncModel::Assigned);
+                UserSync::recordNotified($this->userId, SyncModel::Assigned);
             }
 
             $this->redirect(route('reports.refresh'));
         }
+
+        //calculate totals
+        $this->myTotal = Report::createdBy($this->userId)->get()->count();
+        $this->assignedTotal = Report::assignedTo($this->userId)->get()->count();
     }
 
     public function loadMore(string $type)
@@ -74,18 +84,16 @@ class Reports extends Component
     #[Layout('components.layouts.app', ['title' => 'Reports'])]
     public function render()
     {
-        $userId = User::currentUserId();
-
-        $createdReports = Report::createdBy($userId)
+        $createdReports = Report::createdBy($this->userId)
             ->latestFirst()
             ->paginate($this->createdPerPage);
-        $assignedReports = Report::assignedTo($userId)
+        $assignedReports = Report::assignedTo($this->userId)
             ->latestFirst()
             ->paginate($this->assignedPerPage);
 
         // Get last sync times
-        $createdLastSync = UserSync::getLastSync($userId, SyncModel::MyReports);
-        $assignedLastSync = UserSync::getLastSync($userId, SyncModel::Assigned);
+        $createdLastSync = UserSync::getLastSync($this->userId, SyncModel::MyReports);
+        $assignedLastSync = UserSync::getLastSync($this->userId, SyncModel::Assigned);
 
         return view('livewire.reports.index', [
             'createdReports' => $createdReports,

@@ -1,23 +1,25 @@
-<div>
+<div class="nativephp-safe-area mt-4 px-4 py-8">
     @if(!empty($report) && !empty($report->id))
         <div class="block w-full">
             <!-- First section - carousel (full width on mobile, half width on desktop) -->
             <div class="w-full mb-6">
 
                 <!-- Mobile title -->
-                <div class="flex justify-between items-center -mt-1">
-                    <div class="flex justify-start items-center gap-2">
-                        <flux:heading size="xl" level="1">
-                            <div class="mt-2">{{$report->network_name ?? __('Orphan')}}</div>
-                        </flux:heading>
-                    </div>
-                    <flux:icon.marker-status variant="submitted" size="6" />
-                </div>
+{{--                <div class="flex justify-between items-center -mt-1">--}}
+{{--                    <div class="flex justify-start items-center gap-2">--}}
+{{--                        <flux:heading size="xl" level="1">--}}
+{{--                            <div class="mt-2">{{$report->network_name ?? __('Orphan')}}</div>--}}
+{{--                        </flux:heading>--}}
+{{--                    </div>--}}
+{{--                    <flux:icon.marker-status variant="submitted" size="6" />--}}
+{{--                </div>--}}
                 <div class="mt-6 flex justify-between items-center">
-                    <div class="text-xl flex justify-start items-center gap-2">
-                        <div>{{$report->trail_name ?? __('Trail TBD')}}</div>
+                    <div class="text-xl flex justify-between items-center gap-2 w-full">
+                        <div>{{!empty($report->trail_name) ? $report->trail_name :  __('Trail TBD')}}</div>
+
+                        <flux:icon.marker-status variant="submitted" size="6" class=""/>
                     </div>
-                    <flux:badge size="2" class="!text-xs !bg-zinc-200 dark:!bg-zinc-700 opacity-75" >{{\Carbon\Carbon::parse($report->created_at)->diffForHumans()}}</flux:badge>
+
                 </div>
                 <div class="text-lg text-zinc-500 dark:text-zinc-400">{{$report->title ?? __('Title missing')}}</div>
                 <!-- Carousel container -->
@@ -32,7 +34,7 @@
 {{--                        @if(!$embedded)--}}
                             <div class="absolute bottom-2 right-2">
                                 <flux:button
-                                    wire:click="openMap"
+                                    href="{{route('reports.details.map',['id'=>$report->report_id])}}"
                                     class="w-16 h-16 opacity-70"
                                     variant="primary"
                                 >
@@ -99,6 +101,7 @@
                         </div>
 {{--                    @endif--}}
                 </div>
+
                 <div class="py-6">
 {{--                    @if($report->category_names)--}}
 {{--                        <div class="flex flex-wrap gap-2 items-center p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg mb-4">--}}
@@ -142,7 +145,11 @@
 {{--@endif--}}
 
 <div class="w-full text-sm text-right text-zinc-500 dark:text-zinc-400 mt-4 pr-2 italic">
-    {{__('Submitted by')}}: date goes here<br> Bob smith
+    <flux:badge size="2" class="!text-xs !bg-zinc-200 dark:!bg-zinc-700 opacity-75 mb-2" >{{\Carbon\Carbon::parse($report->created_at)->diffForHumans()}}</flux:badge>
+    <br>
+    {{__('Submitted on')}}: {{\Carbon\Carbon::parse($report->created_at)->format('d-m-Y @ H:i')}}<br> {{$report->created_by_name ?? __('Unknown')}}
+
+    <br>
 {{--    @if(!empty($report->createdByUser))--}}
 {{--        {{$report->createdByUser->fullname}} - {{$report->createdByUser->email}}--}}
 {{--    @endif--}}
@@ -188,7 +195,6 @@
 {{--            @endif--}}
 {{--        </div>--}}
 {{--    @endif--}}
-
 </flux:modal>
 <flux:modal name="report-fixit" class="w-full h-[87%] border border-neutral-content rounded-t-2xl p-0!" variant="flyout" position="bottom" closable="false">
 {{--    @if($report)--}}
@@ -197,144 +203,6 @@
     Fix it here
 </flux:modal>
 
-<flux:modal name="report-map" class="w-full h-[90vh] border border-neutral-content rounded-t-2xl p-0!" variant="flyout" position="bottom" closable="false">
-    <div id="report-location" class="hidegeolocatebutton w-full h-full mt-0!" wire:ignore></div>
-    <flux:icon.chevron-down class="z-50 absolute top-6 left-6 p-4 size-14 bg-black/80 rounded-full text-white cursor-pointer" x-on:click="$flux.modal('report-map').close()" />
-</flux:modal>
-<script data-navigate-track>
-    function initializeMap() {
-        // Add global debug listeners for user-location-updated events (multiple formats)
-        document.addEventListener('livewire:user-location-updated', function (event) {
-            console.log('Global listener (livewire:): Received user-location-updated event:', event.detail);
-        });
-
-        document.addEventListener('user-location-updated', function (event) {
-            console.log('Global listener (direct): Received user-location-updated event:', event.detail);
-        });
-
-        window.addEventListener('user-location-updated', function (event) {
-            console.log('Global listener (window): Received user-location-updated event:', event.detail);
-        });
-
-        document.addEventListener('open-map', function (event) {
-            console.log('Received refresh-map event:', event.detail);
-            console.log('report currently available: ', {{$report->lat}});
-            // Always center on the report location for details view
-            const reportLat = {{$report->lat}};
-            const reportLong = {{$report->long}};
-            // console.log('Centering map on report location:', reportLat, reportLong);
-            mapboxgl.accessToken = '{{config('services.mapbox.token')}}';
-            const map = new mapboxgl.Map({
-                container: 'report-location', // container ID
-                center: [reportLong, reportLat], // center on report location
-                zoom: 15, // starting zoom
-                style: '{{config('services.mapbox.style')}}'
-            });
-
-            const el = document.createElement('div');
-            const width = 30;
-            const height = 38;
-            const marker = '{{asset('icons/markers/'.$report->status.'.svg')}}';
-            el.className = 'marker';
-            el.style.backgroundImage = `url(${marker})`;
-            el.style.width = `${width}px`;
-            el.style.height = `${height}px`;
-            el.style.backgroundSize = '100%';
-
-            // make a marker for each feature and add to the map
-            const markerElement = new mapboxgl.Marker(el)
-                .setLngLat([{{$report->long}}, {{$report->lat}}])
-                .addTo(map);
-
-            //code from step 8 will go here
-            const nav = new mapboxgl.NavigationControl();
-            map.addControl(nav, 'top-right');
-
-            // ✨ Use the unified factory to create geolocate control
-            if (window.MapboxGeolocateControlFactory) {
-                const os = {{$os}};
-                const componentId = '{{ $this->getId() }}';
-                //hidding the geolocate button with CSS app.css
-                const geolocateControl = MapboxGeolocateControlFactory.create(os, {
-                    componentId: componentId,
-                    // Report map specific options - show user location visually
-                    trackUserLocation: true,
-                    showUserHeading: true,
-                    showAccuracyCircle: true,
-                    showUserLocation: true,
-                    onLocationReceived: function (lat, lng) {
-                        console.log('Location received in unified report map control:', lat, lng);
-                        // Center map on user location
-                        map.setCenter([lng, lat]);
-                    },
-                    onError: function (error) {
-                        console.error('Unified geolocate error in report map:', error);
-                        alert('Location Error: ' + error.message);
-                    }
-                });
-
-                map.addControl(geolocateControl, 'top-right');
-                console.log('Unified geolocate control added to report map');
-            } else {
-                console.error('MapboxGeolocateControlFactory not found');
-            }
-
-        });
-        document.addEventListener('move-map-to-location', function () {
-            console.log('Livewire move-map-to-location:', data);
-            if (data.componentId === componentId) {
-
-                const mapElement = document.getElementById(mapId);
-                if (mapElement && mapElement._mapboxMap) {
-                    mapElement._mapboxMap.setCenter([data.lng, data.lat]);
-                }
-            }
-        });
-    }
-
-    function waitForMapbox(callback, maxAttempts = 50) {
-        let attempts = 0;
-
-        function check() {
-            attempts++;
-
-            if (typeof mapboxgl !== 'undefined') {
-                console.log('Mapbox GL JS loaded after', attempts, 'attempts');
-                callback();
-            } else if (attempts < maxAttempts) {
-                console.log('Waiting for Mapbox GL JS... attempt', attempts);
-                setTimeout(check, 200);
-            } else {
-                console.error('Mapbox GL JS failed to load after', maxAttempts, 'attempts');
-            }
-        }
-
-        check();
-    }
-
-    // Wait for Mapbox GL JS to be available, then initialize
-    waitForMapbox(initializeMap);
-    // Listen for move-map-to-location events from Livewire
-    document.addEventListener('livewire:init', function() {
-        // Listen for move-map-to-location events from Livewire
-        // Livewire.on('move-map-to-location', function(data) {
-        //     if (data.componentId === componentId) {
-        //         console.log('Livewire move-map-to-location:', data);
-        //
-        //         const mapElement = document.getElementById(mapId);
-        //         if (mapElement && mapElement._mapboxMap) {
-        //             mapElement._mapboxMap.setCenter([data.lng, data.lat]);
-        //         }
-        //     }
-        // });
-
-        // Listen for location errors
-        Livewire.on('location-error', function(data) {
-            console.error('Location error:', data.message);
-            alert('Location Error: ' + data.message);
-        });
-    });
-</script>
 @else
     No report valid
     @endif
