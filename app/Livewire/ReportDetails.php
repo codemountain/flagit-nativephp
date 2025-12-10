@@ -10,6 +10,7 @@ use Flux\Flux;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Native\Mobile\Edge\Edge;
 use Native\Mobile\Facades\Device;
 use Native\Mobile\Facades\SecureStorage;
 
@@ -27,6 +28,8 @@ class ReportDetails extends Component
 
     public function mount($id)
     {
+        $edge = new Edge;
+        $edge->clear();
         $this->id = $id;
         $this->os = SecureStorage::get('device_os');
         $this->init();
@@ -66,7 +69,7 @@ class ReportDetails extends Component
 
     }
 
-    #[Layout('components.layouts.app', ['title' => 'Trail Report'])]
+    #[Layout('components.layouts.app', ['title' => 'Trail Report', 'showEdgeComponents' => false])]
     public function render()
     {
         return view('livewire.reports.details');

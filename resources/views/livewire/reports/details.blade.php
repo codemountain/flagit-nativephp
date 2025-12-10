@@ -5,13 +5,8 @@
             <div class="w-full mb-6">
 
                 <!-- Mobile title -->
-
                 <div class="flex justify-between items-center -mt-1">
                     <div class="flex justify-start items-center gap-2">
-                        <flux:button  href="{{route('home')}}" wire:navigate
-                                      variant="filled">
-                            <flux:icon.arrow-left class="h-8!" />
-                        </flux:button>
                         <flux:heading size="xl" level="1">
                             <div class="mt-2">{{$report->network_name ?? __('Orphan')}}</div>
                         </flux:heading>
@@ -19,7 +14,9 @@
                     <flux:icon.marker-status variant="submitted" size="6" />
                 </div>
                 <div class="mt-6 flex justify-between items-center">
-                    <div class="text-xl">{{$report->trail_name ?? __('Trail TBD')}}</div>
+                    <div class="text-xl flex justify-start items-center gap-2">
+                        <div>{{$report->trail_name ?? __('Trail TBD')}}</div>
+                    </div>
                     <flux:badge size="2" class="!text-xs !bg-zinc-200 dark:!bg-zinc-700 opacity-75" >{{\Carbon\Carbon::parse($report->created_at)->diffForHumans()}}</flux:badge>
                 </div>
                 <div class="text-lg text-zinc-500 dark:text-zinc-400">{{$report->title ?? __('Title missing')}}</div>
