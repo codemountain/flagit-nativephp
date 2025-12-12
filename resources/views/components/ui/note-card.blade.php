@@ -16,25 +16,18 @@
     @php
         //$attachmentsCount = $note->attachments->count();
        // $hasMultipleImages = $attachmentsCount > 1;
-        $hasImages = $note->has_images;
+//        $hasImages = $note->has_images;
+//        dd($hasImages);
        // ray("Note attachments: ".$attachmentsCount,$hasImages,$note->attachments);
        // ray("Note:",$note);
     @endphp
 
     <div
-        class="w-[25%] h-full overflow-hidden relative {{ $hasImages ? 'cursor-pointer' : '' }}"
-        @if($hasImages)
-            @click="$dispatch('open-note-images', { noteId: '{{ $note->id }}'})"
-        @endif
-    >
-        @if($hasImages || !empty($note->note_default_image ))
+        class="w-[25%] h-full overflow-hidden relative">
+        @if(!empty($note->default_image ))
 
-            <img src="{{ $note->note_default_image }}" class="w-full h-full object-cover" />
+            <img src="{{ $note->default_image }}" class="w-full h-full object-cover" />
 
-            @if($hasMultipleImages)
-                <span class="absolute pb-0.5 top-2 left-2 pt-1 bg-zinc-700 text-white text-xxs rounded-full h-3.5 w-3.5 flex items-center justify-center opacity-75"
-                >{{ $attachmentsCount }}</span>
-            @endif
         @else
             <div class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800">
                 <img src="{{ asset('icons/apps/flagit.svg') }}" class="w-3/4 h-3/4 object-contain opacity-30" alt="App Logo" />

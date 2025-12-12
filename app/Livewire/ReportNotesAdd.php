@@ -62,7 +62,20 @@ class ReportNotesAdd extends Component
         $this->validate([
             'new_note.content' => 'required',
         ]);
+        // Check if photoDataUrl contains compressed base64 image
+        if (str_starts_with($this->photoDataUrl, 'data:image')) {
+            // Use the already compressed image from client-side
+            $imageValue = $this->photoDataUrl;
+        } else {
+            // Fallback: read from file if not already compressed
+            $image = Storage::path($this->newImage);
+            $data = base64_encode(file_get_contents($image));
+            $mime = mime_content_type($image);
+            $imageValue = "data:$mime;base64,$data";
 
+            // Note: We no longer use MediaHelper::compressBase64Image here
+            // as compression should happen client-side
+        }
 
         $data = [
             'external_id' => null,
@@ -70,7 +83,7 @@ class ReportNotesAdd extends Component
             'from_name' => auth()->user()->name,
             'app_key' => 'actionit',
             'description' => $this->new_note['content'],
-            'default_image' => (!empty($imageValue)) ? $imageValue: null,
+            'image' => (!empty($imageValue)) ? $imageValue: null,
             'noteable_type' => 'App\Models\Report',
             'noteable_id' => $this->report->report_id,
             'is_internal' => false,

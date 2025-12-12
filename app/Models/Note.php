@@ -90,7 +90,9 @@ class Note extends Model
                 'noteable_id' => !empty($parentModel) ? $parentModel['report_id'] : $data['noteable_id'],
                 'created_at' => $data['created_at'],
                 'updated_at' => now(),
+                'default_image' => $data['default_image'] ?? null,
             ]
+
         );
 
 //        // Smart image conversion - only convert when necessary
