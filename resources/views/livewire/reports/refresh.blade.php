@@ -1,4 +1,18 @@
 <div class="grid auto-rows-min mt-4 px-4 py-8 gap-4 mb-40">
+
+    @if($userReportsCount == 0)
+        <div class="grid auto-rows-min p-4">
+            <flux:card>
+                <flux:heading size="lg">{{__('Welcome!')}}</flux:heading>
+                <flux:text class="mt-2 mb-4">
+                    {{__('Submit your first FlagIt report now!')}}<br>
+                </flux:text>
+                <flux:button variant="primary" icon="plus" href="{{route('reports.create')}}">
+                    {{__('Create report')}}
+                </flux:button>
+            </flux:card>
+        </div>
+    @endif
     <!-- Created Reports Section -->
     <flux:card @class(["bg-amber-700 dark:bg-amber-700/30  border-0 pb-8 pt-[var(--inset-top)]",
                         "pt-4!" => \Native\Mobile\Facades\System::isAndroid(),

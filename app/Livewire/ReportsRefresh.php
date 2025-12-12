@@ -38,6 +38,15 @@ class ReportsRefresh extends Component
 
     public array $assignedSyncedIds = [];
 
+    public $userReportsCount = 0;
+
+    public function mount()
+    {
+        if(auth()->check()) {
+            $this->userReportsCount = Report::createdBy(auth()->user()->user_id)->get()->count();
+            $this->userReportsCount += Report::assignedTo(auth()->user()->user_id)->get()->count();
+        }
+    }
 
     public function startCreatedSync()
     {

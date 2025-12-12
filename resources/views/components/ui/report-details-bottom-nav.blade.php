@@ -1,5 +1,6 @@
 @props([
     'reportId' => null,
+    'notes' => null,
 ])
 <native:bottom-nav>
     <native:bottom-nav-item
@@ -8,6 +9,7 @@
         label="{{__('Notes')}}"
         url="/reports/{{$reportId}}/notes"
         active="{{request()->routeIs('reports.details.notes')}}"
+        badge="{{$notes}}"
     />
 
     <native:bottom-nav-item

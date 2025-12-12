@@ -16,9 +16,9 @@ class Reports extends Component
 
     public string $activeTab = 'created';
 
-    public int $createdPerPage = 5;
+    public int $createdPerPage = 10;
 
-    public int $assignedPerPage = 5;
+    public int $assignedPerPage = 10;
 
     public int $myTotal = 0;
 
@@ -63,9 +63,9 @@ class Reports extends Component
     public function loadMore(string $type)
     {
         if ($type === 'created') {
-            $this->createdPerPage += 5;
+            $this->createdPerPage += 10;
         } else {
-            $this->assignedPerPage += 5;
+            $this->assignedPerPage += 10;
         }
     }
 

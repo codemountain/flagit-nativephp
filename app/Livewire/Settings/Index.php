@@ -60,6 +60,7 @@ class Index extends Component
         SecureStorage::set('current_longitude', null);
         SecureStorage::set('current_accuracy', null);
         Dialog::toast('Geo locations permissions reset');
+        $this->viewAppSettings();
     }
 
     public function resetPushPermissions()
@@ -67,6 +68,7 @@ class Index extends Component
         SecureStorage::set('push_requested', false);
         SecureStorage::set('push_notification_token', null);
         Dialog::toast('Push notification permissions reset');
+        $this->viewAppSettings();
     }
 
 

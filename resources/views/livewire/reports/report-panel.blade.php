@@ -27,8 +27,22 @@
     >
         <flux:icon.arrow-path class="animate-spin w-8! h-8!"></flux:icon.arrow-path>
     </div>
-@else
+@elseif($reports->count() > 0)
     <div class="text-center py-4 text-gray-400">
         {{ __('You\'ve reached the end of the list.') }}
+    </div>
+@endif
+
+@if($reports->count() == 0)
+    <div class="grid auto-rows-min p-4">
+        <flux:card>
+            <flux:heading size="lg">{{__('Welcome!')}}</flux:heading>
+            <flux:text class="mt-2 mb-4">
+                {{__('Submit your first FlagIt report now!')}}<br>
+            </flux:text>
+            <flux:button variant="primary" icon="plus" href="{{route('reports.create')}}">
+                {{__('Create report')}}
+            </flux:button>
+        </flux:card>
     </div>
 @endif

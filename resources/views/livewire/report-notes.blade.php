@@ -13,7 +13,7 @@
                 :elevation="0"
                 :url="route('reports.create')"
             />
-    <x-ui.report-details-bottom-nav report-id="{{$report->report_id}}" />
+    <x-ui.report-details-bottom-nav report-id="{{$report->report_id}}"  notes="{{$report->notes()->count()}}"/>
     @if(!empty($report->notes) && !empty($report->id))
         <div class="block w-full">
             <div class="space-y-2 mb-6">
