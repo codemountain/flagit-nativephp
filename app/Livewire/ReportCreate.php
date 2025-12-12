@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Livewire\Traits\Geo;
+use App\Livewire\Traits\ImagePicker;
 use App\Livewire\Traits\ReportApi;
 use Flux\Flux;
 use Illuminate\Support\Facades\Log;
@@ -25,15 +26,7 @@ use Native\Mobile\Facades\System;
 
 class ReportCreate extends Component
 {
-    Use Geo, ReportApi;
-
-    public string $photoDataUrl = '';
-
-    public $storagePath='';
-
-    public string $photoGeoStatus='';
-
-    public bool $hasGpsLocation = false;
+    Use Geo, ReportApi, ImagePicker;
 
     public string $locationSource = '';
 
@@ -60,24 +53,8 @@ class ReportCreate extends Component
             $this->photoDataUrl = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAD/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AJV//9k=";
             $this->hasGpsLocation = true;
             $this->locationSource = __("Chrome test location");
-            $this->new_report['image'] = $this->photoDataUrl;
+            $this->newImage = $this->photoDataUrl;
         }
-    }
-
-    public function getImage()
-    {
-        Dialog::alert(
-            'Choose',
-            'Source of image',
-            ['Gallery', 'Photo','Cancel']
-        );
-    }
-
-    #[On('map-loaded')]
-    public function hideMapAfterLoad($data)
-    {
-        dd($data);
-        $this->showMap = false;
     }
 
     public function toggleMap()
@@ -85,60 +62,7 @@ class ReportCreate extends Component
         $this->showMap = ! $this->showMap;
     }
 
-    #[OnNative(ButtonPressed::class)]
-    public function handleAlertButton($index, $label)
-    {
-        switch ($index) {
-            case 0:
-                $this->getImageFromLibrary();
-                break;
-            case 1:
-                $this->getImageFromCamera();
-                break;
-            case 2://cancel
-                break;
-        }
-    }
-    public function getImageFromCamera()
-    {
-        $this->photoDataUrl = '';
-        $this->new_report['image'] = null;
-        Camera::getPhoto();
-    }
 
-    #[OnNative(PhotoTaken::class)]
-    public function handleCamera($path)
-    {
-        $this->hasGpsLocation = true;
-        $filename = '/photos/photo_'.time().'.jpg';
-        MobileFile::move($path, Storage::path($filename));
-        //Log::info("Files ", print_r($this->folderFiles,true));
-        $this->photoDataUrl = Storage::url($filename);
-        $this->new_report['image'] = $filename;
-        $this->dispatch('exif-new-image');
-        $this->photoGeoStatus = __('Checking image GPS data...');
-    }
-
-    public function getImageFromLibrary()
-    {
-        $this->photoDataUrl = '';
-        $this->new_report['image'] = null;
-        Camera::pickImages();
-    }
-
-    #[On('native:'.MediaSelected::class)]
-    public function handleMediaSelected($success, $files, $count)
-    {
-        foreach ($files as $file) {
-            $this->hasGpsLocation = true;
-            $filename = 'photos/photo_'.time().'.jpg';
-            MobileFile::move($file['path'], Storage::path($filename));
-            $this->photoDataUrl = Storage::url($filename);
-            $this->new_report['image'] = $filename;
-            $this->dispatch('exif-new-image');
-            $this->photoGeoStatus = __('Checking image GPS data...');
-        }
-    }
     public function handleImageGPS($data)
     {
         if(!empty($data['latitude']) && !empty($data['longitude'])) {
@@ -162,28 +86,6 @@ class ReportCreate extends Component
     public function handleImageGPSError($error)
     {
         Dialog::toast($error);
-    }
-
-    public function handleImageCompressionError($error)
-    {
-        // Clear image data
-        $this->photoDataUrl = '';
-        $this->new_report['image'] = null;
-
-        // Customize message based on error type
-        if (str_contains($error, 'HEIC')) {
-            $message = 'HEIC format not supported. Please change iPhone camera to "Most Compatible" in Settings > Camera > Formats.';
-        } elseif (str_contains($error, '2MB')) {
-            $message = 'Image too large (max 2MB). Please take a lower resolution photo.';
-        } else {
-            $message = 'Image compression failed. Please try a different photo.';
-        }
-
-        // Notify user
-        Dialog::toast($message);
-
-        // Log for debugging
-        Log::warning('Image compression failed', ['error' => $error]);
     }
 
     public function getLocation()
@@ -242,7 +144,7 @@ class ReportCreate extends Component
             $imageValue = $this->photoDataUrl;
         } else {
             // Fallback: read from file if not already compressed
-            $image = Storage::path($this->new_report['image']);
+            $image = Storage::path($this->newImage);
             $data = base64_encode(file_get_contents($image));
             $mime = mime_content_type($image);
             $imageValue = "data:$mime;base64,$data";
@@ -269,7 +171,7 @@ class ReportCreate extends Component
         $response_report = $client->postReport($data);
 
         if (!empty($response_report)) {
-            Storage::delete($this->new_report['image']);
+            Storage::delete($this->newImage);
             //add report to reports array prepend and cache?
         }
         $this->redirect(route('home'));

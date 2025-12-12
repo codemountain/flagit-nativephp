@@ -33,7 +33,7 @@
     </div>
 @endif
 
-@if($reports->count() == 0)
+@if($myTotal == 0 && $assignedTotal == 0)
     <div class="grid auto-rows-min p-4">
         <flux:card>
             <flux:heading size="lg">{{__('Welcome!')}}</flux:heading>

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Note;
 use App\Models\Report;
 
 class ReportServices
@@ -33,9 +34,18 @@ class ReportServices
 
     public function postReport(array $data) : Report
     {
-        $data = $this->client->post('report', $data);
+        $resp = $this->client->post('report', $data);
         //store report locally and send back to api request
-        return Report::saveSingleFromApi($data['report']);
+        return Report::saveSingleFromApi($resp['report']);
+    }
+
+    public function postNote(array $data)
+    {
+        $resp = $this->client->post('note', $data);
+        if($resp && !empty($resp['note'])){
+            return Note::saveSingleFromApi($resp['note']);
+        }
+        return null;
     }
 
 //    public function getNotes(array $query = ['page' => 0, 'per_page' => 10]): array

@@ -54,8 +54,8 @@
     --color-zinc-950: #0a0a0a;
     --color-error: #e53e3e;
 
-    --color-accent: var(--color-neutral-800);
-    --color-accent-content: var(--color-neutral-800);
+    --color-accent: var(--color-orange-700);
+    --color-accent-content: var(--color-neutral-900);
     --color-accent-foreground: var(--color-white);
 
     --color-status-submitted: var(--color-amber-100);
@@ -81,6 +81,14 @@
     --text-xxs: 0.625rem;
     --text-md: 1rem;
 
+}
+
+@layer theme {
+    .dark {
+        --color-accent: var(--color-orange-600);
+        --color-accent-content: var(--color-zinc-300);
+        --color-accent-foreground: var(--color-zinc-900);
+    }
 }
 @source inline('h-[90vh],h-[100vh],h-full,h-[100%],bg-status-{submitted,validated,done,cancelled,new,updated,added,draft,urgent,scheduled,ongoing,suspended,archived},text-reverse-{submitted,validated,done,cancelled}, backtopo');
 

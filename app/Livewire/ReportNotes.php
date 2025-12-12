@@ -25,7 +25,9 @@ class ReportNotes extends Component
 
     public $os;
 
-//    public $notes;
+    public $showImagesModal = false;
+
+    public $currentNoteId = null;
 
     public function mount($id)
     {
@@ -43,9 +45,10 @@ class ReportNotes extends Component
         //$this->notes = Note::whereNoteableId($this->report->report_id)->get();
     }
 
+
     public function render()
     {
-        return view('livewire.report-notes')
+        return view('livewire.reports.notes')
             ->layout('components.layouts.app',[
                     'title' => __('Notes:') . " ".Str::limit($this->report->title,19) ?? __('Report notes'),
                     'showEdgeComponents' => false,

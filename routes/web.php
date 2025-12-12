@@ -12,6 +12,7 @@ use App\Livewire\ReportCreate;
 use App\Livewire\ReportDetails;
 use App\Livewire\ReportDetailsMap;
 use App\Livewire\ReportNotes;
+use App\Livewire\ReportNotesAdd;
 use App\Livewire\Reports;
 use App\Livewire\ReportsRefresh;
 use App\Livewire\Settings;
@@ -36,6 +37,7 @@ Route::middleware(['mobile.auth','mobile.geopermissions'])->group(function () {
     Route::get('/reports/{id}', ReportDetails::class)->name('reports.details');
     Route::get('/reports/{id}/map', ReportDetailsMap::class)->name('reports.details.map');
     Route::get('/reports/{id}/notes', ReportNotes::class)->name('reports.details.notes');
+    Route::get('/reports/{id}/notes/create',ReportNotesAdd::class)->name('reports.details.notes.create');
     Route::get('/reports/{id}/fix', ReportDetailsMap::class)->name('reports.details.fix');
     Route::get('/reports/{id}/worklog', ReportDetailsMap::class)->name('reports.details.worklog');
     Route::get('/reports/{id}/edit', ReportDetailsMap::class)->name('reports.details.edit');

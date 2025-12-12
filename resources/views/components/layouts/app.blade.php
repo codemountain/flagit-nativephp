@@ -16,10 +16,16 @@
                 <native:top-bar-action id="refresh-action" label="Refresh data" icon="refresh" url="{{ route('reports.refresh') }}"/>
             @endif
             <native:top-bar-action id="profile-action" label="Home" icon="user" url="{{ route('profile') }}"/>
+                @if(\Native\Mobile\Facades\SecureStorage::get('device_online'))
+                <native:top-bar-action id="network-status" label="Network" icon="chart" />
+                @endif
         </native:top-bar>
         @else
         <native:top-bar title="{{$title ?? ''}}" :show-navigation-icon="false" text-color="#F26E36">
             <native:top-bar-action id="profile-action" label="Home" icon="back" url="{{ $link_back ?? request()->header('referer') }}"/>
+            @if(\Native\Mobile\Facades\SecureStorage::get('device_online'))
+            <native:top-bar-action id="network-status" label="Network" icon="chart" />
+            @endif
         </native:top-bar>
         @endif
 
@@ -83,7 +89,7 @@
         'py-0 px-0' => \Native\Mobile\Facades\System::isIos(),
         'py-0 px-0' => !empty($link_back)
         ])>
-        {{--        <livewire:ui.network-monitor />--}}
+        <livewire:ui.network-monitor />
         {{ $slot }}
     </main>
 

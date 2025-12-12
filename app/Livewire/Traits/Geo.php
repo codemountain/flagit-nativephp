@@ -19,18 +19,21 @@ trait Geo
 
     public function checkPermissions()
     {
+        $this->isChecking = true;
         $this->result = 'Checking permissions...';
         GeolocationFacade::checkPermissions();
     }
 
     public function requestPermission()
     {
+        $this->isChecking = true;
         $this->result = 'Requesting permissions...';
         GeolocationFacade::requestPermissions();
     }
 
     public function getLocation()
     {
+        $this->isChecking = true;
         $this->result = 'Getting location...';
         GeolocationFacade::getCurrentPosition(true);
     }
@@ -51,6 +54,7 @@ trait Geo
     #[OnNative(PermissionRequestResult::class)]
     public function handlePermissionRequest($location, $coarseLocation, $fineLocation, $message = null, $needsSettings = null)
     {
+        $this->isChecking = false;
         if ($location === 'permanently_denied') {
             $this->result = 'Permissions permanently denied. '.($message ?? 'Please enable location in Settings.');
             SecureStorage::set('location_permission', false);
@@ -64,6 +68,7 @@ trait Geo
     #[OnNative(LocationReceived::class)]
     public function handleLocationReceived($success = null, $latitude = null, $longitude = null, $accuracy = null, $timestamp = null, $provider = null, $error = null)
     {
+        $this->isChecking = false;
         $this->js('console.log("PHP: handleLocationReceived received');
         if ($success) {
 
@@ -89,6 +94,7 @@ trait Geo
     //mapbox factory helper method
     public function requestUserLocation()
     {
+        $this->isChecking = true;
         // Add debugging
         $this->js('console.log("PHP: requestUserLocation called');
 

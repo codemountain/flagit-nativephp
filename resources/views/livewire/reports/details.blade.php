@@ -3,7 +3,7 @@
                    "pt-0!" => \Native\Mobile\Facades\System::isAndroid(),
                    "pt-0!" => !\Native\Mobile\Facades\System::isAndroid(),
            ])>
-    <x-ui.report-details-bottom-nav report-id="{{$report->report_id}}" />
+    <x-ui.report-details-bottom-nav report-id="{{$report->report_id}}" notes="{{$report->notes()->count()}}"/>
     @if(!empty($report) && !empty($report->id))
         <div class="block w-full">
             <!-- First section - carousel (full width on mobile, half width on desktop) -->

@@ -69,14 +69,14 @@ class Note extends Model
         $notes = [];
         // loop and call single method
         foreach ($data as $item) {
-            $notes[] = static::saveSingleFromApi($item,$parentModel)->toArray();
+            $notes[] = static::saveSingleFromApi($item,$parentModel);
         }
 
 
         return $notes;
     }
 
-    public static function saveSingleFromApi(array $data, $parentModel): static
+    public static function saveSingleFromApi(array $data, $parentModel = null): static
     {
         $note = static::updateOrCreate(
             ['note_id' => $data['id']],
@@ -87,7 +87,7 @@ class Note extends Model
                 'content' => $data['content'],
                 // NOTE: Excluding 'default_image' to preserve base64 data
 //                'noteable_type' => get_class($parentModel),
-                'noteable_id' => $parentModel['report_id'],
+                'noteable_id' => !empty($parentModel) ? $parentModel['report_id'] : $data['noteable_id'],
                 'created_at' => $data['created_at'],
                 'updated_at' => now(),
             ]
