@@ -21,6 +21,7 @@ use Native\Mobile\Facades\Dialog;
 use Native\Mobile\Facades\File as MobileFile;
 use Native\Mobile\Facades\Geolocation as GeolocationFacade;
 use Native\Mobile\Facades\SecureStorage;
+use Native\Mobile\Facades\System;
 
 class ReportCreate extends Component
 {
@@ -36,6 +37,8 @@ class ReportCreate extends Component
 
     public string $locationSource = '';
 
+    public bool $showMap = true;
+
     public $new_report = [
         'title' => 'test',
         'description' => 'test 123 lorem ipsum',
@@ -47,10 +50,18 @@ class ReportCreate extends Component
     ];
     public function mount()
     {
-        Flux::modal('map-location')->show();
-        $this->new_report['lat'] = SecureStorage::get('current_latitude') ?? null;
-        $this->new_report['long'] = SecureStorage::get('current_longitude') ?? null;
-        Flux::modal('map-location')->close();
+        $this->new_report['lat'] = SecureStorage::get('current_latitude') ?? 45.9439739740921 ;
+        $this->new_report['long'] = SecureStorage::get('current_longitude') ?? -74.20967672863866;
+
+        //for testing non mobile
+        if (! System::isMobile() && config('app.env') == 'local') {
+            $this->new_report['lat'] = 45.9439739740921  ;
+            $this->new_report['long'] = -74.20967672863866;
+            $this->photoDataUrl = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAD/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AJV//9k=";
+            $this->hasGpsLocation = true;
+            $this->locationSource = __("Chrome test location");
+            $this->new_report['image'] = $this->photoDataUrl;
+        }
     }
 
     public function getImage()
@@ -60,6 +71,18 @@ class ReportCreate extends Component
             'Source of image',
             ['Gallery', 'Photo','Cancel']
         );
+    }
+
+    #[On('map-loaded')]
+    public function hideMapAfterLoad($data)
+    {
+        dd($data);
+        $this->showMap = false;
+    }
+
+    public function toggleMap()
+    {
+        $this->showMap = ! $this->showMap;
     }
 
     #[OnNative(ButtonPressed::class)]
@@ -237,8 +260,8 @@ class ReportCreate extends Component
             'image' => $imageValue,
             'is_urgent' => $this->new_report['is_urgent'],
             'type' => null,
-            'email' => SecureStorage::get('user_email'),
-            'flagit_user_id' => SecureStorage::get('user_id'),
+            'email' => auth()->user()->email,
+            'flagit_user_id' => auth()->user()->user_id,
 
         ];
 

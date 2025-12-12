@@ -73,11 +73,12 @@ class ApiAuthService
         }
 
         $url = $this->baseUrl.ltrim($endpoint, '/');
-        if(config('app.env') == 'local' && SecureStorage::get('api_token')) {
-            $token = SecureStorage::get('api_token');
-        } else {
-            $token = config('services.api.local_token');
-        }
+        $token = SecureStorage::get('api_token');
+//        if(config('app.env') == 'local' && SecureStorage::get('api_token')) {
+//            $token = SecureStorage::get('api_token');
+//        } else {
+//            $token = config('services.api.local_token');
+//        }
 
 
         $contentType = $multipart ? 'multipart/form-data' : 'application/json';

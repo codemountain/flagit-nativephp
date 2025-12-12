@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'mobile.auth' => \App\Http\Middleware\EnsureMobileAuthenticated::class,
             'mobile.geopermissions' => \App\Http\Middleware\EnsureGeopermissions::class,
+            'mobile.pushpermissions' => \App\Http\Middleware\EnsurePushPermissions::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

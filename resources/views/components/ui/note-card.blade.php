@@ -14,11 +14,11 @@
 
     <!-- Image on the Left -->
     @php
-        $attachmentsCount = $note->attachments->count();
-        $hasMultipleImages = $attachmentsCount > 1;
+        //$attachmentsCount = $note->attachments->count();
+       // $hasMultipleImages = $attachmentsCount > 1;
         $hasImages = $note->has_images;
-        ray("Note attachments: ".$attachmentsCount,$hasImages,$note->attachments);
-        ray("Note:",$note);
+       // ray("Note attachments: ".$attachmentsCount,$hasImages,$note->attachments);
+       // ray("Note:",$note);
     @endphp
 
     <div
@@ -44,9 +44,9 @@
 
 
     <!-- Content on the Right -->
-    @if(empty($note->external_id))
+    @if(empty($note->note_id))
         <div class="absolute top-3 right-4 z-10" >
-            <flux:badge color="red">Not synched</flux:badge>
+            <flux:badge color="red">{{__('Not synched')}}</flux:badge>
         </div>
     @endif
     <div class="w-3/5 p-4 flex flex-col space-y-2">

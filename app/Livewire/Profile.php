@@ -7,7 +7,6 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Native\Mobile\Facades\Dialog;
-use Native\Mobile\Facades\SecureStorage;
 
 class Profile extends Component
 {
@@ -28,8 +27,11 @@ class Profile extends Component
 
     public function mount(): void
     {
-        $this->name = SecureStorage::get('user_name', '');
-        $this->email = SecureStorage::get('user_email', '');
+        if(!auth()->check()) {
+            $this->redirect(route('login'));
+        }
+        $this->name = auth()->user()->name;
+        $this->email = auth()->user()->email;
     }
 
     public function updateProfile(): void
@@ -46,9 +48,10 @@ class Profile extends Component
 
         if ($response->successful()) {
             $data = $response->json();
-
-            SecureStorage::set('user_name', $data['user']['name']);
-            SecureStorage::set('user_email', $data['user']['email']);
+            auth()->user()->update([
+                'name' => $data['name'],
+                'email' => $data['email'],
+            ]);
 
             Dialog::toast('Profile updated successfully');
         } else {

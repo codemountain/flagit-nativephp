@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Native\Mobile\Facades\Dialog;
+use Native\Mobile\Facades\SecureStorage;
 use Native\Mobile\Facades\System;
 
 class Index extends Component
@@ -38,10 +40,11 @@ class Index extends Component
 
     public function loadUserData(): void
     {
+
         $user = User::find(Auth::id());
 
-        $this->userName = $user->name;
-        $this->userEmail = $user->email;
+        $this->userName = $user->name ?? "incognito";
+        $this->userEmail = $user->email ?? "mystery@email.com";
 
     }
 
@@ -49,6 +52,23 @@ class Index extends Component
     {
         System::appSettings();
     }
+
+    public function resetPermissions()
+    {
+        SecureStorage::set('location_permission', false);
+        SecureStorage::set('current_latitude', null);
+        SecureStorage::set('current_longitude', null);
+        SecureStorage::set('current_accuracy', null);
+        Dialog::toast('Geo locations permissions reset');
+    }
+
+    public function resetPushPermissions()
+    {
+        SecureStorage::set('push_requested', false);
+        SecureStorage::set('push_notification_token', null);
+        Dialog::toast('Push notification permissions reset');
+    }
+
 
     public function updatedAutoGenerate(): void
     {

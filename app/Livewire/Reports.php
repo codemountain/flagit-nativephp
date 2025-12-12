@@ -24,14 +24,15 @@ class Reports extends Component
 
     public int $assignedTotal = 0;
 
-    public string $userId = '';
+    public $userId;
 
     public function mount()
     {
         $this->userId = User::currentUserId();
 
         if (! $this->userId) {
-            return;
+           auth()->logout();
+           return redirect(route('login'));
         }
 
         // Get user's sync delay preference (default 1 day = 1440 minutes)

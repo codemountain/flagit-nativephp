@@ -12,9 +12,12 @@ use Native\Mobile\Facades\SecureStorage;
 
 class Check extends Component
 {
+    public $message = 'Biometic check';
+    public $icon = 'finger-print';
+
     public function mount()
     {
-        if($this->isSecure){
+        if(auth()->check() || $this->isSecure){
             Biometrics::prompt();
         }else{
             $this->redirectRoute('login');
@@ -26,6 +29,8 @@ class Check extends Component
     {
 
         if ($success) {
+            $this->message = 'Biometric auth successful';
+            $this->icon = 'check-circle';
             return redirect()->route('home');
         }
         return redirect()->route('login');

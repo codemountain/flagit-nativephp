@@ -53,8 +53,8 @@ class ApiClient
     {
         static::post('/logout');
         SecureStorage::delete('api_token');
-        SecureStorage::delete('user_name');
-        SecureStorage::delete('user_email');
+//        SecureStorage::delete('user_name');
+//        SecureStorage::delete('user_email');
         nativephp_call('Edge.Set', json_encode(['components' => []]));
 //        Edge::clear();
     }

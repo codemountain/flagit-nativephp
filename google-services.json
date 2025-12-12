@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "581096641260",
+    "project_id": "flagit-nativephp",
+    "storage_bucket": "flagit-nativephp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:581096641260:android:de49d80faba86946624bc9",
+        "android_client_info": {
+          "package_name": "co.pixeltrail.flagitapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsODVD6wRvsToBdD7EEQ8EzRXwb7qOMbs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

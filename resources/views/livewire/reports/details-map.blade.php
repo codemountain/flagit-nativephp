@@ -41,7 +41,7 @@
 
             // ✨ Use the unified factory to create geolocate control
             if (window.MapboxGeolocateControlFactory) {
-                const os = {{$os}};
+                const os = {{$os ?? 'android'}};
                 const componentId = '{{ $this->getId() }}';
                 //hidding the geolocate button with CSS app.css
                 const geolocateControl = MapboxGeolocateControlFactory.create(os, {

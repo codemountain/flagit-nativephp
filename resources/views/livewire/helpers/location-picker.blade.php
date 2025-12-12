@@ -32,7 +32,7 @@
 
 <script>
     const mapId = 'location-picker-{{ $this->getId() }}';
-    const os = '{{ $os }}';
+    const os = '{{ $os ?? 'android' }}';
     const componentId = '{{ $this->getId() }}';
 
     function initializeLocationPicker() {
@@ -101,6 +101,12 @@
             }
 
             console.log('Map created successfully');
+            //dispatch map-loaded event
+            document.dispatchEvent(new CustomEvent('map-loaded', {
+                detail: {
+                    mapId: 'location-picker'
+                }
+            }));
 
             // Update location when map stops moving
             map.on('moveend', function() {

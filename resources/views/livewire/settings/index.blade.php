@@ -1,7 +1,13 @@
-<div>
-    <div class="max-w-4xl mx-auto">
+<div class="mb-40">
+    <div @class(["max-w-4xl mx-auto",
+                       "pt-0!" => \Native\Mobile\Facades\System::isAndroid(),
+                       "pt-0! px-4 " => !\Native\Mobile\Facades\System::isAndroid(),
+               ])>
         {{-- Appearance Section --}}
-        <div class="mt-8">
+        <div @class(["mt-4",
+                   "pt-0!" => \Native\Mobile\Facades\System::isAndroid(),
+                   "pt-0!" => !\Native\Mobile\Facades\System::isAndroid(),
+           ])>
             <h2 class="text-zinc-500 dark:text-zinc-400 text-xs uppercase font-semibold px-4 mb-2 tracking-wider">{{ __('Appearance') }}</h2>
             <div class="bg-white dark:bg-zinc-900 rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 p-4">
 {{--                <div class="flex items-center gap-3 mb-3">--}}
@@ -97,7 +103,7 @@
                             <flux:icon name="arrow-right-start-on-rectangle" class="text-white size-4" />
                         </div>
                         <p class="flex-grow font-medium text-zinc-900 dark:text-zinc-100">{{ __('Log Out') }}</p>
-                        <flux:icon name="chevron-right" class="text-zinc-400 dark:text-zinc-600 size-5" />
+                        <flux:icon name="arrow-right-start-on-rectangle" class="text-zinc-400 dark:text-zinc-600 size-5" />
                     </button>
                 </form>
             </div>
@@ -105,33 +111,62 @@
 
         {{-- Permissions --}}
         <div class="mt-8 mb-8">
+            <h2 class="text-zinc-500 dark:text-zinc-400 text-xs uppercase font-semibold px-4 mb-2 tracking-wider">{{ __('Permissions') }}</h2>
             <div class="bg-white dark:bg-zinc-900 rounded-t-xl overflow-hidden border border-zinc-200 dark:border-zinc-700">
+                {{-- Podcast Defaults (Voice, Episode, Custom Instructions) --}}
+                <a
+                    wire:click="viewAppSettings"
+                    wire:navigate
+                    class="flex items-center p-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer"
+                >
+                    <div class="w-7 h-7 rounded-md flex items-center justify-center mr-4 bg-blue-600">
+                        <flux:icon name="device-phone-mobile" class="text-white size-4" />
+                    </div>
+                    <div class="flex-grow">
+                        <p class="font-medium text-zinc-900 dark:text-zinc-100">{{Str::title(\Native\Mobile\Facades\SecureStorage::get('device_os') ?? 'phone')}} {{ __('Settings') }}</p>
+                    </div>
+                    <flux:icon name="chevron-right" class="text-zinc-400 dark:text-zinc-600 size-5" />
+                </a>
+            </div>
+            <div class="bg-white dark:bg-zinc-900 overflow-hidden border border-zinc-200 dark:border-zinc-700">
                     <button
                         wire:click="resetPermissions"
                         class="flex items-center p-3 w-full hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer text-left"
                     >
-                        <div class="w-7 h-7 rounded-md flex items-center justify-center mr-4 bg-red-600">
-                            <flux:icon name="cog" class="text-white size-4" />
+                        <div class="w-7 h-7 rounded-md flex items-center justify-center mr-4 bg-green-600">
+                            <flux:icon name="map-pin" class="text-white size-4" />
                         </div>
                         <p class="flex-grow font-medium text-zinc-900 dark:text-zinc-100">{{ __('Reset Geo permissions') }}</p>
-                        <flux:icon name="chevron-right" class="text-zinc-400 dark:text-zinc-600 size-5" />
+                        <flux:icon name="arrow-path-rounded-square" class="text-zinc-400 dark:text-zinc-600 size-5" />
                     </button>
             </div>
             <div class="bg-white dark:bg-zinc-900 rounded-b-xl overflow-hidden border border-zinc-200 dark:border-zinc-700">
                 <button
-{{--                    wire:click="resetPermissions"--}}
+                    wire:click="resetPushPermissions"
                     class="flex items-center p-3 w-full hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer text-left"
                 >
-                    <div class="w-7 h-7 rounded-md flex items-center justify-center mr-4 bg-red-600">
-                        <flux:icon name="arrow-path" class="text-white size-4" />
+                    <div class="w-7 h-7 rounded-md flex items-center justify-center mr-4 bg-teal-600">
+                        <flux:icon name="bell-alert" class="text-white size-4" />
                     </div>
-                    <div class="flex-grow">
-                        <p class="flex-grow font-medium text-zinc-900 dark:text-zinc-100">{{ __('Something else') }}</p>
-                        <p class="text-sm text-zinc-500 dark:text-zinc-400">subtext</p>
-                    </div>
-                    <flux:icon name="chevron-right" class="text-zinc-400 dark:text-zinc-600 size-5" />
+                    <p class="flex-grow font-medium text-zinc-900 dark:text-zinc-100">{{ __('Reset Notification permissions') }}</p>
+                    <flux:icon name="arrow-path-rounded-square" class="text-zinc-400 dark:text-zinc-600 size-5" />
                 </button>
             </div>
+{{--            <div class="bg-white dark:bg-zinc-900 rounded-b-xl overflow-hidden border border-zinc-200 dark:border-zinc-700">--}}
+{{--                <button--}}
+{{--                    wire:click="resetPermissions"--}}
+{{--                    class="flex items-center p-3 w-full hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer text-left"--}}
+{{--                >--}}
+{{--                    <div class="w-7 h-7 rounded-md flex items-center justify-center mr-4 bg-red-600">--}}
+{{--                        <flux:icon name="arrow-path" class="text-white size-4" />--}}
+{{--                    </div>--}}
+{{--                    <div class="flex-grow">--}}
+{{--                        <p class="flex-grow font-medium text-zinc-900 dark:text-zinc-100">{{ __('Something else') }}</p>--}}
+{{--                        <p class="text-sm text-zinc-500 dark:text-zinc-400">subtext</p>--}}
+{{--                    </div>--}}
+{{--                    <flux:icon name="chevron-right" class="text-zinc-400 dark:text-zinc-600 size-5" />--}}
+{{--                </button>--}}
+{{--            </div>--}}
         </div>
 </div>
 

@@ -33,11 +33,11 @@
         <!-- Go seomwhere card -->
         <flux:card class="bg-zinc-50 dark:bg-zinc-800/50">
             <flux:button
-                href="{{route('reports.create')}}"
-                icon="plus"
+                href="{{route('home')}}"
+                icon="arrow-right-end-on-rectangle"
                 class="py-6 w-full bg-gradient-to-br from-amber-700 to-orange-700 !text-white border-0 shadow-lg transition-all text-xl font-semibold [&>span]:!text-white"
             >
-                {{__('Create new report')}}
+                {{__('Continue')}}
             </flux:button>
         </flux:card>
     @endif

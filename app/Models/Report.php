@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Report extends Model
 {
@@ -75,12 +76,21 @@ class Report extends Model
         return $query->orderBy('created_at', 'desc');
     }
 
+    /**
+     * Get all of the report's notes.
+     */
+    public function notes(): MorphMany
+    {
+        return $this->morphMany(Note::class, 'noteable', null, 'noteable_id', 'report_id')->orderBy('created_at', 'desc');
+    }
+
     public static function saveListFromApi($data): array
     {
         $reports = [];
         // loop and call single method
         foreach ($data['data'] as $item) {
             $reports['data'][] = static::saveSingleFromApi($item)->toArray();
+            if(!empty($item['notes'])) Note::saveListFromApi($item['notes'],$item);
         }
 
         $reports['total'] = $data['total'] ?? null;

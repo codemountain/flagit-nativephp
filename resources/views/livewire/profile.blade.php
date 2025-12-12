@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-6">
+<div class="flex flex-col gap-6 mb-40">
     <!-- Profile Information Section -->
     <div class="rounded-lg bg-white p-6 shadow dark:bg-zinc-800">
         <h2 class="text-xl font-semibold text-zinc-900 dark:text-white">Profile Information</h2>

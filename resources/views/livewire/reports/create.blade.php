@@ -1,6 +1,33 @@
-<div class="nativephp-safe-area mt-4 px-4 py-8">
+<div @class(["mt-4 px-4 relative mb-40",
+                       "pt-4!" => \Native\Mobile\Facades\System::isAndroid(),
+                       "pt-0!" => !\Native\Mobile\Facades\System::isAndroid(),
+               ])>
     <!-- Main Content Area with Horizontal Padding -->
-    <form wire:submit="createReport" class="">
+
+    <div id="report-location"
+         x-data="{ show: @entangle('showMap').live }"
+         x-show="show"
+         x-transition:enter="transition ease-out duration-500"
+         x-transition:enter-start="opacity-0 translate-y-10"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-500"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 translate-y-full"
+        @class([
+           "mt-0! absolute z-50",
+           "w-full h-[100vh] top-0 left-0",
+   ])>
+            <livewire:helpers.location-picker
+                :lat="$new_report['lat'] ?? null"
+                :long="$new_report['long'] ?? null"
+                class="h-[100vh] z-50"
+            />
+            <flux:icon.chevron-down class="z-50 absolute top-6 left-6 p-4 size-14 bg-amber-700/80 rounded-full text-white cursor-pointer" @click="$wire.toggleMap()" />
+
+        </div>
+
+
+    <form wire:submit="createReport" class="z-0 relative">
 
 
         <div class="flex justify-between gap-2 relative mb-4">
@@ -17,14 +44,18 @@
                 @endif
 
             </div>
+
+
+
             @if(!empty($photoDataUrl) && empty($locationSource))
-            <div class="absolute bottom-0 right-0 p-2 bg-amber-700/70 rounded-tl-xl px-2">{{$photoGeoStatus}}</div>
+                <div class="absolute bottom-0 right-0 p-2 bg-amber-700/70 rounded-tl-xl px-2 z-50">{{$photoGeoStatus}}</div>
             @endif
+
             @if(!empty($locationSource))
-                <div class="absolute bottom-0 right-0 p-2 w-full" x-on:click="$flux.modal('map-location').show()">
+                <div class="absolute bottom-0 right-0 p-2 w-full" wire:click="toggleMap">
                 <flux:callout icon="map" color="green" class="mb-0">
                     <flux:callout.heading>
-                        {{__('Got Location from :source',['source'=>$locationSource])}}
+                        {{__('Got Location from :source',['source'=>$locationSource])}} - {{__('click for map')}}
                     </flux:callout.heading>
 {{--                    <x-slot name="actions">--}}
 {{--                        <flux:button class="w-full mr-6"--}}
@@ -38,6 +69,7 @@
                 </div>
             @endif
         </div>
+
 {{--        <div class="bg-zinc-500/20 p-4 rounded-2xl">--}}
 {{--            {{ print_r($new_report,true) }}--}}
 {{--        </div>--}}
@@ -112,6 +144,19 @@
 
 
     <script>
+        document.addEventListener('map-loaded', function(event) {
+            setTimeout(() => {
+{{--                @this.call('toggleMap');--}}
+                @this.set('showMap', false);
+            }, 500);
+            console.log("report create got map loaded");
+        });
+        // document.addEventListener('livewire:initialized', () => {
+        //     Livewire.on('post-created', (data) => {
+        //         console.log('Globally caught:', data.title);
+        //         // Run global JavaScript logic
+        //     });
+        // });
         // Image EXIF extraction and compression handler
         document.addEventListener('exif-new-image', async function(event) {
             console.log('📸 Event received, processing image...');

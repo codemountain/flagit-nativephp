@@ -30,6 +30,8 @@ class Login extends Component
 
     public $device = [];
 
+    public $deviceId;
+
     public function mount(?string $redirectTo = null, ?string $email = ''): void
     {
 
@@ -40,39 +42,9 @@ class Login extends Component
             $this->displayingEmailForm = false;
         }
         $this->device = json_decode(Device::getInfo());
+        $this->deviceId = Device::getId();
 
     }
-
-    //    public function login(): void
-    //    {
-    //        $this->validate();
-    //
-    //        $this->errorMessage = '';
-    //
-    //        $response = ApiClient::post('otp-email', [
-    //            'email' => $this->email,
-    // //            'password' => $this->password,
-    //        ]);
-    //
-    //        if ($response->successful()) {
-    //            $data = $response->json();
-    //            SecureStorage::set('api_token', $data['token']);
-    //            SecureStorage::set('user_name', $data['user']['name']);
-    //            SecureStorage::set('user_email', $data['user']['email']);
-    //
-    //            $this->redirect(route('home'));
-    //        } else {
-    //            $this->errorMessage = $response->json('message', 'Invalid credentials');
-    //        }
-    //    }
-    //
-    //    public function skipLogin()
-    //    {
-    //        SecureStorage::set('api_token', Str::uuid()->toString());
-    //        SecureStorage::set('user_name', 'Simon Hamp');
-    //        SecureStorage::set('user_email', 'simon@nativephp.com');
-    //        $this->redirect(route('home'));
-    //    }
 
     public function submitEmail(): void
     {
@@ -123,13 +95,13 @@ class Login extends Component
         if ($response->successful()) {
             $data = $response->json();
             SecureStorage::set('api_token', $data['access_token']);
-            SecureStorage::set('user_name', $data['name']);
-            SecureStorage::set('user_email', $data['email']);
-            SecureStorage::set('user_lang', $data['lang']);
-            SecureStorage::set('user_phone', $data['phone']);
-            SecureStorage::set('user_phone_verified_at', $data['phone_verified_at']);
+
             SecureStorage::set('user_id', $data['user_id']);
             SecureStorage::set('device_os', (! empty($this->device) ? $this->device->platform : null));
+            SecureStorage::set('device_os_version', (! empty($this->device) ? $this->device->osVersion : null));
+            SecureStorage::set('device_id', (! empty($this->deviceId) ? $this->deviceId : null));
+
+            if(empty(SecureStorage::get('push_requested'))) SecureStorage::set('push_requested', false);
 
             if (config('app.env') == 'local') {
                 Session::put('local_api_token', $data['access_token']);

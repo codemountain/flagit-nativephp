@@ -1,4 +1,4 @@
-<div class="flex flex-col">
+<div class="flex flex-col mb-40">
     <flux:tab.group class="mb-0!">
         <flux:tabs variant="segmented" class="w-full h-14! mb-0! rounded-t! rounded-b-none!">
             <flux:tab name="created">

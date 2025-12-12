@@ -14,8 +14,11 @@ class Home extends Component
 
     public function mount(): void
     {
-        $this->userName = SecureStorage::get('user_name', 'User');
-        $this->userEmail = SecureStorage::get('user_email', '');
+        if(!auth()->check()) {
+            $this->redirect(route('login'));
+        }
+        $this->userName = auth()->user()->name;
+        $this->userEmail = auth()->user()->email;
     }
 
     public function logout(): void

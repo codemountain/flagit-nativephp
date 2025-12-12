@@ -1,4 +1,9 @@
-<div class="nativephp-safe-area mt-4 px-4 py-8">
+<div
+     @class(["mt-4 px-4 mb-40",
+                   "pt-0!" => \Native\Mobile\Facades\System::isAndroid(),
+                   "pt-0!" => !\Native\Mobile\Facades\System::isAndroid(),
+           ])>
+    <x-ui.report-details-bottom-nav report-id="{{$report->report_id}}" />
     @if(!empty($report) && !empty($report->id))
         <div class="block w-full">
             <!-- First section - carousel (full width on mobile, half width on desktop) -->
@@ -17,7 +22,7 @@
                     <div class="text-xl flex justify-between items-center gap-2 w-full">
                         <div>{{!empty($report->trail_name) ? $report->trail_name :  __('Trail TBD')}}</div>
 
-                        <flux:icon.marker-status variant="submitted" size="6" class=""/>
+                        <flux:icon.marker-status variant="{{$report->status ?? 'submitted'}}" class="w-8! h-8!"/>
                     </div>
 
                 </div>
@@ -49,57 +54,9 @@
                 </div>
 
                 <div class="p-6 bg-zinc-400 dark:bg-zinc-700 mt-0 rounded-b-2xl relative">
-                    <div class="text-sm text-zinc-50 dark:text-zinc-200 mr-24">
+                    <div class="text-sm text-zinc-50 dark:text-zinc-200">
                         {{$report->description ?? __('No description given')}}
                     </div>
-{{--                    @if(!$embedded)--}}
-                        <div class="absolute bottom-2 right-2">
-                            <flux:dropdown gap="2" position="left">
-                                <flux:button
-                                    class="w-16 h-13 opacity-70 bg-transparent! border-0!"
-                                    variant="outline"
-                                >
-                                    <flux:icon.ellipsis-horizontal-circle
-                                        class="size-10 text-zinc-700 dark:text-white" variant="solid" />
-                                </flux:button>
-                                <flux:popover class="-mt-2 bg-zinc-700 border border-zinc-600 rounded-lg opacity-70">
-                                    <flux:button
-                                        wire:click="seeNotes"
-                                        class="relative mr-4"
-                                        icon="chat-bubble-bottom-center-text"
-                                        iconSize=""
-                                    >
-                                    </flux:button>
-                                    <flux:button
-                                        wire:click="openFixReport"
-                                        class="relative mr-4"
-                                        icon="wrench-screwdriver"
-                                        iconSize=""
-                                    >
-                                    </flux:button>
-                                    <flux:button
-                                        wire:click="openWorklogs"
-                                        class="relative mr-4"
-                                        icon="clock"
-                                        iconSize=""
-                                    >
-                                    </flux:button>
-                                    <flux:button
-                                        wire:click="openEditReport"
-                                        class="relative"
-                                        icon="pencil"
-                                        iconSize=""
-                                        disabled
-                                    >
-                                    </flux:button>
-                                </flux:popover>
-                            </flux:dropdown>
-
-{{--                            @if($report->notes->count() > 0)--}}
-{{--                                <div class="absolute -top-2 -left-2 bg-amber-600 rounded-full w-5 h-5 flex items-center justify-center text-white text-xs">100</div>--}}
-{{--                            @endif--}}
-                        </div>
-{{--                    @endif--}}
                 </div>
 
                 <div class="py-6">
@@ -146,6 +103,7 @@
 
 <div class="w-full text-sm text-right text-zinc-500 dark:text-zinc-400 mt-4 pr-2 italic">
     <flux:badge size="2" class="!text-xs !bg-zinc-200 dark:!bg-zinc-700 opacity-75 mb-2" >{{\Carbon\Carbon::parse($report->created_at)->diffForHumans()}}</flux:badge>
+    <flux:badge size="2" class="!text-xs opacity-75 mb-2 !bg-status-{{$report->status}}" >{{__('Status')}}: {{$report->status ?? 'unknown'}}</flux:badge>
     <br>
     {{__('Submitted on')}}: {{\Carbon\Carbon::parse($report->created_at)->format('d-m-Y @ H:i')}}<br> {{$report->created_by_name ?? __('Unknown')}}
 

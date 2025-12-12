@@ -37,4 +37,10 @@ class ReportServices
         //store report locally and send back to api request
         return Report::saveSingleFromApi($data['report']);
     }
+
+//    public function getNotes(array $query = ['page' => 0, 'per_page' => 10]): array
+//    {
+//        $data = $this->client->get('report', $query);
+//        return Report::saveListFromApi($data);
+//    }
 }

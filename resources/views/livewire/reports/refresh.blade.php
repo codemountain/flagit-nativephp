@@ -1,8 +1,13 @@
-<div class="grid auto-rows-min nativephp-safe-area mt-4 px-4 py-8 gap-4">
-
+<div class="grid auto-rows-min mt-4 px-4 py-8 gap-4 mb-40">
     <!-- Created Reports Section -->
-    <flux:card class="bg-amber-700 dark:bg-amber-700/30  border-0 pb-8 pt-[var(--inset-top)]">
-        <div class="flex items-center justify-between mb-4 pt-4">
+    <flux:card @class(["bg-amber-700 dark:bg-amber-700/30  border-0 pb-8 pt-[var(--inset-top)]",
+                        "pt-4!" => \Native\Mobile\Facades\System::isAndroid(),
+                        "pt-2!" => !\Native\Mobile\Facades\System::isAndroid(),
+                ])>
+        <div @class(["flex items-center justify-between mb-4",
+                    "pt-4" => \Native\Mobile\Facades\System::isAndroid(),
+                    "pt-0!" => !\Native\Mobile\Facades\System::isAndroid(),
+            ])>
             <flux:heading size="lg">{{ __('My Reports') }}</flux:heading>
             <flux:button
                 wire:click="startCreatedSync"
@@ -11,7 +16,7 @@
                 icon="arrow-path"
                 class="opacity-50!"
             >
-                {{ $createdSyncing ? __('Syncing...') : __('Sync') }}
+                {{ $createdSyncing ? __('Syncing all...') : __('Sync All') }}
             </flux:button>
         </div>
 
@@ -33,6 +38,7 @@
         @endif
     </flux:card>
 
+
     <!-- Assigned Reports Section -->
     <flux:card class="bg-amber-700 dark:bg-amber-700/30  border-0 pb-8 pt-[var(--inset-top)]">
         <div class="flex items-center justify-between mb-4 pt-4">
@@ -44,7 +50,7 @@
                 icon="arrow-path"
                 class="opacity-50!"
             >
-                {{ $assignedSyncing ? __('Syncing...') : __('Sync') }}
+                {{ $assignedSyncing ? __('Syncing...') : __('Sync All') }}
             </flux:button>
         </div>
 

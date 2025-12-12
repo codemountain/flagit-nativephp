@@ -8,7 +8,7 @@
 <body id="app_body" class="bg-white dark:bg-zinc-950 min-h-screen relative">
 {{--nativephp-safe-area--}}
 
-    @if(!blank(\Native\Mobile\Facades\SecureStorage::get('api_token')))
+    @if(!blank(\Native\Mobile\Facades\SecureStorage::get('api_token')) && auth()->check())
 
         @if(empty($link_back))
         <native:top-bar title="{{ $title ?? config('app.name') }}" :show-navigation-icon="true" >
@@ -28,15 +28,15 @@
         <native:side-nav gestures_enabled="{{(\Native\Mobile\Facades\System::isIos()) ? request()->routeIs('home'):null}}">
             <native:side-nav-header
                 title="Welcome"
-                subtitle="{{\Native\Mobile\Facades\SecureStorage::get('user_name')}}"
+                subtitle="{{auth()->user()->name ?? ''}}"
                 icon="info"
                 :show-close-button="true"
                 :pinned="true"
             />
 {{--            <native:side-nav-item id="nav-home" label="Home" icon="home" url="{{ route('home') }}" active="{{ request()->routeIs('home') }}"/>--}}
-            <native:side-nav-item id="nav-geolocation" label="Geolocation" icon="map-pin" url="{{ route('geolocation') }}" active="{{ request()->routeIs('geolocation') }}"/>
+            <native:side-nav-item id="nav-geolocation" label="Geolocation" icon="map-pin" url="/geolocation" active="{{ request()->routeIs('geolocation') }}"/>
             <native:horizontal-divider/>
-            <native:side-nav-item id="nav-profile" label="Profile" icon="user" url="{{ route('profile') }}" active="{{ request()->routeIs('profile') }}"/>
+            <native:side-nav-item id="nav-profile" label="Profile" icon="user" url="/profile" active="{{ request()->routeIs('profile') }}"/>
         </native:side-nav>
         <native:bottom-nav>
             <native:bottom-nav-item
@@ -79,8 +79,8 @@
 {{--        />--}}
       @endif
     <main @class(["animate-[slideInFromRight_0.3s_ease-out] ",
-        'py-4 px-4' => \Native\Mobile\Facades\System::isAndroid(),
-        'py-15 px-4' => !\Native\Mobile\Facades\System::isAndroid(),
+        'py-0 px-0' => \Native\Mobile\Facades\System::isAndroid(),
+        'py-0 px-0' => \Native\Mobile\Facades\System::isIos(),
         'py-0 px-0' => !empty($link_back)
         ])>
         {{--        <livewire:ui.network-monitor />--}}
