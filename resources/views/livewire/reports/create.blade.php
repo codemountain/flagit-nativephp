@@ -22,7 +22,7 @@
                 :long="$new_report['long'] ?? null"
                 class="h-[100vh] z-50"
             />
-            <flux:icon.chevron-down class="z-50 absolute top-6 left-6 p-4 size-14 bg-amber-700/80 rounded-full text-white cursor-pointer" @click="$wire.toggleMap()" />
+            <flux:icon.chevron-down class="z-50 absolute top-6 left-6 p-4 size-14 bg-accent! rounded-full text-accent-foreground! cursor-pointer" @click="$wire.toggleMap()" />
 
         </div>
 
@@ -45,8 +45,6 @@
 
             </div>
 
-
-
             @if(!empty($photoDataUrl) && empty($locationSource))
                 <div class="absolute bottom-0 right-0 p-2 bg-amber-700/70 rounded-tl-xl px-2 z-50">{{$photoGeoStatus}}</div>
             @endif
@@ -57,14 +55,6 @@
                     <flux:callout.heading>
                         {{__('Got Location from :source',['source'=>$locationSource])}} - {{__('click for map')}}
                     </flux:callout.heading>
-{{--                    <x-slot name="actions">--}}
-{{--                        <flux:button class="w-full mr-6"--}}
-{{--                                     variant="outline"--}}
-{{--                                     icon="map"--}}
-{{--                                     x-on:click="$flux.modal('map-location').show()" >--}}
-{{--                            {{__('View map')}}--}}
-{{--                        </flux:button>--}}
-{{--                    </x-slot>--}}
                 </flux:callout>
                 </div>
             @endif
@@ -114,7 +104,7 @@
 
                 @if(!empty($photoDataUrl) && $hasGpsLocation && !empty($new_report['title']))
                 <flux:button type="submit"
-                             class="w-full bg-amber-700! mobile"
+                             class="w-full mobile"
                             variant="primary"
                 >
                     {{__('Send Report')}}</flux:button>

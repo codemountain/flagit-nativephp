@@ -105,12 +105,4 @@
         </form>
     </div>
 
-    <div class="rounded-lg bg-white p-6 shadow dark:bg-zinc-800">
-        <button
-            class="w-full rounded-lg bg-red-600 px-4 py-2 text-white"
-            wire:loading.attr="disabled"
-        >
-            <span wire:click="logout">Logout</span>
-        </button>
-    </div>
 </div>

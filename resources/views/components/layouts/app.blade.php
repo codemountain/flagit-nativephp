@@ -11,7 +11,7 @@
     @if(!blank(\Native\Mobile\Facades\SecureStorage::get('api_token')) && auth()->check())
 
         @if(empty($link_back))
-        <native:top-bar title="{{ $title ?? config('app.name') }}" :show-navigation-icon="true" >
+        <native:top-bar title="{{ $title ?? config('app.name') }}" :show-navigation-icon="true" text-color="#F26E36">
             @if(request()->routeIs('home'))
                 <native:top-bar-action id="refresh-action" label="Refresh data" icon="refresh" url="{{ route('reports.refresh') }}"/>
             @endif

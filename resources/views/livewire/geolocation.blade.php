@@ -1,6 +1,6 @@
 <div class="space-y-6">
     <!-- Header with Gradient -->
-    <div class="bg-gradient-to-br rounded-2xl from-orange-600 to-amber-600 dark:from-orange-900/30 dark:to-amber-900/30 border:0 pb-8 pt-[var(--inset-top)] px-6">
+    <div class="bg-accent/80 dark:bg-accent/60 border:0 pb-8 pt-[var(--inset-top)] px-6">
         <div class="space-y-3">
             <div class="flex items-start gap-4 p-2">
                 <div class="space-y-3">

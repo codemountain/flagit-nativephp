@@ -13,10 +13,10 @@
 
         <!-- Fixed center marker - positioned above the map -->
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-[1000]">
-            <div class="w-8 h-8 rounded-full border-2 border-red-700 shadow-lg flex items-center justify-center opacity-50">
+            <div class="w-8 h-8 rounded-full border-2 border-accent shadow-lg flex items-center justify-center opacity-50">
                 <flux:icon.viewfinder-circle
                     size="6"
-                    class="text-red-700"/>
+                    class="text-accent"/>
             </div>
         </div>
     </div>

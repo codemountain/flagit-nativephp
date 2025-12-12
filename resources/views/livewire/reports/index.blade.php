@@ -1,6 +1,6 @@
 <div class="flex flex-col mb-40">
     <flux:tab.group class="mb-0!">
-        <flux:tabs variant="segmented" class="w-full h-14! mb-0! rounded-t! rounded-b-none!">
+        <flux:tabs variant="segmented" class="w-full h-14! mb-0! rounded-t! rounded-b-none! bg-accent/80!">
             <flux:tab name="created">
                 {{ __('Created') }}
                 <flux:badge size="sm">{{ $myTotal }}</flux:badge>

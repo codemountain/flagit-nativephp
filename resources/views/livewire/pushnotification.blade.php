@@ -1,13 +1,13 @@
 <div class="space-y-6">
     <!-- Header with Gradient -->
-    <div class="bg-gradient-to-br rounded-2xl from-orange-600 to-amber-600 dark:from-orange-900/30 dark:to-amber-900/30 border:0 pb-8 pt-[var(--inset-top)] px-6">
+    <div class="bg-accent/80 dark:bg-accent/60 border:0 pb-8 pt-[var(--inset-top)] px-6">
         <div class="space-y-3">
             <div class="flex items-start gap-4 p-2">
                 <div class="space-y-3">
-                    <h1 class="text-white text-3xl font-bold flex items-center space-x-6 pt-2">
+                    <h1 class="text-accent-foreground text-3xl font-bold flex items-center space-x-6 pt-2">
                         {{__('Push Notification')}}
                     </h1>
-                    <p class="text-lg text-white">
+                    <p class="text-lg text-accent-foreground">
                         {{__('Flag!t needs your permission to send you notifications')}}
                     </p>
                 </div>
@@ -16,10 +16,11 @@
 
                 <flux:button
                     wire:click="promptForPushNotifications"
+                    variant="outline"
                     icon="bell"
-                    class="py-6 w-full bg-gradient-to-br from-orange-300 to-orange-300 !text-zinc-200 border-0 shadow-lg transition-all text-xl [&>span]:!text-zinc-200"
+                    class="py-6 w-full text-accent-content border-0 shadow-lg transition-all text-xl"
                 >
-                    {{__('Connect to Notifications')}}
+                    {{__('Request permissions for Notifications')}}
                 </flux:button>
 
         </div>
@@ -43,8 +44,9 @@
         <flux:card class="bg-zinc-50 dark:bg-zinc-800/50">
             <flux:button
                 href="{{route('home')}}"
+                variant="primary"
                 icon="arrow-right-end-on-rectangle"
-                class="py-6 w-full bg-gradient-to-br from-amber-700 to-orange-700 !text-white border-0 shadow-lg transition-all text-xl font-semibold [&>span]:!text-white"
+                class="py-6 w-full border-0 shadow-lg transition-all text-xl font-semibold"
             >
                 {{__('Continue')}}
             </flux:button>

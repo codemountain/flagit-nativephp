@@ -8,16 +8,6 @@
         <div class="block w-full">
             <!-- First section - carousel (full width on mobile, half width on desktop) -->
             <div class="w-full mb-6">
-
-                <!-- Mobile title -->
-{{--                <div class="flex justify-between items-center -mt-1">--}}
-{{--                    <div class="flex justify-start items-center gap-2">--}}
-{{--                        <flux:heading size="xl" level="1">--}}
-{{--                            <div class="mt-2">{{$report->network_name ?? __('Orphan')}}</div>--}}
-{{--                        </flux:heading>--}}
-{{--                    </div>--}}
-{{--                    <flux:icon.marker-status variant="submitted" size="6" />--}}
-{{--                </div>--}}
                 <div class="mt-6 flex justify-between items-center">
                     <div class="text-xl flex justify-between items-center gap-2 w-full">
                         <div>{{!empty($report->trail_name) ? $report->trail_name :  __('Trail TBD')}}</div>
@@ -43,7 +33,7 @@
                                     class="w-16 h-16 opacity-70"
                                     variant="primary"
                                 >
-                                    <flux:icon.map class="size-8 text-white dark:text-black" variant="solid" />
+                                    <flux:icon.map class="size-8 text-zinc-300 dark:text-zinc-300" variant="solid" />
                                 </flux:button>
 
                             </div>

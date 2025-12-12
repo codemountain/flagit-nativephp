@@ -54,9 +54,9 @@
     --color-zinc-950: #0a0a0a;
     --color-error: #e53e3e;
 
-    --color-accent: var(--color-orange-700);
-    --color-accent-content: var(--color-neutral-900);
-    --color-accent-foreground: var(--color-white);
+    --color-accent: #F26E36;
+    --color-accent-content: var(--color-zinc-300);
+    --color-accent-foreground: #FCE4DB;
 
     --color-status-submitted: var(--color-amber-100);
     --color-status-validated: var(--color-green-600);
@@ -85,13 +85,22 @@
 
 @layer theme {
     .dark {
-        --color-accent: var(--color-orange-600);
-        --color-accent-content: var(--color-zinc-300);
-        --color-accent-foreground: var(--color-zinc-900);
+        --color-accent: #F26E36;
+        --color-accent-content: var(--color-zinc-900);
+        --color-accent-foreground: var(--color-zinc-100);
     }
 }
 @source inline('h-[90vh],h-[100vh],h-full,h-[100%],bg-status-{submitted,validated,done,cancelled,new,updated,added,draft,urgent,scheduled,ongoing,suspended,archived},text-reverse-{submitted,validated,done,cancelled}, backtopo');
 
+ui-otp {
+    @apply gap-8! min-w-fit!
+}
+ui-otp div.grow-0, ui-otp div.grow-0 input{
+    @apply w-14! h-14!
+ }
+ui-otp div.grow-0 input{
+    @apply border-zinc-900/60! dark:border-b-zinc-400/80!
+}
 a.mobile{
     @apply h-14!;
 }

@@ -20,13 +20,20 @@
     @if(!$displayingEmailForm)
         <div class="">
         <form wire:submit="submitOneTimePassword" class="space-y-8">
-            <flux:otp wire:model="oneTimePassword" length="4" label="Login Code" :error:icon="false" error:class="text-center" class="mx-auto" autofocus/>
+            <flux:otp
+                wire:model="oneTimePassword"
+                length="4"
+                label="Login Code"
+                :error:icon="false"
+                error:class="text-center"
+                class="mx-auto"
+                autofocus/>
             <div class="space-y-4">
                 <flux:button variant="primary" type="submit" class="w-full mobile">{{ __('Submit login code') }}</flux:button>
 
                 <flux:button
-                    variant="primary"
-                    class="w-full"
+                    variant="outline"
+                    class="w-full mobile"
                     wire:click="resendCode"
 
                 >{{ __('Resend code') }}</flux:button>

@@ -3,7 +3,7 @@
 
 @if($lastSyncedAt)
     <div class="flex justify-end mb-6">
-        <div @class(["w-full bg-zinc-800/5 dark:bg-white/10 p-2 text-xs rounded-b text-zinc-300 dark:text-shadow-zinc-500 italic"
+        <div @class(["w-full bg-accent/80! dark:bg-zinc-800/5 dark:bg-white/10 p-2 text-xs rounded-b text-zinc-300 dark:text-shadow-zinc-500 italic"
                    , "text-left" => $type == 'created'
                    , "text-right" => $type == 'assigned'])>
             {{ __('Synced') }} {{ $lastSyncedAt->diffForHumans() }}

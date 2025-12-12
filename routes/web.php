@@ -2,6 +2,7 @@
 
 use App\Livewire\Auth\Check;
 use App\Livewire\Auth\Login;
+use App\Livewire\Auth\Logout;
 use App\Livewire\Auth\Register;
 use App\Livewire\Geolocation;
 use App\Livewire\Home;
@@ -19,6 +20,7 @@ use App\Livewire\Settings;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', Login::class)->name('login');
+Route::get('/logout', Logout::class)->name('logout');
 //Route::get('/register', Register::class)->name('register');
 Route::get('/', Check::class)->name('auth-check');
 

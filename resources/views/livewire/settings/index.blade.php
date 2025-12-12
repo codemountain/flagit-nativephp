@@ -93,19 +93,17 @@
         {{-- Logout Section --}}
         <div class="mt-8 mb-8">
             <div class="bg-white dark:bg-zinc-900 rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700">
-                <form method="POST" action="/logout" class="w-full">
-                    @csrf
-                    <button
-                        type="submit"
-                        class="flex items-center p-3 w-full hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer text-left"
-                    >
-                        <div class="w-7 h-7 rounded-md flex items-center justify-center mr-4 bg-red-600">
-                            <flux:icon name="arrow-right-start-on-rectangle" class="text-white size-4" />
-                        </div>
-                        <p class="flex-grow font-medium text-zinc-900 dark:text-zinc-100">{{ __('Log Out') }}</p>
-                        <flux:icon name="arrow-right-start-on-rectangle" class="text-zinc-400 dark:text-zinc-600 size-5" />
-                    </button>
-                </form>
+                <a
+                    href="/logout"
+                    wire:navigate
+                    class="flex items-center p-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer"
+                >
+                    <div class="w-7 h-7 rounded-md flex items-center justify-center mr-4 bg-red-600">
+                        <flux:icon name="arrow-right-start-on-rectangle" class="text-white size-4" />
+                    </div>
+                    <p class="flex-grow font-medium text-zinc-900 dark:text-zinc-100">{{ __('Log Out') }}</p>
+                    <flux:icon name="arrow-right-start-on-rectangle" class="text-zinc-400 dark:text-zinc-600 size-5" />
+                </a>
             </div>
         </div>
 

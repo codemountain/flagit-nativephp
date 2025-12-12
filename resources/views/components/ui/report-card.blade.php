@@ -37,10 +37,10 @@
         <img src="{{ $imageUrl }}"
              class="w-full h-full object-cover"
              alt="">
-{{--        @if($report->notes->count() > 0)--}}
-{{--            <flux:icon.chat-bubble-bottom-center-text--}}
-{{--                class="text-amber-600 shadow-2xl absolute top-2 left-2"/>--}}
-{{--        @endif--}}
+        @if(count($report['notes']) > 0)
+            <flux:icon.chat-bubble-bottom-center-text
+                class="text-accent shadow-2xl absolute top-2 left-2"/>
+        @endif
     </div>
 
     <!-- Content on the Right -->

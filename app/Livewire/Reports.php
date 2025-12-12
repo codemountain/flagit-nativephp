@@ -86,9 +86,11 @@ class Reports extends Component
     public function render()
     {
         $createdReports = Report::createdBy($this->userId)
+            ->with('notes')
             ->latestFirst()
             ->paginate($this->createdPerPage);
         $assignedReports = Report::assignedTo($this->userId)
+            ->with('notes')
             ->latestFirst()
             ->paginate($this->assignedPerPage);
 
