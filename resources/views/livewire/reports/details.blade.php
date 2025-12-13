@@ -50,46 +50,46 @@
                 </div>
 
                 <div class="py-6">
-{{--                    @if($report->category_names)--}}
-{{--                        <div class="flex flex-wrap gap-2 items-center p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg mb-4">--}}
-{{--                            <flux:heading size="sm text-bold">{{__('Categories')}}</flux:heading>--}}
-{{--                            @foreach(explode(',', $report->category_names) as $item)--}}
-{{--                                <flux:badge size="2" class="!text-xs !bg-zinc-200 dark:!bg-zinc-700 opacity-75">{{Str::ucfirst($item)}}</flux:badge>--}}
-{{--                            @endforeach--}}
-{{--                        </div>--}}
-{{--                    @endif--}}
-{{--                    @if($report->skill_names)--}}
-{{--                        <div class="flex flex-wrap gap-2 items-center p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg mb-4"">--}}
-{{--                        <flux:heading size="sm text-bold">{{__('Skills')}}</flux:heading>--}}
-{{--                        @foreach(explode(',', $report->skill_names) as $item)--}}
-{{--                            <flux:badge size="2" class="!text-xs !bg-zinc-200 dark:!bg-zinc-700 opacity-75">{{Str::ucfirst($item)}}</flux:badge>--}}
-{{--                        @endforeach--}}
-{{--                </div>--}}
-{{--                @endif--}}
-{{--                @if($report->material_names)--}}
-{{--                    <div class="flex flex-wrap gap-2 items-center p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg mb-4"">--}}
-{{--                    <flux:heading size="sm text-bold">{{__('Materials')}}</flux:heading>--}}
-{{--                    @foreach(explode(',', $report->material_names) as $item)--}}
-{{--                        <flux:badge size="2" class="!text-xs !bg-zinc-200 dark:!bg-zinc-700 opacity-75">{{Str::ucfirst($item)}}</flux:badge>--}}
-{{--                    @endforeach--}}
-{{--            </div>--}}
-{{--            @endif--}}
-{{--            @if($report->equipment_names)--}}
-{{--                <div class="flex flex-wrap gap-2 items-center p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg mb-4"">--}}
-{{--                <flux:heading size="sm text-bold">{{__('Materials')}}</flux:heading>--}}
-{{--                @foreach(explode(',', $report->equipment_names) as $item)--}}
-{{--                    <flux:badge size="2" class="!text-xs !bg-zinc-200 dark:!bg-zinc-700 opacity-75">{{Str::ucfirst($item)}}</flux:badge>--}}
-{{--                @endforeach--}}
-{{--        </div>--}}
-{{--    @endif--}}
-{{--    @if($report->task_names)--}}
-{{--        <div class="flex flex-wrap gap-2 items-center p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg mb-4"">--}}
-{{--        <flux:heading size="sm text-bold">{{__('Tasks')}}</flux:heading>--}}
-{{--        @foreach(explode(',', $report->task_names) as $item)--}}
-{{--            <flux:badge size="2" class="!text-xs !bg-zinc-200 dark:!bg-zinc-700 opacity-75">{{Str::ucfirst($item)}}</flux:badge>--}}
-{{--        @endforeach--}}
-{{--</div>--}}
-{{--@endif--}}
+                    @if($report->category_names)
+                        <div class="flex flex-wrap gap-2 items-center p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg mb-4">
+                            <flux:heading size="sm text-bold">{{__('Categories')}}</flux:heading>
+                            @foreach(explode(',', $report->category_names) as $item)
+                                <flux:badge size="2" class="!text-xs !bg-zinc-200 dark:!bg-zinc-700 opacity-75">{{Str::ucfirst($item)}}</flux:badge>
+                            @endforeach
+                        </div>
+                    @endif
+                    @if($report->skill_names)
+                        <div class="flex flex-wrap gap-2 items-center p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg mb-4"">
+                        <flux:heading size="sm text-bold">{{__('Skills')}}</flux:heading>
+                        @foreach(explode(',', $report->skill_names) as $item)
+                            <flux:badge size="2" class="!text-xs !bg-zinc-200 dark:!bg-zinc-700 opacity-75">{{Str::ucfirst($item)}}</flux:badge>
+                        @endforeach
+                </div>
+                @endif
+                @if($report->material_names)
+                    <div class="flex flex-wrap gap-2 items-center p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg mb-4"">
+                    <flux:heading size="sm text-bold">{{__('Materials')}}</flux:heading>
+                    @foreach(explode(',', $report->material_names) as $item)
+                        <flux:badge size="2" class="!text-xs !bg-zinc-200 dark:!bg-zinc-700 opacity-75">{{Str::ucfirst($item)}}</flux:badge>
+                    @endforeach
+            </div>
+            @endif
+            @if($report->equipment_names)
+                <div class="flex flex-wrap gap-2 items-center p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg mb-4"">
+                <flux:heading size="sm text-bold">{{__('Materials')}}</flux:heading>
+                @foreach(explode(',', $report->equipment_names) as $item)
+                    <flux:badge size="2" class="!text-xs !bg-zinc-200 dark:!bg-zinc-700 opacity-75">{{Str::ucfirst($item)}}</flux:badge>
+                @endforeach
+        </div>
+    @endif
+    @if($report->task_names)
+        <div class="flex flex-wrap gap-2 items-center p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg mb-4"">
+        <flux:heading size="sm text-bold">{{__('Tasks')}}</flux:heading>
+        @foreach(explode(',', $report->task_names) as $item)
+            <flux:badge size="2" class="!text-xs !bg-zinc-200 dark:!bg-zinc-700 opacity-75">{{Str::ucfirst($item)}}</flux:badge>
+        @endforeach
+</div>
+@endif
 
 <div class="w-full text-sm text-right text-zinc-500 dark:text-zinc-400 mt-4 pr-2 italic">
     <flux:badge size="2" class="!text-xs !bg-zinc-200 dark:!bg-zinc-700 opacity-75 mb-2" >{{\Carbon\Carbon::parse($report->created_at)->diffForHumans()}}</flux:badge>
