@@ -13,16 +13,7 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'phone',
-        'lang',
-        'user_id',
-        'phone_verified_at',
-        'sync_delay_minutes',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -81,5 +72,30 @@ class User extends Authenticatable
     public static function isAuthenticated(): bool
     {
         return auth()->check() || ! empty(SecureStorage::get('user_id'));
+    }
+
+    /**
+     * Create a minimal user record if it does not already exist.
+     * No updates are performed if the user exists.
+     */
+    public static function saveMini(array $data): void
+    {
+        // Defensive: require user_id
+        if (empty($data['user_id'])) {
+            return;
+        }
+
+        self::insertOrIgnore([
+            'user_id'    => $data['user_id'],
+            'name'       => $data['name']       ?? trim(($data['first_name'] ?? '') . ' ' . ($data['last_name'] ?? '')),
+            'email'      => $data['email']      ?? null,
+            'first_name' => $data['first_name'] ?? null,
+            'last_name'  => $data['last_name']  ?? null,
+            'lang'       => $data['lang']       ?? null,
+            'phone'      => $data['phone']      ?? null,
+            'avatar'     => $data['avatar']     ?? null,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }

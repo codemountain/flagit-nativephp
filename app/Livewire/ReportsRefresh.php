@@ -40,6 +40,8 @@ class ReportsRefresh extends Component
 
     public $userReportsCount = 0;
 
+    public int $defaultPerPage = 5;
+
     public function mount()
     {
         if(auth()->check()) {
@@ -63,18 +65,18 @@ class ReportsRefresh extends Component
     public function syncCreatedPage()
     {
         $client = new ReportServices;
-        $response = $client->getReports(['page' => $this->createdPage, 'per_page' => 10]);
+        $response = $client->getReports(['page' => $this->createdPage, 'per_page' => $this->defaultPerPage]);
 
         $count = count($response['data'] ?? []);
         $this->createdTotal = $response['total'] ?? 0;
-        $this->createdProgress = min(($this->createdPage + 1) * 10, $this->createdTotal);
+        $this->createdProgress = min(($this->createdPage + 1) * $this->defaultPerPage, $this->createdTotal);
 
         // Collect synced report IDs
         foreach ($response['data'] ?? [] as $report) {
             $this->createdSyncedIds[] = $report['report_id'];
         }
 
-        if ($count >= 10) {
+        if ($count >= $this->defaultPerPage) {
             $this->createdPage++;
             $this->dispatch('continue-created-sync');
         } else {
@@ -126,18 +128,18 @@ class ReportsRefresh extends Component
     public function syncAssignedPage()
     {
         $client = new ReportServices;
-        $response = $client->getAssigned(['page' => $this->assignedPage, 'per_page' => 10]);
+        $response = $client->getAssigned(['page' => $this->assignedPage, 'per_page' => $this->defaultPerPage]);
 
         $count = count($response['data'] ?? []);
         $this->assignedTotal = $response['total'] ?? 0;
-        $this->assignedProgress = min(($this->assignedPage + 1) * 10, $this->assignedTotal);
+        $this->assignedProgress = min(($this->assignedPage + 1) * $this->defaultPerPage, $this->assignedTotal);
 
         // Collect synced report IDs
         foreach ($response['data'] ?? [] as $report) {
             $this->assignedSyncedIds[] = $report['report_id'];
         }
 
-        if ($count >= 10) {
+        if ($count >= $this->defaultPerPage) {
             $this->assignedPage++;
             $this->dispatch('continue-assigned-sync');
         } else {

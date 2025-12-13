@@ -70,12 +70,18 @@ class ApiAuthService
     {
         if ( !SecureStorage::get('api_token') && config('app.env') != 'local') {
             throw new \Exception('User does not have a valid API token');
+        } elseif(config('app.env') == 'local' && !SecureStorage::get('api_token')){
+            $token = Session::get('local_api_token');
+        } else {
+            $token = SecureStorage::get('api_token');
         }
 
-        $url = $this->baseUrl.ltrim($endpoint, '/');
-        $token = SecureStorage::get('api_token');
+            $url = $this->baseUrl.ltrim($endpoint, '/');
+
 //        if(config('app.env') == 'local' && SecureStorage::get('api_token')) {
-//            $token = SecureStorage::get('api_token');
+//            $token = Session::get('local_api_token');
+//            Session::put('local_api_token', $data['access_token']);
+//            Session::put('local_user_id', $data['user_id']);
 //        } else {
 //            $token = config('services.api.local_token');
 //        }

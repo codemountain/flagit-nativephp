@@ -19,7 +19,8 @@ return new class extends Migration
             $table->string('category')->nullable();
             $table->string('title');
             $table->text('description');
-
+            $table->string('created_by_name')->nullable();
+            $table->string('created_by_email')->nullable();
             // Location fields
             $table->string('network_name')->nullable();
             $table->string('trail_name')->nullable();
@@ -28,16 +29,13 @@ return new class extends Migration
 
             // Image fields
             $table->text('image')->nullable(); // Full URL can be long
+            $table->longText('images')->nullable();
             $table->text('thumb')->nullable(); // Thumbnail URL
 
             // Status and metadata
             $table->string('status')->default('draft');
             $table->boolean('is_urgent')->default(false);
             $table->string('slug')->nullable();
-
-            // Change image fields to support base64 data for offline reports
-            $table->longText('local_image')->nullable(); // Support base64 encoded images
-            $table->longText('local_thumb')->nullable(); // Will be same as image for local reports
 
             // Relationship IDs (ULIDs)
             $table->string('team_id')->nullable();

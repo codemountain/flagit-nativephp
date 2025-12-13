@@ -1,3 +1,6 @@
+@php
+use Native\Mobile\Facades\SecureStorage;
+@endphp
 <div class="mb-40">
     <div @class(["max-w-4xl mx-auto",
                        "pt-0!" => \Native\Mobile\Facades\System::isAndroid(),
@@ -166,5 +169,28 @@
 {{--                </button>--}}
 {{--            </div>--}}
         </div>
+
+        <div class="bg-zinc-500/80 dark:bg-500/60 border:0 pb-8 pt-[var(--inset-top)] px-6 mt-8 rounded-2xl">
+            <div class="space-y-3">
+                <div class="flex items-start gap-4 p-2">
+                    <div class="space-y-3">
+                        <h1 class="text-white text-xl font-bold flex items-center space-x-6 pt-2">
+                            {{__('App info')}}
+                        </h1>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 bg-white/50 dark:bg-gray-800/50 rounded-lg border-2 border-white/20 backdrop-blur-sm">
+                <p class="text-sm whitespace-pre-wrap font-mono">Token: {{Str::limit(SecureStorage::get('api_token'),5)}}</p>
+                <p class="text-sm whitespace-pre-wrap font-mono">User: {{SecureStorage::get('user_id')}}</p>
+                <p class="text-sm whitespace-pre-wrap font-mono">Os: {{SecureStorage::get('device_os')}}</p>
+                <p class="text-sm whitespace-pre-wrap font-mono">Os Version: {{SecureStorage::get('device_os_version')}}</p>
+                <p class="text-sm whitespace-pre-wrap font-mono">Device: {{SecureStorage::get('device_id')}}</p>
+                <p class="text-sm whitespace-pre-wrap font-mono">Base storage: {{SecureStorage::get('base_storage_url')}}</p>
+                <p class="text-sm whitespace-pre-wrap font-mono">Push Requested: {{SecureStorage::get('push_requested')}}</p>
+            </div>
+
+        </div>
 </div>
 
+</div>

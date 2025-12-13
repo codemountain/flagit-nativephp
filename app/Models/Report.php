@@ -31,6 +31,13 @@ class Report extends Model
             'exif_data' => 'array',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
+            'images'             => 'array',
+            'assigned_user_ids'  => 'array',
+            'category_names'     => 'array',
+            'skill_names'        => 'array',
+            'equipment_names'    => 'array',
+            'material_names'     => 'array',
+            'task_names'         => 'array',
         ];
     }
 
@@ -91,6 +98,7 @@ class Report extends Model
         foreach ($data['data'] as $item) {
             $reports['data'][] = static::saveSingleFromApi($item)->toArray();
             if(!empty($item['notes'])) Note::saveListFromApi($item['notes'],$item);
+            if(!empty($item['worklogs'])) Worklog::saveListFromApi($item['worklogs'],$item);
         }
 
         $reports['total'] = $data['total'] ?? null;
@@ -110,6 +118,7 @@ class Report extends Model
                 'network_name' => $data['network_name'],
                 'trail_name' => $data['trail_name'],
                 'image' => $data['image'],
+                'images' => $data['images'],
                 'thumb' => $data['thumb'],
                 'lat' => $data['lat'],
                 'long' => $data['long'],
@@ -135,6 +144,7 @@ class Report extends Model
                 'task_names' => $data['task_names'] ?? null,
             ]
         );
+        if(!empty($data['creator'])) User::saveMini($data['creator']);
 
         return $report;
         /*  {

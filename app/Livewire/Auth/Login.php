@@ -100,10 +100,10 @@ class Login extends Component
             SecureStorage::set('device_os', (! empty($this->device) ? $this->device->platform : null));
             SecureStorage::set('device_os_version', (! empty($this->device) ? $this->device->osVersion : null));
             SecureStorage::set('device_id', (! empty($this->deviceId) ? $this->deviceId : null));
-
+            SecureStorage::set('base_storage_url', $data['base_storage_url'] ?? null);
             if(empty(SecureStorage::get('push_requested'))) SecureStorage::set('push_requested', false);
 
-            if (config('app.env') == 'local') {
+            if (config('app.env') == 'local' && empty($this->device)) {
                 Session::put('local_api_token', $data['access_token']);
                 Session::put('local_user_id', $data['user_id']);
             }
@@ -125,6 +125,9 @@ class Login extends Component
             [
                 'email' => $data['email'],
                 'name' => $data['name'],
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
+                'avatar' => $data['avatar'],
                 'lang' => $data['lang'] ?? null,
                 'phone' => $data['phone'] ?? null,
                 'phone_verified_at' => isset($data['phone_verified_at']) && $data['phone_verified_at']
@@ -132,7 +135,6 @@ class Login extends Component
                     : null,
             ]
         );
-
         Auth::login($user);
     }
 

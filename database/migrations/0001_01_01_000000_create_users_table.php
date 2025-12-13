@@ -15,12 +15,16 @@ return new class extends Migration
             $table->id();
             $table->string('user_id');
             $table->string('name');
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('avatar')->nullable();
             $table->string('lang')->default('en');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password')->nullable();
+//            $table->string('password')->nullable();
             $table->string('phone')->nullable();
             $table->timestamp('phone_verified_at')->nullable();
+            $table->integer('sync_delay_minutes')->default(1440)->after('user_id'); // 60*24 = 1 day
             $table->rememberToken();
             $table->timestamps();
         });

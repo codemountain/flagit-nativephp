@@ -27,15 +27,15 @@ return new class extends Migration
             $table->string('default_image')->nullable();
 
             // Polymorphic relationship - can belong to any model
-            $table->string('noteable_type')->default('App\Models\Report');
-            $table->string('noteable_id');
+            $table->string('notable_type')->default('App\Models\Report');
+            $table->string('notable_id')->nullable();
 
             $table->timestamps();
 
             // Indexes for better performance
             $table->index('note_id');
             $table->index('from_user_id');
-            $table->index(['noteable_type', 'noteable_id']);
+            $table->index(['notable_type', 'notable_id']);
         });
     }
 

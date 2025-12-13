@@ -70,6 +70,7 @@ class Note extends Model
         // loop and call single method
         foreach ($data as $item) {
             $notes[] = static::saveSingleFromApi($item,$parentModel);
+            if(!empty($item['attachments'])) Attachment::saveListFromApi($item['attachments'],$item);
         }
 
 
@@ -85,9 +86,9 @@ class Note extends Model
                 'from_name' => $data['from_name'],
                 'app_key' => $data['app_key'],
                 'content' => $data['content'],
-                // NOTE: Excluding 'default_image' to preserve base64 data
-//                'noteable_type' => get_class($parentModel),
-                'noteable_id' => !empty($parentModel) ? $parentModel['report_id'] : $data['noteable_id'],
+
+                'notable_type' => $data['notable_type'] ?? null,
+                'notable_id' => $data['notable_id'] ?? null,
                 'created_at' => $data['created_at'],
                 'updated_at' => now(),
                 'default_image' => $data['default_image'] ?? null,
@@ -95,15 +96,7 @@ class Note extends Model
 
         );
 
-//        // Smart image conversion - only convert when necessary
-//        MediaHelper::convertUrlToBase64IfNeeded($note, 'default_image', $data['default_image'] ?? '', 'default_image_source_url');
-//
-//        // Sync attachments if they exist
-//        if (isset($data['attachments']) && is_array($data['attachments'])) {
-//            foreach ($data['attachments'] as $attachmentData) {
-//                Attachment::createFromApiResponse($attachmentData, $note);
-//            }
-//        }
+        if(!empty($data['creator'])) User::saveMini($data['creator']);
 
         return $note;
     }

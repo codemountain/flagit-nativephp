@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('user_id');
             $table->string('model');
             $table->timestamp('last_synced_at')->nullable();
+            $table->timestamp('notified_at')->nullable()->after('last_synced_at');
             $table->timestamps();
 
             $table->unique(['user_id', 'model']);
