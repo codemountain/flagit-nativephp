@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Note extends Model
+class Note extends BaseModel
 {
 
     /**
@@ -35,7 +35,7 @@ class Note extends Model
     /**
      * Get the parent noteable model (report, etc.).
      */
-    public function noteable(): MorphTo
+    public function notable(): MorphTo
     {
         return $this->morphTo();
     }
@@ -87,7 +87,7 @@ class Note extends Model
                 'app_key' => $data['app_key'],
                 'content' => $data['content'],
 
-                'notable_type' => $data['notable_type'] ?? null,
+                'notable_type' => self::normalizeMorphType($data['notable_type']),
                 'notable_id' => $data['notable_id'] ?? null,
                 'created_at' => $data['created_at'],
                 'updated_at' => now(),
@@ -146,8 +146,8 @@ class Note extends Model
             'app_key' => 'actionit',
             'content' => $data['content'],
             'default_image' => (!empty($data['default_image'])) ? $data['default_image'] : null,
-            'noteable_type' => 'App\Models\Report',
-            'noteable_id' => $data['noteable_id'],
+            'notable_type' => 'App\Models\Report',
+            'notable_id' => $data['notable_id'],
         ]);
 
     }
@@ -180,7 +180,7 @@ class Note extends Model
     }
 
     public function report() {
-        return $this->belongsTo(Report::class, 'noteable_id', 'id');
+        return $this->belongsTo(Report::class, 'notable_id', 'id');
     }
 
 

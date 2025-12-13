@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Worklog extends Model
+class Worklog extends BaseModel
 {
 
     /**
@@ -97,7 +97,7 @@ class Worklog extends Model
                 'approved_by' => $data['approved_by'] ?? null,
 
                 // Morph to workable (if parent provided, prefer it)
-                'workable_type' => $data['workable_type'] ?? null,
+                'workable_type' => self::normalizeMorphType($data['workable_type']),
                 'workable_id'   => $data['workable_id'] ?? null,
 
                 'updated_at' => $data['updated_at'] ?? null,

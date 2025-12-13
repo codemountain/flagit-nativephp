@@ -39,6 +39,7 @@ class ReportNotes extends Component
     public function init()
     {
         $this->report = Report::whereReportId($this->id)->with('notes')->first();
+
         if(empty($this->report)){
             $this->redirect(route('home'));
         }

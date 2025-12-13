@@ -66,7 +66,7 @@ class ReportNotesAdd extends Component
         if (str_starts_with($this->photoDataUrl, 'data:image')) {
             // Use the already compressed image from client-side
             $imageValue = $this->photoDataUrl;
-        } else {
+        } elseif(!empty($this->newImage)) {
             // Fallback: read from file if not already compressed
             $image = Storage::path($this->newImage);
             $data = base64_encode(file_get_contents($image));
@@ -84,8 +84,8 @@ class ReportNotesAdd extends Component
             'app_key' => 'actionit',
             'description' => $this->new_note['content'],
             'image' => (!empty($imageValue)) ? $imageValue: null,
-            'noteable_type' => 'App\Models\Report',
-            'noteable_id' => $this->report->report_id,
+            'notable_type' => Note::normalizeMorphType('App\Models\Report'),
+            'notable_id' => $this->report->report_id,
             'is_internal' => false,
         ];
 

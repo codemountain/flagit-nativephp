@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Attachment extends Model
+class Attachment extends BaseModel
 {
 
     /**
@@ -70,7 +70,7 @@ class Attachment extends Model
                 'url'     => $data['url'] ?? null,
                 'file_path' => $data['file_path'] ?? null,
 
-                'attachable_type'     => $data['attachable_type'] ?? null,
+                'attachable_type'     => self::normalizeMorphType($data['attachable_type']),
                 'attachable_id'     => $data['attachable_id'] ?? null,
 
                 'updated_at' => $data['updated_at'] ?? null,

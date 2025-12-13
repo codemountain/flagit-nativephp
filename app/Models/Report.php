@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-class Report extends Model
+class Report extends BaseModel
 {
     /**
      * The attributes that are not mass assignable.
@@ -88,7 +88,7 @@ class Report extends Model
      */
     public function notes(): MorphMany
     {
-        return $this->morphMany(Note::class, 'noteable', null, 'noteable_id', 'report_id')->orderBy('created_at', 'desc');
+        return $this->morphMany(Note::class, 'notable', 'notable_type', 'notable_id', 'report_id')->orderBy('created_at', 'desc');
     }
 
     public static function saveListFromApi($data): array
