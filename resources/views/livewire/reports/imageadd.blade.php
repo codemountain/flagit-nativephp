@@ -2,10 +2,12 @@
                        "pt-4!" => \Native\Mobile\Facades\System::isAndroid(),
                        "pt-0!" => !\Native\Mobile\Facades\System::isAndroid(),
                ])>
+
     <x-ui.report-details-bottom-nav
         report-id="{{$report->report_id}}"  notes="{{$report->notes()->count()}}"/>
+
         <flux:heading size="xl">{{$report->title}}</flux:heading>
-        <form wire:submit="saveNote" class="flex flex-col gap-8 mt-4">
+        <form wire:submit="saveImage" class="flex flex-col gap-8 mt-4">
             <div
                 wire:click="getImage"
                 class="h-64 w-full flex justify-center rounded-lg border border-zinc-200 dark:border-zinc-700 p-0 items-center text-center bg-zinc-50 dark:bg-zinc-600">
@@ -19,15 +21,7 @@
 
             </div>
 
-            <flux:textarea
-                label="{{__('Note')}}"
-                wire:model="new_note.content"
-                placeholder="{{__(' ')}}..."
-                rows="2"
-                required
-            />
-
-            <flux:button type="submit" variant="primary" class="w-full mobile">{{__('Add Note')}}</flux:button>
+            <flux:button type="submit" variant="primary" class="w-full mobile">{{__('Add Image')}}</flux:button>
         </form>
 
 <script>

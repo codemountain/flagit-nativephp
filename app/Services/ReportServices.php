@@ -39,6 +39,15 @@ class ReportServices
         return Report::saveSingleFromApi($resp['report']);
     }
 
+    public function postReportImage($id, array $data)
+    {
+        $resp = $this->client->post('report/'.$id.'/image-upload', $data);
+        if($resp && !empty($resp['report'])){
+            return Report::saveImagesArray($resp['report']);
+        }
+        return null;
+    }
+
     public function postNote(array $data)
     {
         $resp = $this->client->post('note', $data);
@@ -47,6 +56,9 @@ class ReportServices
         }
         return null;
     }
+
+
+
 
 //    public function getNotes(array $query = ['page' => 0, 'per_page' => 10]): array
 //    {

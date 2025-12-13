@@ -2,7 +2,8 @@
     @if(!empty($report) && !empty($report->id))
    <div id="report-location" class="hidegeolocatebutton w-full h-[100vh] m-0! p0!" wire:ignore></div>
 
-
+        <x-ui.report-details-bottom-nav
+            report-id="{{$report->report_id}}"  notes="{{$report->notes()->count()}}"/>
 {{--    <flux:icon.chevron-down class="z-50 absolute top-6 left-6 p-4 size-14 bg-black/80 rounded-full text-white cursor-pointer" x-on:click="$flux.modal('report-map').close()" />--}}
 
 <script data-navigate-track>

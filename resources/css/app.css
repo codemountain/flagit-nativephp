@@ -141,3 +141,9 @@ ui-modal dialog{
 div.hidegeolocatebutton .mapboxgl-ctrl-geolocate{
     display: none !important;
 }
+.carousel-nav-button{
+    @apply h-14 w-14 bg-accent! text-accent-foreground opacity-60!
+}
+.carousel-nav-button svg{
+    @apply h-10! w-10!
+}

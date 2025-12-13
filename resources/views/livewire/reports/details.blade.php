@@ -25,21 +25,27 @@
                             src="{{$report->image}}"
                             class="w-full h-full object-cover relative rounded-t-2xl"
                         />
+                        @if(!empty($report->images) && count($report->images) > 1)
+                        <div class="absolute top-2 right-2">
+                            <flux:button
+                                href="{{route('reports.details.images',['id'=>$report->report_id])}}"
+                                class="w-16 h-16 opacity-70"
+                                variant="primary"
+                            >
+                                <flux:icon.photo class="size-8 text-zinc-300 dark:text-zinc-300" variant="solid" />
+                            </flux:button>
+                        </div>
+                        @endif
+                        <div class="absolute bottom-2 right-2">
+                            <flux:button
+                                href="{{route('reports.details.map',['id'=>$report->report_id])}}"
+                                class="w-16 h-16 opacity-70"
+                                variant="primary"
+                            >
+                                <flux:icon.map class="size-8 text-zinc-300 dark:text-zinc-300" variant="solid" />
+                            </flux:button>
 
-{{--                        @if(!$embedded)--}}
-                            <div class="absolute bottom-2 right-2">
-                                <flux:button
-                                    href="{{route('reports.details.map',['id'=>$report->report_id])}}"
-                                    class="w-16 h-16 opacity-70"
-                                    variant="primary"
-                                >
-                                    <flux:icon.map class="size-8 text-zinc-300 dark:text-zinc-300" variant="solid" />
-                                </flux:button>
-
-                            </div>
-
-{{--                        @endif--}}
-
+                        </div>
                     </div>
                 </div>
 

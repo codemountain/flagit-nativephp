@@ -11,6 +11,8 @@ use App\Livewire\Profile;
 use App\Livewire\PushNotification;
 use App\Livewire\ReportCreate;
 use App\Livewire\ReportDetails;
+use App\Livewire\ReportDetailsImages;
+use App\Livewire\ReportDetailsImagesAdd;
 use App\Livewire\ReportDetailsMap;
 use App\Livewire\ReportNotes;
 use App\Livewire\ReportNotesAdd;
@@ -38,6 +40,8 @@ Route::middleware(['mobile.auth','mobile.geopermissions'])->group(function () {
     Route::get('/reports/refresh', ReportsRefresh::class)->name('reports.refresh');
     Route::get('/reports/{id}', ReportDetails::class)->name('reports.details');
     Route::get('/reports/{id}/map', ReportDetailsMap::class)->name('reports.details.map');
+    Route::get('/reports/{id}/images', ReportDetailsImages::class)->name('reports.details.images');
+    Route::get('/reports/{id}/imageadd', ReportDetailsImagesAdd::class)->name('reports.details.imageadd');
     Route::get('/reports/{id}/notes', ReportNotes::class)->name('reports.details.notes');
     Route::get('/reports/{id}/notes/create',ReportNotesAdd::class)->name('reports.details.notes.create');
     Route::get('/reports/{id}/fix', ReportDetailsMap::class)->name('reports.details.fix');

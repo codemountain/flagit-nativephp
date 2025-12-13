@@ -147,36 +147,14 @@ class Report extends BaseModel
         if(!empty($data['creator'])) User::saveMini($data['creator']);
 
         return $report;
-        /*  {
-    "category": "mtb",
-    "title": "cloudburst Cafe",
-    "description": "testing",
-    "network_name": "Orphan flags",
-    "trail_name": "cloudburst Cafe",
-    "lat": 49.735288,
-    "long": -123.1324544,
-    "image": "https:\/\/pixeltrail.s3.us-east-1.amazonaws.com\/local\/actionit\/report_photos\/0BTlqOzrH5_1747669079.jpg",
-    "thumb": "https:\/\/pixeltrail.s3.us-east-1.amazonaws.com\/local\/thumbs\/bd\/xy\/hvcpits800k0gowcww4sc.jpg?crop=100x100&p=%2F0BTlqOzrH5_1747669079.jpg&s=fy",
-    "status": "submitted",
-    "created_at": "19 May 2025 @ 11:38",
-    "created_date": "2025-05-19T15:38:00.000000Z",
-    "elapsed": "6 months ago",
-    "report_id": "01jvmk3pt3yabj4mksx07xrg8q",
-    "team_id": "01jqw8drzd1xev5w1e5tv3mkc8",
-    "network_id": "01jqw8drzd1xev5w1e5tv3mkc8",
-    "slug": "orphan-flags",
-    "is_urgent": false,
-    "network_logo_url": null,
-    "distance": null,
-    "assigned_user_ids": "01j6w3aqz1mf3ygemb9cyaaq8m,01jkvf42krt68wj1jfrf7mk9x6,01j6w3ar5vjnnqwkvdej21497w,01j91p2eb07seknnw80hawz31x,01jqvyjpj9fwf0wkpvs5hnc61z",
-    "created_by": "01jqvyjpj9fwf0wkpvs5hnc61z",
-    "notes": [],
-    "notes_count": 0,
-    "category_names": "",
-    "skill_names": null,
-    "material_names": null,
-    "task_names": null,
-    "equipment_names": null
-  },*/
+
+    }
+    public static function saveImagesArray($data)
+    {
+        $report = self::whereReportId($data['report_id'])->first();
+        if($report){
+            $report->update(['images' => $data['images'] ?? null,'updated_at' => $data['updated_at'] ?? now()]);
+        }
+        return $report;
     }
 }

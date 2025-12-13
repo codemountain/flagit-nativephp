@@ -77,4 +77,6 @@ return [
         public_path('storage') => storage_path('app/public'),
     ],
 
+    'base_storage_path_default' => env('S3_STORAGE_URL', 'https://pixeltrail.s3.us-east-1.amazonaws.com/local/actionit/'),
+
 ];

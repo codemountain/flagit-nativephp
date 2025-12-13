@@ -39,21 +39,21 @@ class Reports extends Component
         $user = User::where('user_id', $this->userId)->first();
         $delayMinutes = $user?->sync_delay_minutes ?? 1440;
 
-        // Check if either reports type should redirect (needs sync AND not already notified this cycle)
-        $shouldRedirectMyReports = UserSync::shouldRedirectToSync($this->userId, SyncModel::MyReports, $delayMinutes);
-        $shouldRedirectAssigned = UserSync::shouldRedirectToSync($this->userId, SyncModel::Assigned, $delayMinutes);
-
-        if ($shouldRedirectMyReports || $shouldRedirectAssigned) {
-            // Record that we notified the user
-            if ($shouldRedirectMyReports) {
-                UserSync::recordNotified($this->userId, SyncModel::MyReports);
-            }
-            if ($shouldRedirectAssigned) {
-                UserSync::recordNotified($this->userId, SyncModel::Assigned);
-            }
-
-            $this->redirect(route('reports.refresh'));
-        }
+//        // Check if either reports type should redirect (needs sync AND not already notified this cycle)
+//        $shouldRedirectMyReports = UserSync::shouldRedirectToSync($this->userId, SyncModel::MyReports, $delayMinutes);
+//        $shouldRedirectAssigned = UserSync::shouldRedirectToSync($this->userId, SyncModel::Assigned, $delayMinutes);
+//
+//        if ($shouldRedirectMyReports || $shouldRedirectAssigned) {
+//            // Record that we notified the user
+//            if ($shouldRedirectMyReports) {
+//                UserSync::recordNotified($this->userId, SyncModel::MyReports);
+//            }
+//            if ($shouldRedirectAssigned) {
+//                UserSync::recordNotified($this->userId, SyncModel::Assigned);
+//            }
+//
+//            //$this->redirect(route('reports.refresh'));
+//        }
 
         //calculate totals
         $this->myTotal = Report::createdBy($this->userId)->get()->count();

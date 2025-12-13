@@ -4,6 +4,13 @@
 ])
 <native:bottom-nav>
     <native:bottom-nav-item
+        id="reports"
+        icon="home"
+        label="{{__('Reports')}}"
+        url="/reports"
+        active="{{request()->routeIs('home')}}"
+    />
+    <native:bottom-nav-item
         id="notes"
         icon="chat"
         label="{{__('Notes')}}"
@@ -30,13 +37,15 @@
         />
     @endif
 
-    <native:bottom-nav-item
-        id="worklog"
-        icon="list"
-        label="{{__('Worklog')}}"
-        url="/reports/{{$reportId}}/edit"
-        active="{{request()->routeIs('home')}}"
-    />
+    @if(request()->routeIs('reports.details'))
+        <native:bottom-nav-item
+            id="addimage"
+            icon="photo"
+            label="{{__('Add')}}"
+            url="/reports/{{$reportId}}/imageadd"
+            active="{{request()->routeIs('reports.details.imageadd')}}"
+        />
+    @endif
 
     <native:bottom-nav-item
         id="edit"
@@ -45,4 +54,5 @@
         url="/reports/{{$reportId}}/edit"
         active="{{request()->routeIs('home')}}"
     />
+
 </native:bottom-nav>

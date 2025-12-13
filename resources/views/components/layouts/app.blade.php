@@ -22,7 +22,7 @@
         </native:top-bar>
         @else
         <native:top-bar title="{{$title ?? ''}}" :show-navigation-icon="false" text-color="#F26E36">
-            <native:top-bar-action id="profile-action" label="Home" icon="back" url="{{ $link_back ?? request()->header('referer') }}"/>
+{{--            <native:top-bar-action id="profile-action" label="Home" icon="back" url="{{ $link_back ?? request()->header('referer') }}"/>--}}
             @if(\Native\Mobile\Facades\SecureStorage::get('device_online'))
             <native:top-bar-action id="network-status" label="Network" icon="chart" />
             @endif
@@ -47,7 +47,7 @@
         <native:bottom-nav>
             <native:bottom-nav-item
                 id="home"
-                icon="description"
+                icon="home"
                 label="{{__('Reports')}}"
                 url="/reports"
                 active="{{request()->routeIs('home')}}"

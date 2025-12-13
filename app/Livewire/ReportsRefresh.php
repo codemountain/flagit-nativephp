@@ -180,9 +180,7 @@ class ReportsRefresh extends Component
     {
         return view('livewire.reports.refresh')
             ->layout('components.layouts.app',[
-                'title' => __('Sync Reports') ,
-                'showEdgeComponents' => false,
-                'link_back'=> url('/reports')
+                'title' => __('Sync Reports')
             ]);
     }
 }
